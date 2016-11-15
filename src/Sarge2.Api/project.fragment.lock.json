@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "exports": {
+    "Sarge.Maps/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.2",
+      "compile": {
+        "bin/Debug/Sarge.Maps.dll": {}
+      },
+      "runtime": {
+        "../../Web/Sarge2.Api/packages/Spire.PDF.3.8.45/lib/net40/Spire.License.dll": {},
+        "../../Web/Sarge2.Api/packages/Spire.PDF.3.8.45/lib/net40/Spire.Pdf.dll": {},
+        "../../bin/ProjNet.dll": {},
+        "bin/Debug/Sarge.Maps.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Sarge.Maps.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}
