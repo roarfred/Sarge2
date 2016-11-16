@@ -36,9 +36,10 @@ namespace Sarge2.Api.Controllers
             using (var vBitmap = await vLoader.CreateBitmapForPrintAsync())
             {
                 var vStream = new MemoryStream();
-                await vLoader.CreatePDFWithSpireAsync(vBitmap, title, null, vStream);
-                vStream.Position = 0;
-                return new FileStreamResult(vStream, "binary/pdf");
+                await vLoader.CreatePDFWithPdfSharpAsync(vBitmap, title, null, vStream);
+                // The stream is closed for some reason, so we'll just make a new one
+                var vNewStream = new MemoryStream(vStream.GetBuffer());
+                return new FileStreamResult(vNewStream, "binary/pdf");
             }
         }
 
