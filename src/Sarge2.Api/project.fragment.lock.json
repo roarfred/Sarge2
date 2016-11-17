@@ -8,8 +8,8 @@
         "bin/Debug/Sarge.Maps.dll": {}
       },
       "runtime": {
-        "../../Web/Sarge2.Api/packages/Spire.PDF.3.8.45/lib/net40/Spire.License.dll": {},
-        "../../Web/Sarge2.Api/packages/Spire.PDF.3.8.45/lib/net40/Spire.Pdf.dll": {},
+        "../../Clients/MapPrinter/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.Charting.dll": {},
+        "../../Clients/MapPrinter/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.dll": {},
         "../../bin/ProjNet.dll": {},
         "bin/Debug/Sarge.Maps.dll": {}
       },
