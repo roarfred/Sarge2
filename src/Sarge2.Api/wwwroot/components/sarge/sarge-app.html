@@ -1,0 +1,129 @@
+﻿<link rel="import" href="../../lib/polymer/polymer.html">
+<link rel="import" href="../../lib/app-layout/app-scroll-effects/effects/waterfall.html" />
+<link rel="import" href="../../lib/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../lib/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../lib/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../lib/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../lib/app-layout/app-header/app-header.html">
+<link rel="import" href="../../lib/app-layout/app-toolbar/app-toolbar.html">
+
+<link rel="import" href="../../lib/paper-button/paper-button.html">
+<link rel="import" href="../../lib/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../../lib/iron-icon/iron-icon.html" />
+<link rel="import" href="../../lib/iron-icons/iron-icons.html" />
+<link rel="import" href="../../lib/paper-styles/paper-styles.html" />
+<link rel="import" href="../../lib/paper-icon-button/paper-icon-button.html">
+
+
+<link rel="import" href="sarge-map-setup.html">
+<link rel="import" href="sarge-map.html">
+
+
+<dom-module id="sarge-app">
+    <style is="custom-style">
+      body {
+        /* No margin on body so toolbar can span the screen */
+        margin: 0;
+      }
+      app-toolbar {
+        /* Toolbar is the main header, so give it some color */
+        background-color: #1E88E5;
+        font-family: 'Roboto', Helvetica, sans-serif;
+        color: white;
+        --app-toolbar-font-size: 24px;
+      }
+      paper-button {width: 90%}
+    </style>
+    <template>
+        <app-drawer-layout>
+
+            <app-drawer>
+                <app-toolbar>
+                    <paper-icon-button icon="print" drawer-toggle></paper-icon-button>
+                    Oppsett
+                </app-toolbar>
+                <sarge-map-setup on-map-change="mapChanged" on-scale-or-paper-size-change="scaleOrPaperSizeChanged" map-title="{{mapTitle}}"></sarge-map-setup>
+                <paper-button raised on-click="createPDF">Lag PDF</paper-button>
+            </app-drawer>
+
+            <app-header-layout>
+
+                <app-header reveals effects="waterfall">
+                    <app-toolbar>
+                        <paper-icon-button icon="print" drawer-toggle></paper-icon-button>
+                        <div main-title>SARGE2</div>
+                    </app-toolbar>
+                </app-header>
+
+                <sample-content size="100">
+                    <sarge-map/>
+                </sample-content>
+
+            </app-header-layout>
+
+        </app-drawer-layout>
+
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'sarge-app',
+                properties: {
+                    mapTitle: {
+                        type: String,
+                        notify: true
+                    }
+                },
+                attached: function()
+                {
+                    
+                },
+                mapChanged: function(e, i)
+                {
+                    this.querySelector("sarge-map").setMap(i.map);
+                },
+                scaleOrPaperSizeChanged: function(e, i)
+                {
+                    this.querySelector("sarge-map").setScaleAndPaperSize(i.scale, i.paperSize);
+                },
+                createPDF: function()
+                {
+                    var vSettings = this.querySelector("sarge-map-setup");
+
+                    var vObject = {
+                        "map": {
+                            "name": vSettings.map.name,
+                            "layer": vSettings.map.name
+                        },
+                        "margins": {
+                            "left": "10",
+                            "right": "10",
+                            "top": "10",
+                            "bottom": "10"
+                        },
+                        "paperSize": vSettings.paperSize,
+                        "scaleAndTileSize": vSettings.scale,
+                        "showUtmGrid": "true",
+                        "showLatLonGrid": "false",
+                        "showCrossHair": "true",
+                        "radius": "200"
+                    };
+
+                    $.ajax({
+                        url: "api/MapAsPdf/Roar",
+                        type: "POST",
+                        data: JSON.stringify(vObject),
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: function(pData)
+                        {
+                            uriContent = "data:application/octet-stream," + encodeURIComponent(pData);
+                            newWindow = window.open(uriContent, 'Kart.pdf');
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
+</dom-module>

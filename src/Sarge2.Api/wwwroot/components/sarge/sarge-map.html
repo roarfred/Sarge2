@@ -1,0 +1,122 @@
+﻿<link rel="import" href="../../lib/polymer/polymer.html">
+<dom-module id="sarge-map">
+    <style>
+    </style>
+    <template>
+        <div id="cMap" style="width: 100%; height: 100%; position:fixed"></div>
+    </template>
+
+    <script src="../../script/proj4.js"></script>
+    <script src="../../script/ol.js"></script>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'sarge-map',
+                properties: {
+                    map: Object
+                },
+                attached: function () {
+                    var Maps = {};
+                    var PaperSizes = {};
+                    var Scales = {};
+
+                    var sProjection = 'EPSG:32633';
+                    var extent = {
+                        'EPSG:32633': [-2500000, 3500000, 3045984, 9045984]
+                    };
+
+                    var projection = new ol.proj.Projection({
+                        code: sProjection,
+                        extent: extent[sProjection]
+                    });
+
+                    ol.proj.addProjection(projection);
+
+                    var view = new ol.View({
+                        projection: projection,
+                        center: [302474, 6945724],
+                        zoom: 12
+                    });
+                    var vLayerGroup = new ol.layer.Group({
+                        layers: [
+                            this.createMapTile({ name: 'topo2' })
+                        ]
+                    })
+                    this.map = new ol.Map({
+                        target: 'cMap',
+                        view: view
+                    });
+                    
+                    this.map.setLayerGroup(vLayerGroup);
+                },
+                setMap: function(pMap)
+                {
+                    this.map.setLayerGroup(new ol.layer.Group({
+                        layers: [
+                            this.createMapTile(pMap)
+                        ]
+                    }));
+                    if (this.map.layers)
+                        this.map.layers[0].refresh({ force: true });
+                },
+                setScaleAndPaperSize: function(scale, paperSize)
+                {
+
+                },
+                createMapTile: function (pMap) {
+                    return new ol.layer.Tile({
+                        title: pMap.name,
+                        source: new ol.source.TileWMS({
+                            url: 'http://opencache.statkart.no/gatekeeper/gk/gk.open?',
+                            params: {
+                                'LAYERS': pMap.name,
+                                'VERSION': '1.1.1',
+                                'FORMAT': 'image/png',
+                                'TILED': true
+                            },
+                            //tileGrid: tileGrid
+                        })
+                    });
+                },
+
+                createMap: function () {
+                    var vObject = {
+                        "map": {
+                            "name": "topo2",
+                            "layer": "topo2"
+                        },
+                        "margins": {
+                            "left": "10",
+                            "right": "10",
+                            "top": "10",
+                            "bottom": "10"
+                        },
+                        "paperSize": {
+                            "name": "A3 Portrait",
+                            "paperKind": "0",
+                            "width": "0.297301769",
+                            "height": "0.4204482"
+                        },
+                        "scaleAndTileSize": {
+                            "scale": "50000",
+                            "tileSizeInMeters": "5416",
+                            "name": "1:50000 (Hi)"
+                        },
+                        "showUtmGrid": "true",
+                        "showLatLonGrid": "false",
+                        "showCrossHair": "true",
+                        "radius": "200"
+                    };
+                    $.ajax({
+                        url: "api/MapAsPdf/Roar",
+                        type: "POST",
+                        data: JSON.stringify(vObject),
+                        contentType: "application/json",
+                        dataType: "json"
+                    });
+                }
+            });
+        })();
+    </script>
+</dom-module>

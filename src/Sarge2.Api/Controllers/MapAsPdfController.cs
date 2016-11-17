@@ -29,17 +29,30 @@ namespace Sarge2.Api.Controllers
 
         // POST api/values
         [HttpPost("{title}")]
-        public async Task<FileStreamResult> Post(string title, [FromBody]MapSetup setup)
+        public async Task<Guid> Post(string title, [FromBody]MapSetup setup)
         {
             MapLoader vLoader = new MapLoader(setup);
             vLoader.PositionUtm32 = new UtmPosition(317206, 6692784);
             using (var vBitmap = await vLoader.CreateBitmapForPrintAsync())
             {
-                var vStream = new MemoryStream();
-                await vLoader.CreatePDFWithPdfSharpAsync(vBitmap, title, null, vStream);
-                // The stream is closed for some reason, so we'll just make a new one
-                var vNewStream = new MemoryStream(vStream.GetBuffer());
-                return new FileStreamResult(vNewStream, "binary/pdf");
+                Guid vFileID = Guid.NewGuid();
+                string vFilename = Path.Combine(Path.GetTempPath(), vFileID.ToString());
+                using (var vFile = System.IO.File.Create(vFilename))
+                {
+                    await vLoader.CreatePDFWithPdfSharpAsync(vBitmap, title, null, vFile);
+                }
+
+                return vFileID;
+            }
+        }
+
+        [HttpGet("{file}")]
+        public async Task<FileStreamResult> GetMap(Guid file)
+        {
+            string vFilename = Path.Combine(Path.GetTempPath(), file.ToString());
+            using (var vFile = System.IO.File.OpenRead(vFilename))
+            {
+                return new FileStreamResult(vFile, "binary/pdf");
             }
         }
 
