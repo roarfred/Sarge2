@@ -8,8 +8,8 @@
         "bin/Debug/Sarge.Maps.dll": {}
       },
       "runtime": {
-        "../../Clients/MapPrinter/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.Charting.dll": {},
-        "../../Clients/MapPrinter/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.dll": {},
+        "../../Web/Sarge2.Api/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.Charting.dll": {},
+        "../../Web/Sarge2.Api/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.dll": {},
         "../../bin/ProjNet.dll": {},
         "bin/Debug/Sarge.Maps.dll": {}
       },
