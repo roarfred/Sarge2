@@ -47,13 +47,12 @@ namespace Sarge2.Api.Controllers
         }
 
         [HttpGet("{file}")]
-        public async Task<FileStreamResult> GetMap(Guid file)
+        public FileStreamResult GetMap(Guid file)
         {
             string vFilename = Path.Combine(Path.GetTempPath(), file.ToString());
-            using (var vFile = System.IO.File.OpenRead(vFilename))
-            {
-                return new FileStreamResult(vFile, "binary/pdf");
-            }
+            var vFile = System.IO.File.OpenRead(vFilename);
+            Response.Headers.Add("Content-Disposition", "attachment;filename=Kart.pdf");
+            return new FileStreamResult(vFile, "application/pdf");
         }
 
         // PUT api/values/5

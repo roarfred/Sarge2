@@ -5,16 +5,16 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Debug/Sarge.Maps.dll": {}
+        "bin/Release/Sarge.Maps.dll": {}
       },
       "runtime": {
         "../../Web/Sarge2.Api/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.Charting.dll": {},
         "../../Web/Sarge2.Api/packages/PDFsharp.1.32.3057.0/lib/net20/PdfSharp.dll": {},
         "../../bin/ProjNet.dll": {},
-        "bin/Debug/Sarge.Maps.dll": {}
+        "bin/Release/Sarge.Maps.dll": {}
       },
       "contentFiles": {
-        "bin/Debug/Sarge.Maps.pdb": {
+        "bin/Release/Sarge.Maps.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true

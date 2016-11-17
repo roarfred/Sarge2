@@ -118,8 +118,7 @@
                         dataType: "json",
                         success: function(pData)
                         {
-                            uriContent = "data:application/octet-stream," + encodeURIComponent(pData);
-                            newWindow = window.open(uriContent, 'Kart.pdf');
+                            $("body").append("<iframe src='/api/MapAsPdf/" + pData + "' style='display: none;' ></iframe>");
                         }
                     });
                 }
