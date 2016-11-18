@@ -28,18 +28,17 @@ namespace Sarge2.Api.Controllers
         }
 
         // POST api/values
-        [HttpPost("{title}")]
-        public async Task<Guid> Post(string title, [FromBody]MapSetup setup)
+        [HttpPost()]
+        public async Task<Guid> Post([FromBody]MapSetup setup)
         {
             MapLoader vLoader = new MapLoader(setup);
-            vLoader.PositionUtm32 = new UtmPosition(317206, 6692784);
             using (var vBitmap = await vLoader.CreateBitmapForPrintAsync())
             {
                 Guid vFileID = Guid.NewGuid();
                 string vFilename = Path.Combine(Path.GetTempPath(), vFileID.ToString());
                 using (var vFile = System.IO.File.Create(vFilename))
                 {
-                    await vLoader.CreatePDFWithPdfSharpAsync(vBitmap, title, null, vFile);
+                    await vLoader.CreatePDFWithPdfSharpAsync(vBitmap, setup.Title, null, vFile);
                 }
 
                 return vFileID;

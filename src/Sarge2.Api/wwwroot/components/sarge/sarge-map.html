@@ -3,7 +3,7 @@
     <style>
     </style>
     <template>
-        <div id="cMap" style="width: 100%; height: 100%; position:fixed"></div>
+        <div id="cMap" style="width: 100%; height:100%; position:fixed"></div>
     </template>
 
     <script src="../../script/proj4.js"></script>
@@ -14,13 +14,13 @@
             Polymer({
                 is: 'sarge-map',
                 properties: {
-                    map: Object
+                    map: Object,
+                    mapLocation: {
+                        type: Object,
+                        observer: '_mapLocationChanged'
+                    }
                 },
                 attached: function () {
-                    var Maps = {};
-                    var PaperSizes = {};
-                    var Scales = {};
-
                     var sProjection = 'EPSG:32633';
                     var extent = {
                         'EPSG:32633': [-2500000, 3500000, 3045984, 9045984]
@@ -35,8 +35,8 @@
 
                     var view = new ol.View({
                         projection: projection,
-                        center: [302474, 6945724],
-                        zoom: 12
+                        //center: this.mapLocation ? [this.mapLocation.easting, this.mapLocation.northing] : [302474, 6945724],
+                        //zoom: 12
                     });
                     var vLayerGroup = new ol.layer.Group({
                         layers: [
@@ -48,7 +48,32 @@
                         view: view
                     });
                     
-                    this.map.setLayerGroup(vLayerGroup);
+                    var vComponent = this;
+                    this.map.on('moveend', function () {
+                        var vView = vComponent.map.getView();
+                        var vCenter = vView.getCenter();
+                        vComponent.fire('map-move', { zoom: vView.getZoom(), location: { easting: vCenter[0], northing: vCenter[1] } });
+                    });
+
+                    this.map.setLayerGroup(vLayerGroup);                   
+                },
+                getLocation: function() {
+                    var vCenter = this.map.getView().getCenter();
+                    return { easting: vCenter[0], northing: vCenter[1] };
+                },
+                setLocation: function(pLocation) {
+                    this.map.getView().setCenter([pLocation.easting, pLocation.northing]);
+                },
+                getZoom: function()
+                {
+                    return this.map.getView().getZoom();
+                },
+                setZoom: function (pZoom) {
+                    return this.map.getView().setZoom(pZoom);
+                },
+                ready: function ()
+                {
+                    
                 },
                 setMap: function(pMap)
                 {
@@ -115,6 +140,38 @@
                         contentType: "application/json",
                         dataType: "json"
                     });
+                },
+                drawPaper: function(pBounds)
+                {
+                    if (!pBounds)
+                        return;
+
+                    var polyCoords = [
+                            [pBounds.northWest.easting, pBounds.northWest.northing],
+                            [pBounds.southEast.easting, pBounds.northWest.northing],
+                            [pBounds.southEast.easting, pBounds.southEast.northing],
+                            [pBounds.northWest.easting, pBounds.southEast.northing],
+                    ];
+
+                    if (!this.paper)
+                    {
+                        var feature = new ol.Feature({
+                            geometry: new ol.geom.Polygon([polyCoords])
+                        });
+
+                        var layer = new ol.layer.Vector({
+                            source: new ol.source.Vector({
+                                features: [feature]
+                            })
+                        });
+
+                        this.map.addLayer(layer);
+                        this.paper = feature;
+                    }
+                    else
+                    {
+                        this.paper.setGeometry(new ol.geom.Polygon([polyCoords]));
+                    }
                 }
             });
         })();

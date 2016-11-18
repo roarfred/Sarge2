@@ -32,7 +32,6 @@ namespace Sarge2.Api.Controllers
         public async Task<FileStreamResult> Post([FromBody]MapSetup setup)
         {
             MapLoader vLoader = new MapLoader(setup);
-            vLoader.PositionUtm32 = new UtmPosition(317206, 6692784);
             using (var vBitmap = await vLoader.CreateBitmapForPrintAsync())
             {
                 var vStream = new MemoryStream();

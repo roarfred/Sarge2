@@ -6,6 +6,7 @@
 <link rel="import" href="../../lib/iron-ajax/iron-ajax.html" />
 <link rel="import" href="../../lib/paper-input/paper-input.html">
 <link rel="import" href="../../lib/paper-button/paper-button.html">
+<link rel="import" href="../../lib/paper-checkbox/paper-checkbox.html">
 
 <dom-module id="sarge-map-setup">
     <style>
@@ -39,6 +40,16 @@
             </paper-dropdown-menu>
             <iron-ajax auto url="/api/PaperSize" handle-as="json" last-response="{{paperSizes}}" verbose="true"></iron-ajax>
             <paper-input label="Tittel" value="{{mapTitle}}"></paper-input>
+            <paper-input label="Radius" value="{{radius}}"></paper-input>
+            <div>
+                <paper-checkbox checked="{{showCrossHair}}" on-change="settingChanged">Vis sikte</paper-checkbox>
+            </div>
+            <div>
+                <paper-checkbox checked="{{showUtmGrid}}" on-change="settingChanged">UTM grid</paper-checkbox>
+            </div>
+            <div>
+                <paper-checkbox checked="{{showLatLonGrid}}" on-change="settingChanged">lat/long grid</paper-checkbox>
+            </div>
         </div>
     </template>
     <script>
@@ -61,11 +72,31 @@
                     mapTitle: {
                         type: String,
                         notify: true
+                    },
+                    radius: {
+                        type: Number,
+                        notify: true
+                    },
+                    showUtmGrid: {
+                        type: Boolean,
+                        notify: true
+                    },
+                    showLatLonGrid: {
+                        type: Boolean,
+                        notify: true
+                    },
+                    showCrossHair: {
+                        type: Boolean,
+                        notify: true
                     }
                 },
                 attached: function()
                 {
                     
+                },
+                detached: function()
+                {
+                    alert('detach');
                 },
                 createPDF: function() {
                     alert(this.mapTitle);
@@ -86,6 +117,10 @@
                     var vAjax = this.querySelector("#cScalesAjax");
                     vAjax.setAttribute("url", "/api/Scale/" + this.map.name);
                     vAjax.generateRequest();
+                },
+                settingChanged: function()
+                {
+                    this.fire('setting-change', { });
                 },
                 fireMapChanged: function()
                 {

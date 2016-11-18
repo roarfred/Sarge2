@@ -43,7 +43,7 @@
                     <paper-icon-button icon="print" drawer-toggle></paper-icon-button>
                     Oppsett
                 </app-toolbar>
-                <sarge-map-setup on-map-change="mapChanged" on-scale-or-paper-size-change="scaleOrPaperSizeChanged" map-title="{{mapTitle}}"></sarge-map-setup>
+                <sarge-map-setup on-map-change="mapChanged" on-scale-or-paper-size-change="scaleOrPaperSizeChanged" on-setting-change="settingChanged" map-title="{{mapTitle}}"></sarge-map-setup>
                 <paper-button raised on-click="createPDF">Lag PDF</paper-button>
             </app-drawer>
 
@@ -56,9 +56,12 @@
                     </app-toolbar>
                 </app-header>
 
-                <sample-content size="100">
-                    <sarge-map/>
-                </sample-content>
+                <div style="height: 100%;">
+
+                    <sarge-map on-map-move="mapMoved" />
+
+                </div>
+                
 
             </app-header-layout>
 
@@ -77,7 +80,19 @@
                 },
                 attached: function()
                 {
+                    this.loadState();
+                },
+                detached: function()
+                {
+                    this.saveState();
+                },
+                ready: function()
+                {
                     
+                },
+                positionChanged: function(e, i)
+                {
+
                 },
                 mapChanged: function(e, i)
                 {
@@ -86,12 +101,88 @@
                 scaleOrPaperSizeChanged: function(e, i)
                 {
                     this.querySelector("sarge-map").setScaleAndPaperSize(i.scale, i.paperSize);
+                    this.saveState();
                 },
-                createPDF: function()
+                settingChanged: function() {
+                    this.saveState();
+                },
+                loadState: function () {
+                    var vSettings = this.querySelector("sarge-map-setup");
+                    var vMap = this.querySelector("sarge-map");
+
+                    var vCookie = this.getCookie('settings');
+                    
+                    if (vCookie)
+                    {
+                        var v = JSON.parse(vCookie);
+                        vSettings.showUtmGrid = v.showUtmGrid;
+                        vSettings.showLatLonGrid = v.showLatLonGrid;
+                        vSettings.radius = v.radius | "";
+                        vSettings.showCrossHair = v.showCrossHair;
+                        vMap.setLocation(v.mapLocation);
+                        if (v.mapZoom) vMap.setZoom(v.mapZoom);
+                    }
+                    else
+                    {
+                        vSettings.showUtmGrid = true;
+                        vSettings.showLatLonGrid = false;
+                        vSettings.radius = 333;
+                        vSettings.showCrossHair = true;
+                    }
+                    this.stateLoaded = true;
+                },
+                saveState: function () {
+                    var vSettings = this.querySelector("sarge-map-setup");
+                    var vMap = this.querySelector("sarge-map");
+
+                    var vCookieObject = {
+                        showUtmGrid: vSettings.showUtmGrid,
+                        showLatLonGrid: vSettings.showLatLonGrid,
+                        radius: vSettings.radius,
+                        showCrossHair: vSettings.showCrossHair,
+                        mapTitle: vSettings.mapTitle,
+                        mapLocation: vMap.getLocation(),
+                        mapZoom: vMap.getZoom()
+                    };
+                    this.setCookie("settings", JSON.stringify(vCookieObject), 365);
+                },
+                mapMoved: function(zoom, location)
+                {
+                    if (this.stateLoaded)
+                        this.saveState();
+                    var vMap = this.querySelector("sarge-map");
+                    var vSettings = this.querySelector("sarge-map-setup");
+                    if (vSettings.paperSize && vSettings.scale)
+                    {
+                        $.ajax({
+                            url: "api/GetPaperCoordinates",
+                            type: "POST",
+                            data: JSON.stringify(this.getMapSettings()),
+                            contentType: "application/json",
+                            dataType: "json",
+                            success: function (pData) {
+                                vMap.drawPaper(pData.paper);
+                            }
+                        })
+                    }
+                },
+                getCookie: function (name) {
+                    var value = "; " + document.cookie;
+                    var parts = value.split("; " + name + "=");
+                    if (parts.length == 2) return  decodeURIComponent(parts.pop().split(";").shift());
+                },
+                setCookie: function(name, value, days, path) {
+                    days |= 7;
+                    path |= '/';
+                    var expires = new Date(Date.now() + days * 864e5).toGMTString()
+                    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=' + path;
+                },
+                getMapSettings: function()
                 {
                     var vSettings = this.querySelector("sarge-map-setup");
+                    var vMap = this.querySelector("sarge-map");
 
-                    var vObject = {
+                    return {
                         "map": {
                             "name": vSettings.map.name,
                             "layer": vSettings.map.name
@@ -102,18 +193,23 @@
                             "top": "10",
                             "bottom": "10"
                         },
+                        title: vSettings.mapTitle,
+                        "location": vMap.getLocation(),
                         "paperSize": vSettings.paperSize,
                         "scaleAndTileSize": vSettings.scale,
-                        "showUtmGrid": "true",
-                        "showLatLonGrid": "false",
-                        "showCrossHair": "true",
-                        "radius": "200"
+                        "showUtmGrid": vSettings.showUtmGrid,
+                        "showLatLonGrid": vSettings.showLatLonGrid,
+                        "showCrossHair": vSettings.showCrossHair,
+                        "radius": vSettings.radius
                     };
-
+                },
+                createPDF: function()
+                {
+             
                     $.ajax({
-                        url: "api/MapAsPdf/Roar",
+                        url: "api/MapAsPdf",
                         type: "POST",
-                        data: JSON.stringify(vObject),
+                        data: JSON.stringify(this.getMapSettings()),
                         contentType: "application/json",
                         dataType: "json",
                         success: function(pData)
