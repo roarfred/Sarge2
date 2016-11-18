@@ -3,7 +3,7 @@
     <style>
     </style>
     <template>
-        <div id="cMap" style="width: 100%; height:100%; position:fixed"></div>
+        <div id="cMap" style="width: 100%; height: 100%; position: fixed"></div>
     </template>
 
     <script src="../../script/proj4.js"></script>
@@ -21,6 +21,9 @@
                     }
                 },
                 attached: function () {
+                    //$("#cMap").height($("#cMap").height() - 70);
+                    //$("#cMap").width($("#cMap").width() - $("#contentContainer.app-drawer").width());
+
                     var sProjection = 'EPSG:32633';
                     var extent = {
                         'EPSG:32633': [-2500000, 3500000, 3045984, 9045984]
@@ -35,8 +38,8 @@
 
                     var view = new ol.View({
                         projection: projection,
-                        //center: this.mapLocation ? [this.mapLocation.easting, this.mapLocation.northing] : [302474, 6945724],
-                        //zoom: 12
+                        center: this.mapLocation ? [this.mapLocation.easting, this.mapLocation.northing] : [300000, 6550000],
+                        zoom: 5
                     });
                     var vLayerGroup = new ol.layer.Group({
                         layers: [
@@ -53,13 +56,18 @@
                         var vView = vComponent.map.getView();
                         var vCenter = vView.getCenter();
                         vComponent.fire('map-move', { zoom: vView.getZoom(), location: { easting: vCenter[0], northing: vCenter[1] } });
+                        vComponent.drawPaper();
                     });
-
-                    this.map.setLayerGroup(vLayerGroup);                   
+                    this.map.on('pointerdrag', function () {
+                        vComponent.drawPaper();
+                    });
+                    this.map.setLayerGroup(vLayerGroup);
+                    this.drawPaper();
                 },
                 getLocation: function() {
                     var vCenter = this.map.getView().getCenter();
-                    return { easting: vCenter[0], northing: vCenter[1] };
+                    if (vCenter)
+                        return { easting: vCenter[0], northing: vCenter[1] };
                 },
                 setLocation: function(pLocation) {
                     this.map.getView().setCenter([pLocation.easting, pLocation.northing]);
@@ -87,7 +95,9 @@
                 },
                 setScaleAndPaperSize: function(scale, paperSize)
                 {
-
+                    this.scale = scale;
+                    this.paperSize = paperSize;
+                    this.drawPaper();
                 },
                 createMapTile: function (pMap) {
                     return new ol.layer.Tile({
@@ -141,16 +151,20 @@
                         dataType: "json"
                     });
                 },
-                drawPaper: function(pBounds)
+                drawPaper: function()
                 {
-                    if (!pBounds)
+                    if (!this.paperSize || !this.scale)
                         return;
 
+                    var vCenter = this.map.getView().getCenter();
+                    var vHalfWidth = this.paperSize.width * this.scale.scale / 2.0;
+                    var vHalfHeight = this.paperSize.height * this.scale.scale / 2.0;
+
                     var polyCoords = [
-                            [pBounds.northWest.easting, pBounds.northWest.northing],
-                            [pBounds.southEast.easting, pBounds.northWest.northing],
-                            [pBounds.southEast.easting, pBounds.southEast.northing],
-                            [pBounds.northWest.easting, pBounds.southEast.northing],
+                            [vCenter[0] - vHalfWidth, vCenter[1] + vHalfHeight],
+                            [vCenter[0] + vHalfWidth, vCenter[1] + vHalfHeight],
+                            [vCenter[0] + vHalfWidth, vCenter[1] - vHalfHeight],
+                            [vCenter[0] - vHalfWidth, vCenter[1] - vHalfHeight]
                     ];
 
                     if (!this.paper)

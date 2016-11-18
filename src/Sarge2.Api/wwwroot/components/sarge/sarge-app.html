@@ -49,7 +49,7 @@
 
             <app-header-layout>
 
-                <app-header reveals effects="waterfall">
+                <app-header reveals effects="waterfall" id="cAppHeader">
                     <app-toolbar>
                         <paper-icon-button icon="print" drawer-toggle></paper-icon-button>
                         <div main-title>SARGE2</div>
@@ -130,6 +130,7 @@
                         vSettings.showCrossHair = true;
                     }
                     this.stateLoaded = true;
+                    this.mapMoved(vMap.getZoom(), vMap.getLocation());
                 },
                 saveState: function () {
                     var vSettings = this.querySelector("sarge-map-setup");
@@ -150,21 +151,6 @@
                 {
                     if (this.stateLoaded)
                         this.saveState();
-                    var vMap = this.querySelector("sarge-map");
-                    var vSettings = this.querySelector("sarge-map-setup");
-                    if (vSettings.paperSize && vSettings.scale)
-                    {
-                        $.ajax({
-                            url: "api/GetPaperCoordinates",
-                            type: "POST",
-                            data: JSON.stringify(this.getMapSettings()),
-                            contentType: "application/json",
-                            dataType: "json",
-                            success: function (pData) {
-                                vMap.drawPaper(pData.paper);
-                            }
-                        })
-                    }
                 },
                 getCookie: function (name) {
                     var value = "; " + document.cookie;
