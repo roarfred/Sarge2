@@ -14,6 +14,7 @@
 <link rel="import" href="../../lib/iron-icons/iron-icons.html" />
 <link rel="import" href="../../lib/paper-styles/paper-styles.html" />
 <link rel="import" href="../../lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../lib/paper-toggle-button/paper-toggle-button.html">
 
 
 <link rel="import" href="sarge-map-setup.html">
@@ -34,6 +35,7 @@
         --app-toolbar-font-size: 24px;
       }
       paper-button {width: 90%}
+      .mainpanel {padding-left: 10px; padding-right: 10px}
     </style>
     <template>
         <app-drawer-layout>
@@ -43,28 +45,26 @@
                     <paper-icon-button icon="print" drawer-toggle></paper-icon-button>
                     Oppsett
                 </app-toolbar>
-                <sarge-map-setup on-map-change="mapChanged" on-scale-or-paper-size-change="scaleOrPaperSizeChanged" on-setting-change="settingChanged" map-title="{{mapTitle}}"></sarge-map-setup>
-                <paper-button raised on-click="createPDF">Lag PDF</paper-button>
+                <div class="mainpanel">
+                    <sarge-map-setup on-map-change="mapChanged" on-scale-or-paper-size-change="scaleOrPaperSizeChanged" on-setting-change="settingChanged" map-title="{{mapTitle}}" radiusR25="{{radiusR25}}" radiusR50="{{radiusR50}}"></sarge-map-setup>
+                    <paper-toggle-button on-change="setIpp" id="ippLock">Lås IPP</paper-toggle-button>
+                    <paper-button raised on-click="createPDF">Lag PDF</paper-button>
+                    <div id="cError">{{error}}</div>
+                </div>
+                
             </app-drawer>
 
             <app-header-layout>
-
                 <app-header reveals effects="waterfall" id="cAppHeader">
                     <app-toolbar>
                         <paper-icon-button icon="print" drawer-toggle></paper-icon-button>
                         <div main-title>SARGE2</div>
                     </app-toolbar>
                 </app-header>
-
                 <div style="height: 100%;">
-
-                    <sarge-map on-map-move="mapMoved" />
-
+                    <sarge-map on-map-move="mapMoved" radiusR25="{{radiusR25}}" radiusR50="{{radiusR50}}" />
                 </div>
-                
-
             </app-header-layout>
-
         </app-drawer-layout>
 
     </template>
@@ -76,7 +76,16 @@
                     mapTitle: {
                         type: String,
                         notify: true
-                    }
+                    },
+                    radiusR25: {
+                        type: Number,
+                        notify: true
+                    },
+                    radiusR50: {
+                        type: Number,
+                        notify: true
+                    },
+                    error: String
                 },
                 attached: function()
                 {
@@ -90,6 +99,7 @@
                 {
                     
                 },
+                
                 positionChanged: function(e, i)
                 {
 
@@ -103,7 +113,15 @@
                     this.querySelector("sarge-map").setScaleAndPaperSize(i.scale, i.paperSize);
                     this.saveState();
                 },
-                settingChanged: function() {
+                settingChanged: function () {
+                    var vMap = this.querySelector("sarge-map");
+                    var vSettings = this.querySelector("sarge-map-setup");
+
+                    if (vSettings) {
+                        vMap.radiusR25 = vSettings.radiusR25 || 0;
+                        vMap.radiusR50 = vSettings.radiusR50 || 0;
+                    }
+
                     this.saveState();
                 },
                 loadState: function () {
@@ -117,35 +135,46 @@
                         var v = JSON.parse(vCookie);
                         vSettings.showUtmGrid = v.showUtmGrid;
                         vSettings.showLatLonGrid = v.showLatLonGrid;
-                        vSettings.radius = v.radius | "";
+                        vSettings.radiusR25 = v.radiusR25 | 0;
+                        vSettings.radiusR50 = v.radiusR50 | 0;
                         vSettings.showCrossHair = v.showCrossHair;
-                        vMap.setLocation(v.mapLocation);
+                        vSettings.mapTitle = v.mapTitle;
+                        if (this.isValidLocation(v.mapLocation))
+                            vMap.setLocation(v.mapLocation);
                         if (v.mapZoom) vMap.setZoom(v.mapZoom);
                     }
                     else
                     {
                         vSettings.showUtmGrid = true;
                         vSettings.showLatLonGrid = false;
-                        vSettings.radius = 333;
+                        vSettings.radiusR25 = 200;
+                        vSettings.radiusR50 = 1000;
                         vSettings.showCrossHair = true;
                     }
                     this.stateLoaded = true;
                     this.mapMoved(vMap.getZoom(), vMap.getLocation());
                 },
+                isValidLocation: function(pLocation)
+                {
+                    return (pLocation.easting > -2500000) && (pLocation.easting < 3500000) &&
+                        (pLocation.northing > 3045984.0) && (pLocation.northing > -9045984);
+                },
                 saveState: function () {
                     var vSettings = this.querySelector("sarge-map-setup");
                     var vMap = this.querySelector("sarge-map");
-
-                    var vCookieObject = {
-                        showUtmGrid: vSettings.showUtmGrid,
-                        showLatLonGrid: vSettings.showLatLonGrid,
-                        radius: vSettings.radius,
-                        showCrossHair: vSettings.showCrossHair,
-                        mapTitle: vSettings.mapTitle,
-                        mapLocation: vMap.getLocation(),
-                        mapZoom: vMap.getZoom()
-                    };
-                    this.setCookie("settings", JSON.stringify(vCookieObject), 365);
+                    if (vSettings && vMap) {
+                        var vCookieObject = {
+                            showUtmGrid: vSettings.showUtmGrid,
+                            showLatLonGrid: vSettings.showLatLonGrid,
+                            radiusR25: vSettings.radiusR25,
+                            radiusR50: vSettings.radiusR50,
+                            showCrossHair: vSettings.showCrossHair,
+                            mapTitle: vSettings.mapTitle,
+                            mapLocation: vMap.getLocation(),
+                            mapZoom: vMap.getZoom()
+                        };
+                        this.setCookie("settings", JSON.stringify(vCookieObject), 365);
+                    }
                 },
                 mapMoved: function(zoom, location)
                 {
@@ -163,10 +192,20 @@
                     var expires = new Date(Date.now() + days * 864e5).toGMTString()
                     document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=' + path;
                 },
+                setIpp: function()
+                {
+                    var vMap = this.querySelector("sarge-map");
+                    var ippLock = this.querySelector("#ippLock");
+                    if (ippLock.checked)
+                        vMap.setIpp();
+                    else
+                        vMap.resetIpp();
+                },
                 getMapSettings: function()
                 {
                     var vSettings = this.querySelector("sarge-map-setup");
                     var vMap = this.querySelector("sarge-map");
+                    var vLocation = vMap.getIpp();
 
                     return {
                         "map": {
@@ -180,18 +219,24 @@
                             "bottom": "10"
                         },
                         title: vSettings.mapTitle,
-                        "location": vMap.getLocation(),
+                        "location": {
+                            "easting": vLocation[0],
+                            "northing": vLocation[1]
+                        },
                         "paperSize": vSettings.paperSize,
                         "scaleAndTileSize": vSettings.scale,
                         "showUtmGrid": vSettings.showUtmGrid,
                         "showLatLonGrid": vSettings.showLatLonGrid,
                         "showCrossHair": vSettings.showCrossHair,
-                        "radius": vSettings.radius
+                        "radiusR25": vSettings.radiusR25,
+                        "radiusR50": vSettings.radiusR50
                     };
                 },
                 createPDF: function()
                 {
-             
+                    var vComponent = this;
+                    vComponent.error = "";
+
                     $.ajax({
                         url: "api/MapAsPdf",
                         type: "POST",
@@ -201,6 +246,10 @@
                         success: function(pData)
                         {
                             $("body").append("<iframe src='/api/MapAsPdf/" + pData + "' style='display: none;' ></iframe>");
+                        },
+                        error: function()
+                        {
+                            vComponent.error = "Unable to create map";
                         }
                     });
                 }

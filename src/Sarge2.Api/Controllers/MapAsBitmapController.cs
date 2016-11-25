@@ -31,6 +31,9 @@ namespace Sarge2.Api.Controllers
         [HttpPost]
         public async Task<FileStreamResult> Post([FromBody]MapSetup setup)
         {
+            if (setup == null)
+                throw new ArgumentException("Unable to parse MapSetup parameter", "setup");
+
             MapLoader vLoader = new MapLoader(setup);
             using (var vBitmap = await vLoader.CreateBitmapForPrintAsync())
             {

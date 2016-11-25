@@ -30,7 +30,8 @@ namespace Sarge2.Api.Controllers
                 PaperSize = new PaperSizeController().Get(paper),
                 Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0),
                 ScaleAndTileSize = vMap.GetScales().Where(v => v.Scale == 50000).First(),
-                Radius = 200,
+                RadiusR25 = 200,
+                RadiusR50 = 1000,
                 ShowCrossHair = true,
                 ShowLatLonGrid = false,
                 ShowUtmGrid = false

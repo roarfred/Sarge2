@@ -10,47 +10,47 @@
 
 <dom-module id="sarge-map-setup">
     <style>
-        .mainpanel {padding-left: 10px; padding-right: 10px}
+        
         paper-listbox, paper-item, paper-input { width: 100% }
     </style>
     <template>
-        <div class="mainpanel">
-            <paper-dropdown-menu label="Velg kart">
-                <paper-listbox class="dropdown-content" selected="0" on-iron-select="mapSelected">
-                    <template is="dom-repeat" items="[[maps]]">
-                        <paper-item name$="[[item.name]]">[[item.name]]</paper-item>
-                    </template>
-                </paper-listbox>
-            </paper-dropdown-menu>
-            <iron-ajax auto url="/api/MapSource" handle-as="json" last-response="{{maps}}" verbose="true"></iron-ajax>
-            <paper-dropdown-menu label="Velg målestokk">
-                <paper-listbox class="dropdown-content" selected="15" on-iron-select="scaleSelected">
-                    <template is="dom-repeat" items="[[scales]]">
-                        <paper-item name$="[[item.name]]">[[item.name]]</paper-item>
-                    </template>
-                </paper-listbox>
-            </paper-dropdown-menu>
-            <iron-ajax handle-as="json" last-response="{{scales}}" verbose="true" id="cScalesAjax"></iron-ajax>
-            <paper-dropdown-menu label="Velg papir">
-                <paper-listbox class="dropdown-content" selected="8" on-iron-select="paperSizeSelected">
-                    <template is="dom-repeat" items="[[paperSizes]]">
-                        <paper-item>[[item.name]]</paper-item>
-                    </template>
-                </paper-listbox>
-            </paper-dropdown-menu>
-            <iron-ajax auto url="/api/PaperSize" handle-as="json" last-response="{{paperSizes}}" verbose="true"></iron-ajax>
-            <paper-input label="Tittel" value="{{mapTitle}}"></paper-input>
-            <paper-input label="Radius" value="{{radius}}"></paper-input>
-            <div>
-                <paper-checkbox checked="{{showCrossHair}}" on-change="settingChanged">Vis sikte</paper-checkbox>
-            </div>
-            <div>
-                <paper-checkbox checked="{{showUtmGrid}}" on-change="settingChanged">UTM grid</paper-checkbox>
-            </div>
-            <div>
-                <paper-checkbox checked="{{showLatLonGrid}}" on-change="settingChanged">lat/long grid</paper-checkbox>
-            </div>
+        <paper-dropdown-menu label="Velg kart">
+            <paper-listbox class="dropdown-content" selected="0" on-iron-select="mapSelected">
+                <template is="dom-repeat" items="[[maps]]">
+                    <paper-item name$="[[item.name]]">[[item.name]]</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+        <iron-ajax auto url="/api/MapSource" handle-as="json" last-response="{{maps}}" verbose="true"></iron-ajax>
+        <paper-dropdown-menu label="Velg målestokk">
+            <paper-listbox class="dropdown-content" selected="15" on-iron-select="scaleSelected">
+                <template is="dom-repeat" items="[[scales]]">
+                    <paper-item name$="[[item.name]]">[[item.name]]</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+        <iron-ajax handle-as="json" last-response="{{scales}}" verbose="true" id="cScalesAjax"></iron-ajax>
+        <paper-dropdown-menu label="Velg papir">
+            <paper-listbox class="dropdown-content" selected="8" on-iron-select="paperSizeSelected">
+                <template is="dom-repeat" items="[[paperSizes]]">
+                    <paper-item>[[item.name]]</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+        <iron-ajax auto url="/api/PaperSize" handle-as="json" last-response="{{paperSizes}}" verbose="true"></iron-ajax>
+        <paper-input label="Tittel" value="{{mapTitle}}" on-change="settingChanged"></paper-input>
+        <paper-input label="Radius R25" value="{{radiusR25}}" on-change="settingChanged" type="number"></paper-input>
+        <paper-input label="Radius R50" value="{{radiusR50}}" on-change="settingChanged" type="number"></paper-input>
+        <div>
+            <paper-checkbox checked="{{showCrossHair}}" on-change="settingChanged">Vis sikte</paper-checkbox>
         </div>
+        <div>
+            <paper-checkbox checked="{{showUtmGrid}}" on-change="settingChanged">UTM grid</paper-checkbox>
+        </div>
+        <div>
+            <paper-checkbox checked="{{showLatLonGrid}}" on-change="settingChanged">lat/long grid</paper-checkbox>
+        </div>
+        
     </template>
     <script>
         (function () {
@@ -73,9 +73,17 @@
                         type: String,
                         notify: true
                     },
-                    radius: {
+                    radiusR25: {
                         type: Number,
-                        notify: true
+                        notify: true,
+                        value: 0,
+                        observer: '_radiusR25_changed'
+                    },
+                    radiusR50: {
+                        type: Number,
+                        notify: true,
+                        value: 0,
+                        observer: '_radiusR50_changed'
                     },
                     showUtmGrid: {
                         type: Boolean,
@@ -90,7 +98,15 @@
                         notify: true
                     }
                 },
-                attached: function()
+                _radiusR25_changed: function (p) {
+                    this.radiusR25 = Number(p);
+                    this.settingChanged();
+                },
+                _radiusR50_changed: function (p) {
+                    this.radiusR50 = Number(p);
+                    this.settingChanged();
+                },
+                attached: function ()
                 {
                     
                 },

@@ -10,6 +10,19 @@
           "Node.js": "0.10.28"
         }
       },
+      "BundlerMinifier.Core/2.2.306": {
+        "type": "package",
+        "dependencies": {
+          "NUglify": "1.5.1",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "compile": {
+          "lib/net452/dotnet-bundle.exe": {}
+        },
+        "runtime": {
+          "lib/net452/dotnet-bundle.exe": {}
+        }
+      },
       "jQuery/3.1.1": {
         "type": "package"
       },
@@ -1152,6 +1165,21 @@
         "dependencies": {
           "NoGit": "0.1.0",
           "Node.js": "0.12.7"
+        }
+      },
+      "NUglify/1.5.1": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System",
+          "System.Core",
+          "System.Xml",
+          "mscorlib"
+        ],
+        "compile": {
+          "lib/net40/NUglify.dll": {}
+        },
+        "runtime": {
+          "lib/net40/NUglify.dll": {}
         }
       },
       "System.Buffers/4.0.0": {
@@ -3398,6 +3426,18 @@
         "tools/bin_tools.ps1",
         "tools/install.ps1",
         "tools/uninstall.ps1"
+      ]
+    },
+    "BundlerMinifier.Core/2.2.306": {
+      "sha512": "3MhXe3qLroL+Fe4Uo/7cmtYQ3YPjSHIjfuHxpewVZUdU4mh73wLEKAgf9rr3OLTuEXCbJr8bOBdwjuNwfGR8qw==",
+      "type": "package",
+      "path": "BundlerMinifier.Core/2.2.306",
+      "files": [
+        "BundlerMinifier.Core.2.2.306.nupkg.sha512",
+        "BundlerMinifier.Core.nuspec",
+        "lib/net452/dotnet-bundle.exe",
+        "lib/netcoreapp1.0/dotnet-bundle.dll",
+        "lib/netcoreapp1.0/dotnet-bundle.runtimeconfig.json"
       ]
     },
     "jQuery/3.1.1": {
@@ -8267,6 +8307,21 @@
         "tools/uninstall.ps1"
       ]
     },
+    "NUglify/1.5.1": {
+      "sha512": "iYV/OtSs+HgyE/RilY7UvGXYec6r0OJenWlPIdX/IivedVpSSdzxvPvUIyWpiV/6ad7VjantH0/6oaOhAZbaoQ==",
+      "type": "package",
+      "path": "NUglify/1.5.1",
+      "files": [
+        "NUglify.1.5.1.nupkg.sha512",
+        "NUglify.nuspec",
+        "lib/net35/NUglify.dll",
+        "lib/net35/NUglify.xml",
+        "lib/net40/NUglify.dll",
+        "lib/net40/NUglify.xml",
+        "lib/netstandard1.3/NUglify.dll",
+        "lib/netstandard1.3/NUglify.xml"
+      ]
+    },
     "System.Buffers/4.0.0": {
       "sha512": "msXumHfjjURSkvxUjYuq4N2ghHoRi2VpXcKMA7gK6ujQfU3vGpl+B6ld0ATRg+FZFpRyA6PgEPA+VlIkTeNf2w==",
       "type": "package",
@@ -9912,6 +9967,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Bower >= 1.3.11",
+      "BundlerMinifier.Core >= 2.2.306",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",
       "Microsoft.AspNetCore.Mvc >= 1.0.1",
       "Microsoft.AspNetCore.Routing >= 1.0.1",
