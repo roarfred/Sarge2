@@ -1,9 +1,11 @@
 ﻿<link rel="import" href="../../lib/polymer/polymer.html">
 <dom-module id="sarge-map">
     <style>
+        #overlay {background-color: #c1f5f4; padding: 5px; border: 1px solid black; border-radius: 5px; text-align: right}
     </style>
     <template>
         <div id="cMap" style="width: 100%; height: 100%; position: fixed"></div>
+        <div id="overlay"></div>
     </template>
 
     <script src="../../script/proj4.js"></script>
@@ -11,6 +13,9 @@
 
     <script>
         (function () {
+
+
+
             Polymer({
                 is: 'sarge-map',
                 properties: {
@@ -41,7 +46,11 @@
                     }, 300, this);
 
                 },
-                createMap: function() {
+                createMap: function () {
+
+                    proj4.defs("EPSG:32632", "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+                    proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+
                     var sProjection = 'EPSG:32633';
                     var extent = {
                         'EPSG:32633': [-2500000, 3500000, 3045984, 9045984]
@@ -53,6 +62,11 @@
                     });
 
                     ol.proj.addProjection(projection);
+
+                    ol.proj.addProjection(new ol.proj.Projection({
+                        code: 'EPSG:4326',
+                        extent: [-180,-90,180,90]
+                    }));
 
                     var view = new ol.View({
                         projection: projection,
@@ -77,6 +91,39 @@
                     });
                  
                     this.map.setLayerGroup(vLayerGroup);
+
+                    var overlay = new ol.Overlay({
+                        element: document.getElementById('overlay'),
+                        positioning: 'bottom-center'
+                    });
+                    var vMap = this;
+                    this.map.on('click', function (event) {
+                        // extract the spatial coordinate of the click event in map projection units
+                        var coord = event.coordinate;
+                        // transform it to decimal degrees
+                        var degrees = ol.proj.transform(coord, 'EPSG:32633', 'EPSG:4326');
+                        var utm32 = ol.proj.transform(coord, 'EPSG:32633', 'EPSG:32632');
+                        // update the overlay element's content
+                        var element = overlay.getElement();
+                        element.innerHTML = vMap.formatDegrees(degrees) + "<br/>" + vMap.formatUtm32(utm32);
+                        // position the element (using the coordinate in the map's projection)
+                        overlay.setPosition(coord);
+                        // and add it to the map
+                        vMap.map.addOverlay(overlay);
+                    });
+                },
+                formatDegrees: function(pLocation)
+                {
+                    var vEastDegrees = Math.floor(pLocation[0]);
+                    var vEastDecimal = Math.round((pLocation[0] - vEastDegrees) * 6000) / 100;
+                    var vNorthDegrees = Math.floor(pLocation[1]);
+                    var vNorthDecimal = Math.round((pLocation[1] - vNorthDegrees) * 6000) / 100;
+
+                    return "<div style='text-align: right'>E " + vEastDegrees + "° " + vEastDecimal + "′<br/>N " + vNorthDegrees + "° " + vNorthDecimal + "</div>";
+                },
+                formatUtm32: function(pLocation)
+                {
+                    return "<div style='text-align: right'>32V " + Math.round(pLocation[0]) + "<br/>" + Math.round(pLocation[1]) + "</div>";
                 },
                 getLocation: function () {
                     if (this.map) {

@@ -11,19 +11,20 @@
 <dom-module id="sarge-map-setup">
     <style>
         
-        paper-listbox, paper-item, paper-input {  }
+        paper-dropdown-menu, paper-listbox, paper-input { width: 100%  }
+        paper-item {width: 250px}
     </style>
     <template>
         <paper-input label="Tittel" value="{{mapTitle}}" on-change="settingChanged"></paper-input>
        <paper-dropdown-menu label="Velg kart">
             <paper-listbox class="dropdown-content" selected="0" on-iron-select="mapSelected">
                 <template is="dom-repeat" items="[[maps]]">
-                    <paper-item name$="[[item.name]]">[[item.name]]</paper-item>
+                    <paper-item name$="[[item.name]]" style="width: 250px">[[item.name]]</paper-item>
                 </template>
             </paper-listbox>
         </paper-dropdown-menu>
         <iron-ajax auto url="/api/MapSource" handle-as="json" last-response="{{maps}}" verbose="true"></iron-ajax>
-        <paper-dropdown-menu label="Velg målestokk">
+        <paper-dropdown-menu label="Velg målestokk" >
             <paper-listbox class="dropdown-content" selected="15" on-iron-select="scaleSelected">
                 <template is="dom-repeat" items="[[scales]]">
                     <paper-item name$="[[item.name]]">[[item.name]]</paper-item>
