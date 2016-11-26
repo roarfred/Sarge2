@@ -11,10 +11,11 @@
 <dom-module id="sarge-map-setup">
     <style>
         
-        paper-listbox, paper-item, paper-input { width: 100% }
+        paper-listbox, paper-item, paper-input {  }
     </style>
     <template>
-        <paper-dropdown-menu label="Velg kart">
+        <paper-input label="Tittel" value="{{mapTitle}}" on-change="settingChanged"></paper-input>
+       <paper-dropdown-menu label="Velg kart">
             <paper-listbox class="dropdown-content" selected="0" on-iron-select="mapSelected">
                 <template is="dom-repeat" items="[[maps]]">
                     <paper-item name$="[[item.name]]">[[item.name]]</paper-item>
@@ -38,19 +39,25 @@
             </paper-listbox>
         </paper-dropdown-menu>
         <iron-ajax auto url="/api/PaperSize" handle-as="json" last-response="{{paperSizes}}" verbose="true"></iron-ajax>
-        <paper-input label="Tittel" value="{{mapTitle}}" on-change="settingChanged"></paper-input>
-        <paper-input label="Radius R25" value="{{radiusR25}}" on-change="settingChanged" type="number"></paper-input>
-        <paper-input label="Radius R50" value="{{radiusR50}}" on-change="settingChanged" type="number"></paper-input>
-        <div>
-            <paper-checkbox checked="{{showCrossHair}}" on-change="settingChanged">Vis sikte</paper-checkbox>
+        <div class="row">
+            <div class="col-xs-6">
+                <paper-input label="Radius R50" value="{{radiusR50}}" on-change="settingChanged" type="number"></paper-input>
+            </div>
+            <div class="col-xs-6">
+                <paper-input label="Radius R25" value="{{radiusR25}}" on-change="settingChanged" type="number"></paper-input>
+            </div>
         </div>
-        <div>
-            <paper-checkbox checked="{{showUtmGrid}}" on-change="settingChanged">UTM grid</paper-checkbox>
+        <div class="row">
+            <div class="col-xs-4">
+                <paper-checkbox checked="{{showCrossHair}}" on-change="settingChanged">Sikte</paper-checkbox>
+            </div>
+            <div class="col-xs-4">
+                <paper-checkbox checked="{{showUtmGrid}}" on-change="settingChanged">UTM</paper-checkbox>
+            </div>
+            <div class="col-xs-4">
+                <paper-checkbox checked="{{showLatLonGrid}}" on-change="settingChanged">lat/long</paper-checkbox>
+            </div>
         </div>
-        <div>
-            <paper-checkbox checked="{{showLatLonGrid}}" on-change="settingChanged">lat/long grid</paper-checkbox>
-        </div>
-        
     </template>
     <script>
         (function () {
