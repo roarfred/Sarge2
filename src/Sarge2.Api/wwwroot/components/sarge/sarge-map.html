@@ -119,7 +119,7 @@
                     var vNorthDegrees = Math.floor(pLocation[1]);
                     var vNorthDecimal = Math.round((pLocation[1] - vNorthDegrees) * 6000) / 100;
 
-                    return "<div style='text-align: right'>E " + vEastDegrees + "° " + vEastDecimal + "′<br/>N " + vNorthDegrees + "° " + vNorthDecimal + "</div>";
+                    return "<div style='text-align: right'>E " + vEastDegrees + "° " + vEastDecimal + "'<br/>N " + vNorthDegrees + "° " + vNorthDecimal + "'</div>";
                 },
                 formatUtm32: function(pLocation)
                 {

@@ -20,6 +20,8 @@
     "iron-icon": "PolymerElements/iron-icon#^1.0.12",
     "paper-styles": "PolymerElements/paper-styles#^1.1.5",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.1.4",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
+    "paper-tabs": "PolymerElements/paper-tabs#^1.7.0",
+    "iron-pages": "PolymerElements/iron-pages#^1.0.8"
   }
 }

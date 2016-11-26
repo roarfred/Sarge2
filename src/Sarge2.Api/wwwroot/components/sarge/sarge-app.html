@@ -18,6 +18,8 @@
 <link rel="import" href="../../lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../lib/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../../lib/paper-progress/paper-progress.html" />
+<link rel="import" href="../../lib/paper-tabs/paper-tabs.html" />
+<link rel="import" href="../../lib/iron-pages/iron-pages.html" />
 
 <link rel="import" href="sarge-map-setup.html">
 <link rel="import" href="sarge-map.html">
@@ -49,26 +51,41 @@
 
             <app-drawer>
                 <app-toolbar>
-                    <paper-icon-button icon="print" drawer-toggle></paper-icon-button>
-                    <paper-icon-button icon="gesture" drawer-toggle></paper-icon-button>
-                    <paper-icon-button icon="flag" drawer-toggle></paper-icon-button>
-                    <paper-icon-button icon="room" drawer-toggle></paper-icon-button>
-                    <paper-icon-button icon="editor:mode-edit" drawer-toggle></paper-icon-button>
+                    <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                    
+                    
+                    
+                    
+                    
+                    <paper-tabs selected="{{selectedTab}}">
+                        <paper-tab><paper-icon-button icon="print" show-menu="print"></paper-icon-button></paper-tab>
+                        <paper-tab><paper-icon-button icon="gesture" drawer-toggle></paper-icon-button></paper-tab>
+                        <paper-tab><paper-icon-button icon="flag" drawer-toggle></paper-icon-button></paper-tab>
+                        <paper-tab><paper-icon-button icon="editor:format-shapes" drawer-toggle></paper-icon-button></paper-tab>
+                    </paper-tabs>
                 </app-toolbar>
                 
                 <div class="mainpanel">
-                    <sarge-map-setup on-map-change="mapChanged" on-scale-or-paper-size-change="scaleOrPaperSizeChanged" on-setting-change="settingChanged" map-title="{{mapTitle}}" radiusR25="{{radiusR25}}" radiusR50="{{radiusR50}}"></sarge-map-setup>
+                    <iron-pages selected="{{selectedTab}}">
+                        <div>
+                            <sarge-map-setup on-map-change="mapChanged" on-scale-or-paper-size-change="scaleOrPaperSizeChanged" on-setting-change="settingChanged" map-title="{{mapTitle}}" radiusR25="{{radiusR25}}" radiusR50="{{radiusR50}}"></sarge-map-setup>
+
+                            <div class="text-center" style="padding-top: 15px">
+                                <paper-button id="cPrintButton" raised active on-click="createPDF">
+                                    <paper-icon-button icon="print"></paper-icon-button>Lag PDF
+                                </paper-button>
+                            </div>
+
+                            <div class="text-center" style="padding-top: 15px">
+                                <paper-progress indeterminate hidden style="width: 100%"></paper-progress>
+                            </div>
+                            <div id="cError">{{error}}</div>
+                        </div>
+                        <div>Sporlogger</div>
+                        <div>Points of interest</div>
+                        <div>Søketeiger</div>
+                    </iron-pages>
                     
-                    <div class="text-center" style="padding-top: 15px">
-                        <paper-button id="cPrintButton" raised active on-click="createPDF">
-                            <paper-icon-button icon="print"></paper-icon-button>Lag PDF
-                        </paper-button>
-                    </div>
-                    
-                    <div class="text-center" style="padding-top: 15px">
-                        <paper-progress indeterminate hidden style="width: 100%"></paper-progress>
-                    </div>
-                    <div id="cError">{{error}}</div>
                 </div>
             </app-drawer>
 
@@ -79,11 +96,10 @@
                             <paper-icon-button icon="menu" class="dropdown-trigger" alt="menu"></paper-icon-button>
 
                             <paper-menu class="dropdown-content">
-                                <paper-icon-button icon="print" drawer-toggle></paper-icon-button><br />
-                                <paper-icon-button icon="gesture" drawer-toggle></paper-icon-button><br />
-                                <paper-icon-button icon="flag" drawer-toggle></paper-icon-button><br />
-                                <paper-icon-button icon="room" drawer-toggle></paper-icon-button><br />
-                                <paper-icon-button icon="editor:mode-edit" drawer-toggle></paper-icon-button><br />
+                                <paper-icon-button icon="print" drawer-toggle on-click="showMenu" menu="0"></paper-icon-button><br />
+                                <paper-icon-button icon="gesture" drawer-toggle on-click="showMenu" menu="1"></paper-icon-button><br />
+                                <paper-icon-button icon="flag" drawer-toggle on-click="showMenu" menu="2"></paper-icon-button><br />
+                                <paper-icon-button icon="editor:format-shapes" drawer-toggle on-click="showMenu" menu="3"></paper-icon-button><br />
                             </paper-menu>
 
                             Oppsett
@@ -117,11 +133,21 @@
                         type: Number,
                         notify: true
                     },
+                    selectedTab: {
+                        type: Number,
+                        value: 0
+                    },
                     error: String
+                },
+                showMenu: function(event)
+                {
+                    this.selectedTab = Number(event.srcElement.parentElement.attributes["menu"].value);
                 },
                 attached: function()
                 {
                     this.loadState();
+                    var vItems = this.$$("show-menu");
+                    
                 },
                 detached: function()
                 {
