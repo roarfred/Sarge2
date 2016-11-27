@@ -26,7 +26,7 @@ namespace Sarge2.Api.Controllers
             var vMap = new MapSourceController().Get(map);
             return new MapSetup()
             {
-                Map = vMap,
+                MapName = vMap.Name,
                 PaperSize = new PaperSizeController().Get(paper),
                 Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0),
                 ScaleAndTileSize = vMap.GetScales().Where(v => v.Scale == 50000).First(),

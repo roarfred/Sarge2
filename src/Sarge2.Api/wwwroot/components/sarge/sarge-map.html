@@ -96,6 +96,10 @@
                         element: document.getElementById('overlay'),
                         positioning: 'bottom-center'
                     });
+
+                    this.map.addControl(new ol.control.Zoom({
+                        className: 'custom-zoom'
+                    }));
                     var vMap = this;
                     this.map.on('click', function (event) {
                         // extract the spatial coordinate of the click event in map projection units

@@ -13,6 +13,7 @@
 <link rel="import" href="../../lib/iron-icon/iron-icon.html" />
 <link rel="import" href="../../lib/iron-icons/iron-icons.html" />
 <link rel="import" href="../../lib/iron-icons/editor-icons.html" />
+<link rel="import" href="../../lib/iron-icons/maps-icons.html" />
 
 <link rel="import" href="../../lib/paper-styles/paper-styles.html" />
 <link rel="import" href="../../lib/paper-icon-button/paper-icon-button.html">
@@ -52,12 +53,7 @@
             <app-drawer>
                 <app-toolbar>
                     <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-                    
-                    
-                    
-                    
-                    
-                    <paper-tabs selected="{{selectedTab}}">
+                     <paper-tabs selected="{{selectedTab}}">
                         <paper-tab><paper-icon-button icon="print" show-menu="print"></paper-icon-button></paper-tab>
                         <paper-tab><paper-icon-button icon="gesture" drawer-toggle></paper-icon-button></paper-tab>
                         <paper-tab><paper-icon-button icon="flag" drawer-toggle></paper-icon-button></paper-tab>
@@ -83,7 +79,11 @@
                         </div>
                         <div>Sporlogger</div>
                         <div>Points of interest</div>
-                        <div>Søketeiger</div>
+                        <div>Søketeiger
+                            <paper-icon-button icon="maps:add-location" on-click="addPoiToMap">POI</paper-icon-button>
+                            <paper-icon-button icon="editor:format-shapes" on-click="addPolygonToMap">Teig</paper-icon-button>
+                            <paper-icon-button icon="editor:show-chart" on-click="addLineToMap">Linje</paper-icon-button>
+                        </div>
                     </iron-pages>
                     
                 </div>
@@ -138,6 +138,15 @@
                         value: 0
                     },
                     error: String
+                },
+                addPoiToMap: function()
+                {
+                },
+                addPolygonToMap: function() {
+
+                },
+                addLineToMap: function() {
+
                 },
                 showMenu: function(event)
                 {
@@ -267,10 +276,7 @@
                     var vLocation = vMap.getIpp();
 
                     return {
-                        "map": {
-                            "name": vSettings.map.name,
-                            "layer": vSettings.map.name
-                        },
+                        "mapName": vSettings.map.name,
                         "margins": {
                             "left": "10",
                             "right": "10",
