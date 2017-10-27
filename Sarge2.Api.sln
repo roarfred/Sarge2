@@ -1,18 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5D27AD09-04FD-4FF8-8523-F743146D5B45}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D300152-1FFC-43EC-B046-B704B36F9480}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Sarge2.Api", "src\Sarge2.Api\Sarge2.Api.xproj", "{D963AA02-B91F-43CC-A434-F7916A67FDAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sarge2.Api", "src\Sarge2.Api\Sarge2.Api.csproj", "{D963AA02-B91F-43CC-A434-F7916A67FDAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sarge.Maps", "..\..\Assemblies\Sarge.Maps\Sarge.Maps.csproj", "{96987C29-F2BC-4435-B08E-13174E0452B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sarge.Maps", "src\Sarge.Maps\Sarge.Maps.csproj", "{96987C29-F2BC-4435-B08E-13174E0452B7}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -38,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D963AA02-B91F-43CC-A434-F7916A67FDAC} = {5D27AD09-04FD-4FF8-8523-F743146D5B45}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B52F93C2-03EC-4CD9-A202-026B60542AD9}
 	EndGlobalSection
 EndGlobal
