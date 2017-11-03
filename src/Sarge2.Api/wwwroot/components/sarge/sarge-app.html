@@ -224,7 +224,10 @@
                 },
                 isValidLocation: function(pLocation)
                 {
-                    return (pLocation.easting > -2500000) && (pLocation.easting < 3500000) &&
+                    return pLocation &&
+                        pLocation.zone &&
+                        pLocation.zone > 0 && pLocation.zone <= 60 &&
+                        (pLocation.easting > -2500000) && (pLocation.easting < 3500000) &&
                         (pLocation.northing > 3045984.0) && (pLocation.northing > -9045984);
                 },
                 saveState: function () {
@@ -285,6 +288,7 @@
                         },
                         title: vSettings.mapTitle,
                         "location": {
+                            "zone": vLocation.zone || 33,
                             "easting": vLocation[0],
                             "northing": vLocation[1]
                         },

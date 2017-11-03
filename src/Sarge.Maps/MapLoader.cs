@@ -23,7 +23,8 @@ namespace Sarge.Maps
 
         private MapSetup gSetup;
         private List<UtmPosition> gDownloadQueue = new List<UtmPosition>();
- 
+        private List<string> gDownloadList = new List<string>();
+
         public MapLoader()
         {
             this.Setup = new MapSetup();
@@ -58,7 +59,7 @@ namespace Sarge.Maps
         {
             get
             {
-                return (Setup.PaperSize.Width - (Margins.Left + Margins.Right) * 0.254 / 1000.0) * Setup.ScaleAndTileSize.Scale;
+                return (Setup.PaperSize.Width - (Setup.Margins.Left + Setup.Margins.Right) * 0.254 / 1000.0) * Setup.ScaleAndTileSize.Scale;
             }
         }
 
@@ -66,7 +67,7 @@ namespace Sarge.Maps
         {
             get
             {
-                return (Setup.PaperSize.Height - (Margins.Top + Margins.Bottom) * 0.254 / 1000.0) * Setup.ScaleAndTileSize.Scale;
+                return (Setup.PaperSize.Height - (Setup.Margins.Top + Setup.Margins.Bottom) * 0.254 / 1000.0) * Setup.ScaleAndTileSize.Scale;
             }
         }
 
@@ -88,14 +89,14 @@ namespace Sarge.Maps
         {
             get
             {
-                return BottomRigthUtm32.Transform(32, 33).ExtendBottomRight(Setup.TileSizeInMeters);
+                return BottomRigthUtm32.Transform(33).ExtendBottomRight(Setup.TileSizeInMeters);
             }
         }
         public UtmPosition OrigoUtm33
         {
             get
             {
-                return OrigoUtm32.Transform(32, 33).Move(-Setup.TileSizeInMeters, 0).ExtendTopLeft(Setup.TileSizeInMeters);
+                return OrigoUtm32.Transform(33).Move(-Setup.TileSizeInMeters, 0).ExtendTopLeft(Setup.TileSizeInMeters);
             }
         }
         public Font Font { get; set; }
@@ -104,7 +105,7 @@ namespace Sarge.Maps
         {
             get
             {
-                return PositionUtm33.Transform(33, 32);
+                return PositionUtm33.Transform(32);
             }
         }
         public UtmPosition PositionUtm33
@@ -153,7 +154,7 @@ namespace Sarge.Maps
         }
         public void DrawPreview(Graphics vGraphics, Rectangle vImageRect, float pPreviewZoom)
         {
-            var vCenter33 = PositionUtm32.Transform(32, 33);
+            var vCenter33 = PositionUtm32.Transform(33);
             var vOrigoUtm33 = vCenter33.Move(-vImageRect.Width / 2.0 / Setup.PixelsPerMeter * pPreviewZoom, vImageRect.Height / 2.0 / Setup.PixelsPerMeter * pPreviewZoom);
             var vBottomRightUtm33 = vCenter33.Move(vImageRect.Width / 2.0 / Setup.PixelsPerMeter * pPreviewZoom, -vImageRect.Height / 2.0 / Setup.PixelsPerMeter * pPreviewZoom);
 
@@ -198,10 +199,10 @@ namespace Sarge.Maps
 
         private void DrawLatLongGrid(Graphics vGraphics, UtmPosition pOrigoUtm33, UtmPosition pBottomRightUtm33, float pZoom, SizeF vLabelRectSize)
         {
-            var vOrigoWGS = pOrigoUtm33.TransformToWGS(33);
-            var vBottomRigthWGS = pBottomRightUtm33.TransformToWGS(33);
-            var vBottomLeftWGS = new UtmPosition(pOrigoUtm33.Easting, pBottomRightUtm33.Northing).TransformToWGS(33);
-            var vTopRightWGS = new UtmPosition(pBottomRightUtm33.Easting, pOrigoUtm33.Northing).TransformToWGS(33);
+            var vOrigoWGS = pOrigoUtm33.TransformToWGS();
+            var vBottomRigthWGS = pBottomRightUtm33.TransformToWGS();
+            var vBottomLeftWGS = new UtmPosition(0, pOrigoUtm33.Easting, pBottomRightUtm33.Northing).TransformToWGS();
+            var vTopRightWGS = new UtmPosition(0, pBottomRightUtm33.Easting, pOrigoUtm33.Northing).TransformToWGS();
 
             double vStartEasting = Math.Min(vOrigoWGS.Easting, vBottomLeftWGS.Easting);
             vStartEasting = Math.Floor(vStartEasting / 0.1) * 0.1;
@@ -218,9 +219,9 @@ namespace Sarge.Maps
 
             for (double x = vStartEasting; x <= vEndEasting; x += 0.1)
             {
-                var vStartWGS = new UtmPosition(x, vStartNorthing);
-                var vMidWGS = new UtmPosition(x, vStartNorthing + (vEndNorthing - vStartNorthing) / 2.0);
-                var vEndWGS = new UtmPosition(x, vEndNorthing);
+                var vStartWGS = new UtmPosition(0, x, vStartNorthing);
+                var vMidWGS = new UtmPosition(0, x, vStartNorthing + (vEndNorthing - vStartNorthing) / 2.0);
+                var vEndWGS = new UtmPosition(0, x, vEndNorthing);
 
                 var vStartUtm33 = vStartWGS.TransformFromWGS(33);
                 var vMidUtm33 = vMidWGS.TransformFromWGS(33);
@@ -244,9 +245,9 @@ namespace Sarge.Maps
             }
             for (double y = vStartNorthing; y <= vEndNorthing; y += 0.1)
             {
-                var vStartWGS = new UtmPosition(vStartEasting, y);
-                var vMidWGS = new UtmPosition(vStartEasting + (vEndEasting - vStartEasting) / 2.0, y);
-                var vEndWGS = new UtmPosition(vEndEasting, y);
+                var vStartWGS = new UtmPosition(0, vStartEasting, y);
+                var vMidWGS = new UtmPosition(0, vStartEasting + (vEndEasting - vStartEasting) / 2.0, y);
+                var vEndWGS = new UtmPosition(0, vEndEasting, y);
 
                 var vStartUtm33 = vStartWGS.TransformFromWGS(33);
                 var vMidUtm33 = vMidWGS.TransformFromWGS(33);
@@ -275,12 +276,14 @@ namespace Sarge.Maps
             return CreateBitmapAsync(new Maps.UtmBounds(OrigoUtm33, BottomRigthUtm33));
         }
 
-        private void DrawUtmGrid(Graphics vGraphics, UtmPosition pOrigoUtm33, UtmPosition pBottomRightUtm33, float pZoom, SizeF vLabelRectSize)
+        private void DrawUtmGrid(Graphics graphics, UtmPosition pOrigoUtm33, UtmPosition pBottomRightUtm33, float pZoom, SizeF vLabelRectSize)
         {
-            var vOrigoUtm32 = pOrigoUtm33.Transform(33, 32);
-            var vBottomRigthUtm32 = pBottomRightUtm33.Transform(33, 32);
-            var vBottomLeft32 = new UtmPosition(pOrigoUtm33.Easting, pBottomRightUtm33.Northing).Transform(33, 32);
-            var vTopRight32 = new UtmPosition(pBottomRightUtm33.Easting, pOrigoUtm33.Northing).Transform(33, 32);
+            var zone = PositionUtm33.GetUtmZone();
+
+            var vOrigoUtm32 = pOrigoUtm33.Transform(zone);
+            var vBottomRigthUtm32 = pBottomRightUtm33.Transform(zone);
+            var vBottomLeft32 = new UtmPosition(33, pOrigoUtm33.Easting, pBottomRightUtm33.Northing).Transform(zone);
+            var vTopRight32 = new UtmPosition(33, pBottomRightUtm33.Easting, pOrigoUtm33.Northing).Transform(zone);
 
             double vStartEasting = Math.Min(vOrigoUtm32.Easting, vBottomLeft32.Easting);
             vStartEasting = Math.Floor(vStartEasting / 1000.0) * 1000.0;
@@ -297,50 +300,53 @@ namespace Sarge.Maps
 
             for (double x = vStartEasting; x <= vEndEasting; x += 1000.0)
             {
-                var vStartUtm32 = new UtmPosition(x, vStartNorthing);
-                var vEndUtm32 = new UtmPosition(x, vEndNorthing);
+                var vStartUtm32 = new UtmPosition(zone, x, vStartNorthing);
+                var vEndUtm32 = new UtmPosition(zone, x, vEndNorthing);
 
-                var vStartUtm33 = vStartUtm32.Transform(32, 33);
-                var vEndUtm33 = vEndUtm32.Transform(32, 33);
+                var vStartUtm33 = vStartUtm32.Transform(33);
+                var vEndUtm33 = vEndUtm32.Transform(33);
                 PointF vStart = Utm33ToBitmapPosition(vStartUtm33, pOrigoUtm33, pZoom);
                 PointF vEnd = Utm33ToBitmapPosition(vEndUtm33, pOrigoUtm33, pZoom);
                 if (Math.Round(x, 1) % 10000.0 == 0.0)
-                    vGraphics.DrawLine(vSolidLinePen, vStart, vEnd);
+                    graphics.DrawLine(vSolidLinePen, vStart, vEnd);
                 else
-                    vGraphics.DrawLine(vLinePen, vStart, vEnd);
+                    graphics.DrawLine(vLinePen, vStart, vEnd);
 
                 float vIncline = (vEnd.X - vStart.X) / (vEnd.Y - vStart.Y);
                 PointF vLabelPosition = new PointF(vStart.X - vIncline * vStart.Y, 0);
                 RectangleF vLabelRect = new RectangleF(vLabelPosition.X - vLabelRectSize.Width / 2F, vLabelPosition.Y, vLabelRectSize.Width, vLabelRectSize.Height);
-                DrawLabelUTM(vGraphics, vLabelRect, vStartUtm32.Easting);
+                DrawLabelUTM(graphics, vLabelRect, vStartUtm32.Easting);
 
-                vLabelPosition = new PointF(vStart.X - vIncline * (vStart.Y - vGraphics.VisibleClipBounds.Height), vGraphics.VisibleClipBounds.Height - vLabelRectSize.Height);
+                vLabelPosition = new PointF(vStart.X - vIncline * (vStart.Y - graphics.VisibleClipBounds.Height), graphics.VisibleClipBounds.Height - vLabelRectSize.Height);
                 vLabelRect = new RectangleF(vLabelPosition.X - vLabelRectSize.Width / 2F, vLabelPosition.Y, vLabelRectSize.Width, vLabelRectSize.Height);
-                DrawLabelUTM(vGraphics, vLabelRect, vStartUtm32.Easting);
+                DrawLabelUTM(graphics, vLabelRect, vStartUtm32.Easting);
             }
             for (double y = vStartNorthing; y <= vEndNorthing; y += 1000.0)
             {
-                var vStartUtm32 = new UtmPosition(vStartEasting, y);
-                var vEndUtm32 = new UtmPosition(vEndEasting, y);
+                var vStartUtm32 = new UtmPosition(zone, vStartEasting, y);
+                var vEndUtm32 = new UtmPosition(zone, vEndEasting, y);
 
-                var vStartUtm33 = vStartUtm32.Transform(32, 33);
-                var vEndUtm33 = vEndUtm32.Transform(32, 33);
+                var vStartUtm33 = vStartUtm32.Transform(33);
+                var vEndUtm33 = vEndUtm32.Transform(33);
                 PointF vStart = Utm33ToBitmapPosition(vStartUtm33, pOrigoUtm33, pZoom);
                 PointF vEnd = Utm33ToBitmapPosition(vEndUtm33, pOrigoUtm33, pZoom);
                 if (Math.Round(y, 1) % 10000.0 == 0.0)
-                    vGraphics.DrawLine(vSolidLinePen, vStart, vEnd);
+                    graphics.DrawLine(vSolidLinePen, vStart, vEnd);
                 else
-                    vGraphics.DrawLine(vLinePen, vStart, vEnd);
+                    graphics.DrawLine(vLinePen, vStart, vEnd);
 
                 float vIncline = (vEnd.Y - vStart.Y) / (vEnd.X - vStart.X);
                 PointF vLabelPosition = new PointF(0, vStart.Y - vIncline * vStart.X);
                 RectangleF vLabelRect = new RectangleF(vLabelPosition.X, vLabelPosition.Y - vLabelRectSize.Height / 2F, vLabelRectSize.Width, vLabelRectSize.Height);
-                DrawLabelUTM(vGraphics, vLabelRect, vStartUtm32.Northing);
+                DrawLabelUTM(graphics, vLabelRect, vStartUtm32.Northing);
 
-                vLabelPosition = new PointF(vGraphics.VisibleClipBounds.Width - vLabelRectSize.Width, vStart.Y - vIncline * (vStart.X - vGraphics.VisibleClipBounds.Width));
+                vLabelPosition = new PointF(graphics.VisibleClipBounds.Width - vLabelRectSize.Width, vStart.Y - vIncline * (vStart.X - graphics.VisibleClipBounds.Width));
                 vLabelRect = new RectangleF(vLabelPosition.X, vLabelPosition.Y - vLabelRectSize.Height / 2F, vLabelRectSize.Width, vLabelRectSize.Height);
-                DrawLabelUTM(vGraphics, vLabelRect, vStartUtm32.Northing);
+                DrawLabelUTM(graphics, vLabelRect, vStartUtm32.Northing);
             }
+
+            var labelRect = new RectangleF(5, 5, vLabelRectSize.Width * 3, vLabelRectSize.Height * 1.5f);
+            DrawLabel(graphics, labelRect, Color.Blue, $"UTM {zone:00}");
         }
         private void DrawLabelWGS(Graphics pGraphics, RectangleF pLabelRect, double pCoordinate)
         {
@@ -367,8 +373,8 @@ namespace Sarge.Maps
                 var vPen = new Pen(Color.FromArgb(255, Color.Blue), 2.5f);
                 float vSize = (float)((float)pRadius / (float)Setup.PixelsPerMeter / (float)pZoom);
 
-                var vUpperLeftPosition = new UtmPosition(pCenter33.Easting - pRadius, pCenter33.Northing + pRadius);
-                var vBottomRightPosition = new UtmPosition(pCenter33.Easting + pRadius, pCenter33.Northing - pRadius);
+                var vUpperLeftPosition = new UtmPosition(33, pCenter33.Easting - pRadius, pCenter33.Northing + pRadius);
+                var vBottomRightPosition = new UtmPosition(33, pCenter33.Easting + pRadius, pCenter33.Northing - pRadius);
 
                 PointF vUpperLeft = Utm33ToBitmapPosition(vUpperLeftPosition, pOrigoUtm33, pZoom);
                 PointF vBottomRight = Utm33ToBitmapPosition(vBottomRightPosition, pOrigoUtm33, pZoom);
@@ -388,148 +394,7 @@ namespace Sarge.Maps
             pGraphics.DrawLine(vPen, vCenter.X - vSize, vCenter.Y, vCenter.X - vOpening, vCenter.Y);
             pGraphics.DrawLine(vPen, vCenter.X + vSize, vCenter.Y, vCenter.X + vOpening, vCenter.Y);
         }
-
-        //public async Task CreatePDFWithSpireAsync(Bitmap pBitmap, string pTitle, Image pLogo, Stream pOutput)
-        //{
-        //    var vTask = Task.Run(() =>
-        //    {
-        //        //Create a pdf document.
-        //        PdfDocument doc = new PdfDocument();
-
-        //        PdfUnitConvertor vUnitConverter = new PdfUnitConvertor();
-
-        //        PdfMargins vMargins = new PdfMargins(0); // new PdfMargins(Setup.Margins.Left, Setup.Margins.Top, Setup.Margins.Right, Setup.Margins.Bottom);
-        //        vMargins.Left = vUnitConverter.ConvertUnits(Setup.Margins.Left / 100f, PdfGraphicsUnit.Inch, PdfGraphicsUnit.Point);
-        //        vMargins.Top = vUnitConverter.ConvertUnits(Setup.Margins.Top / 100f, PdfGraphicsUnit.Inch, PdfGraphicsUnit.Point);
-        //        vMargins.Right = vUnitConverter.ConvertUnits(Setup.Margins.Right / 100f, PdfGraphicsUnit.Inch, PdfGraphicsUnit.Point);
-        //        vMargins.Bottom = vUnitConverter.ConvertUnits(Setup.Margins.Bottom / 100f, PdfGraphicsUnit.Inch, PdfGraphicsUnit.Point);
-
-        //        // Create one page
-        //        PdfPageBase page = doc.Pages.Add(new SizeF(
-        //            vUnitConverter.ConvertUnits(Setup.PaperSize.Width * 1000f, PdfGraphicsUnit.Millimeter, PdfGraphicsUnit.Point),
-        //            vUnitConverter.ConvertUnits(Setup.PaperSize.Height * 1000f, PdfGraphicsUnit.Millimeter, PdfGraphicsUnit.Point)
-        //        ), vMargins);
-
-                
-        //        PdfImage vImage = PdfImage.FromImage(pBitmap);
-
-        //        var vDocumentUnitsFactor = 1000.0f / 0.254f;
-        //        float vWidth = (float)(Setup.PaperSize.Width - (Setup.Margins.Left + Setup.Margins.Right) * 0.254 / 1000.0);// -100;
-        //        float vHeight = (float)(Setup.PaperSize.Height - (Setup.Margins.Top + Setup.Margins.Bottom) * 0.254 / 1000.0);// -100;
-        //        var vRect = new RectangleF(0f, 0f, page.ActualSize.Width - vMargins.Left - vMargins.Right, page.ActualSize.Height - vMargins.Top - vMargins.Bottom); //new RectangleF(0f, 0f, vWidth * vDocumentUnitsFactor * 0.958f, vHeight * vDocumentUnitsFactor * 0.958f); //vIndex[0] * vBitmap.Width, vIndex[1] * vBitmap.Height, vBitmap.Width, vBitmap.Height);
-
-        //        page.Canvas.DrawImage(vImage, vRect);
-
-        //        doc.SaveToStream(pOutput);
-        //        /*
-
-        //        LinkBase vLink = new Link(new PrintingSystem());
-        //        vLink.MinMargins = new Margins(0, 0, 0, 0);
-        //        vLink.Margins = Setup.Margins;
-        //        vLink.PaperKind = PaperKind.Custom;
-        //        vLink.CustomPaperSize = new System.Drawing.Size((int)(Setup.PaperSize.Width * 1000.0 / 0.254), (int)(Setup.PaperSize.Height * 1000.0 / 0.254));
-        //        vLink.PaperName = Setup.PaperSize.Name;
-
-        //        vLink.CreateDetailArea += (s, e) =>
-        //        {
-        //            ImageBrick vBrick = new ImageBrick(new BrickStyle(BorderSide.None, 0f, Color.Empty, Color.Empty, Color.Empty, this.Font, null));
-        //            vBrick.Image = pBitmap;
-        //            vBrick.SizeMode = ImageSizeMode.ZoomImage;
-        //            vBrick.Separable = false;
-        //            vBrick.NoClip = false;
-
-        //            var vDocumentUnitsFactor = 1000.0f / 0.254f;
-        //            float vWidth = (float)(Setup.PaperSize.Width - (Setup.Margins.Left + Setup.Margins.Right) * 0.254 / 1000.0);// -100;
-        //            float vHeight = (float)(Setup.PaperSize.Height - (Setup.Margins.Top + Setup.Margins.Bottom) * 0.254 / 1000.0);// -100;
-        //            var vRect = new RectangleF(0f, 0f, vWidth * vDocumentUnitsFactor * 0.958f, vHeight * vDocumentUnitsFactor * 0.958f); //vIndex[0] * vBitmap.Width, vIndex[1] * vBitmap.Height, vBitmap.Width, vBitmap.Height);
-
-        //            e.Graph.DrawBrick(vBrick, vRect);
-
-        //            if (!string.IsNullOrEmpty(pTitle))
-        //            {
-        //                TextBrick vTitle = new TextBrick(BorderSide.All, 1f, Color.Black, Color.FromArgb(200, Color.White), Color.Red);
-        //                vTitle.Font = new Font("Arial", 14f);
-        //                vTitle.Location = new PointF(0f, 0f);
-        //                vTitle.Text = pTitle;
-        //                vTitle.Padding = new PaddingInfo(5, 0, 5, 0, 100);
-        //                var vStringSize = e.Graph.MeasureString(pTitle, vTitle.Font);
-        //                vTitle.Rect = new RectangleF(30f, 25f, vStringSize.Width + 10, vStringSize.Height + 8);
-        //                e.Graph.DrawBrick(vTitle);
-        //            }
-
-        //            if (pLogo != null)
-        //            {
-        //                ImageBrick vLogoBrick = new ImageBrick(new BrickStyle(BorderSide.All, 2f, Color.Black, Color.White, Color.Empty, this.Font, null));
-        //                vLogoBrick.Image = pLogo;
-        //                vLogoBrick.SizeMode = ImageSizeMode.ZoomImage;
-        //                vLogoBrick.Separable = false;
-        //                vLogoBrick.NoClip = false;
-        //                var vLogoSize = new SizeF(pLogo.Width / 2, pLogo.Height / 2);
-        //                RectangleF vLogoRect = new RectangleF(vRect.Right - vLogoSize.Width - 30, vRect.Height - vLogoSize.Height - 20, vLogoSize.Width, vLogoSize.Height);
-        //                e.Graph.DrawBrick(vLogoBrick, vLogoRect);
-        //            }
-        //        };
-
-        //        vLink.ExportToPdf(pFilename);
-        //        */
-        //    });
-        //    await vTask;
-        //}
-        public async Task CreatePDFAsync(Bitmap pBitmap, string pTitle, Image pLogo, string pFilename)
-        {
-            var vTask = Task.Run(() =>
-            {
-                LinkBase vLink = new Link(new PrintingSystem());
-                vLink.MinMargins = new Margins(0, 0, 0, 0);
-                vLink.Margins = Setup.Margins;
-                vLink.PaperKind = PaperKind.Custom;
-                vLink.CustomPaperSize = new System.Drawing.Size((int)(Setup.PaperSize.Width * 1000.0 / 0.254), (int)(Setup.PaperSize.Height * 1000.0 / 0.254));
-                vLink.PaperName = Setup.PaperSize.Name;
-
-                vLink.CreateDetailArea += (s, e) =>
-                {
-                    ImageBrick vBrick = new ImageBrick(new BrickStyle(BorderSide.None, 0f, Color.Empty, Color.Empty, Color.Empty, this.Font, null));
-                    vBrick.Image = pBitmap;
-                    vBrick.SizeMode = ImageSizeMode.ZoomImage;
-                    vBrick.Separable = false;
-                    vBrick.NoClip = false;
-
-                    var vDocumentUnitsFactor = 1000.0f / 0.254f;
-                    float vWidth = (float)(Setup.PaperSize.Width - (Setup.Margins.Left + Setup.Margins.Right) * 0.254 / 1000.0);// -100;
-                    float vHeight = (float)(Setup.PaperSize.Height - (Setup.Margins.Top + Setup.Margins.Bottom) * 0.254 / 1000.0);// -100;
-                    var vRect = new RectangleF(0f, 0f, vWidth * vDocumentUnitsFactor * 0.958f, vHeight * vDocumentUnitsFactor * 0.958f); //vIndex[0] * vBitmap.Width, vIndex[1] * vBitmap.Height, vBitmap.Width, vBitmap.Height);
-
-                    e.Graph.DrawBrick(vBrick, vRect);
-
-                    if (!string.IsNullOrEmpty(pTitle))
-                    {
-                        TextBrick vTitle = new TextBrick(BorderSide.All, 1f, Color.Black, Color.FromArgb(200, Color.White), Color.Red);
-                        vTitle.Font = new Font("Arial", 14f);
-                        vTitle.Location = new PointF(0f, 0f);
-                        vTitle.Text = pTitle;
-                        vTitle.Padding = new PaddingInfo(5, 0, 5, 0, 100);
-                        var vStringSize = e.Graph.MeasureString(pTitle, vTitle.Font);
-                        vTitle.Rect = new RectangleF(30f, 25f, vStringSize.Width + 10, vStringSize.Height + 8);
-                        e.Graph.DrawBrick(vTitle);
-                    }
-
-                    if (pLogo != null)
-                    {
-                        ImageBrick vLogoBrick = new ImageBrick(new BrickStyle(BorderSide.All, 2f, Color.Black, Color.White, Color.Empty, this.Font, null));
-                        vLogoBrick.Image = pLogo;
-                        vLogoBrick.SizeMode = ImageSizeMode.ZoomImage;
-                        vLogoBrick.Separable = false;
-                        vLogoBrick.NoClip = false;
-                        var vLogoSize = new SizeF(pLogo.Width / 2, pLogo.Height / 2);
-                        RectangleF vLogoRect = new RectangleF(vRect.Right - vLogoSize.Width - 30, vRect.Height - vLogoSize.Height - 20, vLogoSize.Width, vLogoSize.Height);
-                        e.Graph.DrawBrick(vLogoBrick, vLogoRect);
-                    }
-                };
-
-                vLink.ExportToPdf(pFilename);
-            });
-            await vTask;
-        }
+        
         public Task CreatePDFWithPdfSharpAsync(Bitmap pBitmap, string pTitle, Image pLogo, Stream pStream)
         {
             return Task.Run(() =>
@@ -578,62 +443,7 @@ namespace Sarge.Maps
                 
                 vPdf.Save(pStream);
             });
-                /*
-                var vTask = Task.Run(() =>
-                {
-                    LinkBase vLink = new Link(new PrintingSystem());
-                    vLink.MinMargins = new Margins(0, 0, 0, 0);
-                    vLink.Margins = Setup.Margins;
-                    vLink.PaperKind = PaperKind.Custom;
-                    vLink.CustomPaperSize = new System.Drawing.Size((int)(Setup.PaperSize.Width * 1000.0 / 0.254), (int)(Setup.PaperSize.Height * 1000.0 / 0.254));
-                    vLink.PaperName = Setup.PaperSize.Name;
-
-                    vLink.CreateDetailArea += (s, e) =>
-                    {
-                        ImageBrick vBrick = new ImageBrick(new BrickStyle(BorderSide.None, 0f, Color.Empty, Color.Empty, Color.Empty, this.Font, null));
-                        vBrick.Image = pBitmap;
-                        vBrick.SizeMode = ImageSizeMode.ZoomImage;
-                        vBrick.Separable = false;
-                        vBrick.NoClip = false;
-
-                        var vDocumentUnitsFactor = 1000.0f / 0.254f;
-                        float vWidth = (float)(Setup.PaperSize.Width - (Setup.Margins.Left + Setup.Margins.Right) * 0.254 / 1000.0);// -100;
-                        float vHeight = (float)(Setup.PaperSize.Height - (Setup.Margins.Top + Setup.Margins.Bottom) * 0.254 / 1000.0);// -100;
-                        var vRect = new RectangleF(0f, 0f, vWidth * vDocumentUnitsFactor * 0.958f, vHeight * vDocumentUnitsFactor * 0.958f); //vIndex[0] * vBitmap.Width, vIndex[1] * vBitmap.Height, vBitmap.Width, vBitmap.Height);
-
-                        e.Graph.DrawBrick(vBrick, vRect);
-
-                        if (!string.IsNullOrEmpty(pTitle))
-                        {
-                            TextBrick vTitle = new TextBrick(BorderSide.All, 1f, Color.Black, Color.FromArgb(200, Color.White), Color.Red);
-                            vTitle.Font = new Font("Arial", 14f);
-                            vTitle.Location = new PointF(0f, 0f);
-                            vTitle.Text = pTitle;
-                            vTitle.Padding = new PaddingInfo(5, 0, 5, 0, 100);
-                            var vStringSize = e.Graph.MeasureString(pTitle, vTitle.Font);
-                            vTitle.Rect = new RectangleF(30f, 25f, vStringSize.Width + 10, vStringSize.Height + 8);
-                            e.Graph.DrawBrick(vTitle);
-                        }
-
-                        if (pLogo != null)
-                        {
-                            ImageBrick vLogoBrick = new ImageBrick(new BrickStyle(BorderSide.All, 2f, Color.Black, Color.White, Color.Empty, this.Font, null));
-                            vLogoBrick.Image = pLogo;
-                            vLogoBrick.SizeMode = ImageSizeMode.ZoomImage;
-                            vLogoBrick.Separable = false;
-                            vLogoBrick.NoClip = false;
-                            var vLogoSize = new SizeF(pLogo.Width / 2, pLogo.Height / 2);
-                            RectangleF vLogoRect = new RectangleF(vRect.Right - vLogoSize.Width - 30, vRect.Height - vLogoSize.Height - 20, vLogoSize.Width, vLogoSize.Height);
-                            e.Graph.DrawBrick(vLogoBrick, vLogoRect);
-                        }
-                    };
-
-                    vLink.ExportToPdf(pFilename);
-                });
-                await vTask;
-                */
-            }
-        private List<string> gDownloadList = new List<string>();
+        }
 
         private async Task DownloadAllImagesAsync(UtmBounds pBounds)
         {
@@ -646,7 +456,7 @@ namespace Sarge.Maps
             {
                 for (double y = vStart.Northing; y <= pBounds.NorthWest.Northing + Setup.TileSizeInMeters; y += Setup.TileSizeInMeters)
                 {
-                    UtmPosition vImagePosition = new UtmPosition(x, y);
+                    UtmPosition vImagePosition = new UtmPosition(33, x, y);
                     string vFilename = GetFilename(vImagePosition, Setup.TileSizeInMeters, Setup.Map.TileSize);
 
                     if (!File.Exists(vFilename) && !gDownloadList.Contains(vFilename))
@@ -724,7 +534,7 @@ namespace Sarge.Maps
                 vRescaledGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 vRescaledGraphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                var vCenterUtm33 = PositionUtm32.Transform(32, 33);
+                var vCenterUtm33 = PositionUtm32.Transform(33);
 
                 var vNewOrigo = vCenterUtm33.Move(-vRescaledSize.Width / Setup.PixelsPerMeter / 2.0, vRescaledSize.Height / Setup.PixelsPerMeter / 2.0);
                 var vNewBottomRight = vCenterUtm33.Move(vRescaledSize.Width / Setup.PixelsPerMeter / 2.0, -vRescaledSize.Height / Setup.PixelsPerMeter / 2.0);
@@ -740,7 +550,7 @@ namespace Sarge.Maps
                 if (Setup.ShowLatLonGrid)
                     DrawLatLongGrid(vRescaledGraphics, vNewOrigo, vNewBottomRight, 1F, vLabelRectSizeLatLong);
 
-                var vNewCenter = new UtmPosition(vNewOrigo.Easting + (vNewBottomRight.Easting - vNewOrigo.Easting) / 2.0, vNewBottomRight.Northing + (vNewOrigo.Northing - vNewBottomRight.Northing) / 2.0);
+                var vNewCenter = new UtmPosition(33, vNewOrigo.Easting + (vNewBottomRight.Easting - vNewOrigo.Easting) / 2.0, vNewBottomRight.Northing + (vNewOrigo.Northing - vNewBottomRight.Northing) / 2.0);
 
                 if (Setup.RadiusR25.HasValue)
                     DrawRadius(vRescaledGraphics, vNewCenter, vNewOrigo, Setup.RadiusR25.Value, 1f);
@@ -774,7 +584,7 @@ namespace Sarge.Maps
             {
                 for (double y = vStart.Northing; y <= pBounds.NorthWest.Northing + Setup.TileSizeInMeters; y += Setup.TileSizeInMeters)
                 {
-                    UtmPosition vImagePosition = new UtmPosition(x, y);
+                    UtmPosition vImagePosition = new UtmPosition(33, x, y);
                     var vLocationInBitmap = Utm33ToBitmapPosition(vImagePosition, pBounds.NorthWest);
                     string vFilename = GetFilename(vImagePosition, Setup.TileSizeInMeters, Setup.Map.TileSize);
 

@@ -10,6 +10,7 @@
 
     <script src="../../script/proj4.js"></script>
     <script src="../../script/ol.js"></script>
+    <script src="../../script/utm.js"></script>
 
     <script>
         (function () {
@@ -48,9 +49,16 @@
                 },
                 createMap: function () {
 
+                    for (var i = 1; i < 60; i++)
+                    {
+                        var zone = "EPSG:326" + (i < 10 ? "0" : "") + i.toString();
+                        proj4.defs(zone, "+proj=utm +zone=" + i + " +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+                    }
+                    /*
                     proj4.defs("EPSG:32632", "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
                     proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
-
+                    */
+                    
                     var sProjection = 'EPSG:32633';
                     var extent = {
                         'EPSG:32633': [-2500000, 3500000, 3045984, 9045984]
@@ -106,10 +114,11 @@
                         var coord = event.coordinate;
                         // transform it to decimal degrees
                         var degrees = ol.proj.transform(coord, 'EPSG:32633', 'EPSG:4326');
-                        var utm32 = ol.proj.transform(coord, 'EPSG:32633', 'EPSG:32632');
+                        var zone = getUtmZone(degrees[0], degrees[1]);
+                        var utmLocal = ol.proj.transform(coord, 'EPSG:32633', getProjectionName(zone));
                         // update the overlay element's content
                         var element = overlay.getElement();
-                        element.innerHTML = vMap.formatDegrees(degrees) + "<br/>" + vMap.formatUtm32(utm32);
+                        element.innerHTML = vMap.formatDegrees(degrees) + "<br/>" + vMap.formatUtm32(zone, utmLocal);
                         // position the element (using the coordinate in the map's projection)
                         overlay.setPosition(coord);
                         // and add it to the map
@@ -125,15 +134,16 @@
 
                     return "<div style='text-align: right'>E " + vEastDegrees + "° " + vEastDecimal + "'<br/>N " + vNorthDegrees + "° " + vNorthDecimal + "'</div>";
                 },
-                formatUtm32: function(pLocation)
+                formatUtm32: function(zone, location)
                 {
-                    return "<div style='text-align: right'>32V " + Math.round(pLocation[0]) + "<br/>" + Math.round(pLocation[1]) + "</div>";
+                    var z = (zone < 10 ? "0" : "") + zone.toString();
+                    return "<div style='text-align: right'>" + z + "V " + Math.round(location[0]) + "<br/>" + Math.round(location[1]) + "</div>";
                 },
                 getLocation: function () {
                     if (this.map) {
                         var vCenter = this.map.getView().getCenter();
                         if (vCenter)
-                            return { easting: vCenter[0], northing: vCenter[1] };
+                            return { zone: 33, easting: vCenter[0], northing: vCenter[1] };
                     }
                     else
                     {
@@ -141,6 +151,9 @@
                     }
                 },
                 setLocation: function (pLocation) {
+                    if (!pLocation.zone)
+                        pLocation.zone = 33;
+
                     if (this.map)
                         this.map.getView().setCenter([pLocation.easting, pLocation.northing]);
                     else

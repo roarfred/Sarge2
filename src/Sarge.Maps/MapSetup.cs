@@ -42,8 +42,8 @@ namespace Sarge.Maps
                 double vWidthInMeters = (this.PaperSize.Width) * ScaleAndTileSize.Scale;
                 double vHeightInMeter = (this.PaperSize.Height) * ScaleAndTileSize.Scale;
                 return new UtmBounds(
-                    new UtmPosition(this.Location.Easting - vWidthInMeters / 2, this.Location.Northing + vHeightInMeter / 2),
-                    new UtmPosition(this.Location.Easting + vWidthInMeters / 2, this.Location.Northing - vHeightInMeter / 2)
+                    new UtmPosition(33, this.Location.Easting - vWidthInMeters / 2, this.Location.Northing + vHeightInMeter / 2),
+                    new UtmPosition(33, this.Location.Easting + vWidthInMeters / 2, this.Location.Northing - vHeightInMeter / 2)
                 );
             }
             else
@@ -71,6 +71,7 @@ namespace Sarge.Maps
         public UtmPosition GetStart(UtmBounds pBounds)
         {
             return new Maps.UtmPosition(
+                33,
                 Map.EastOrigin + Math.Floor((pBounds.NorthWest.Easting - Map.EastOrigin) / TileSizeInMeters) * TileSizeInMeters,
                 Map.NorthOrigin + Math.Floor((pBounds.SouthEast.Northing - Map.NorthOrigin) / TileSizeInMeters) * TileSizeInMeters
             );
