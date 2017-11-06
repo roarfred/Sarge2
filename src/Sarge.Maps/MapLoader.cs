@@ -1,5 +1,4 @@
-﻿using DevExpress.XtraPrinting;
-using PdfSharp;
+﻿using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
