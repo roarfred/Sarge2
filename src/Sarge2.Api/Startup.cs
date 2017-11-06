@@ -49,14 +49,16 @@ namespace Sarge2.Api
                 config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
 
-            app.UseMvc(config =>
-            {
-                config.MapRoute("Default", "{controller}/{action}/{id?}",
-                    new { controller = "Home", action = "Index" });
-            });
+            //app.UseMvc(config =>
+            //{
+            //    config.MapRoute("Default", "{controller}/{action}/{id?}",
+            //        new { controller = "Home", action = "Index" });
+            //});
 
+            app.UseMvc();
+
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-           
         }
     }
 }
