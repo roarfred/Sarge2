@@ -68,7 +68,10 @@ export class PrintMenuComponent implements OnInit {
 
     ngOnInit() {
         this._mapService.getMapSources()
-            .then((result) => this.mapSources = result)
+            .then((result) => {
+                this.mapSources = result;
+                this.mapSource = result[0];
+            })
             .catch((error) => console.error(error));
 
         this._mapService.getPaperSizes()

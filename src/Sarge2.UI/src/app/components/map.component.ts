@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '../models/location.model';
 import { PaperSize } from '../models/paper-size.model';
 import { ScaleAndTileSize } from '../models/scale-and-tile-size.model';
+import { MapSource } from '../models/map-source.model';
 
 declare var ol: any;
 
@@ -18,8 +19,12 @@ export class MapComponent {
     paperFeature: any;
     crossHairFeature: any;
 
+    @Input()
     paperSize: PaperSize = new PaperSize("A4", 0.30, 0.20);
+    @Input()
     scale: ScaleAndTileSize = new ScaleAndTileSize("1:50000", 50000, 0);
+    
+    _mapSource = new MapSource("topo2");
     
     _mapLocation = new Location(33, 300000, 6550000);
     _ipp: Location;
@@ -35,6 +40,16 @@ export class MapComponent {
     @Output() mapLocationChange = new EventEmitter<Location>();
     @Output() mapClicked = new EventEmitter<Location>();
     
+    @Input()
+    get mapSource() : MapSource {
+        return this._mapSource;
+    }
+    set mapSource(map: MapSource) {
+        this._mapSource = map;
+        if (map != null)
+            this.setMap(map);
+    }
+
     @Input()
     get zoom(): number {
         return this._zoom;
@@ -135,18 +150,15 @@ export class MapComponent {
             center: center,
             zoom: this._zoom
         });
-        var layerGroup = new ol.layer.Group({
-            layers: [
-                this.createMapTile({ name: 'topo2' })
-            ]
-        })
+
         this.map = new ol.Map({
             target: 'map',
             view: view
         });
 
-        this.map.setLayerGroup(layerGroup);
-
+        if (this._mapSource != null)
+            this.setMap(this._mapSource);
+        
         this.map.addControl(new ol.control.Zoom({
             className: 'custom-zoom'
         }));
@@ -167,6 +179,14 @@ export class MapComponent {
 
         this.map.on('click', (event: any) => { this.mapClick(event, this) });
     };
+    setMap(map: MapSource): void {
+        var layerGroup = new ol.layer.Group({
+            layers: [
+                this.createMapTile(map)
+            ]
+        })
+        this.map.setLayerGroup(layerGroup);
+    };
 
     mapClick(event: any, map: MapComponent): void {
         // extract the spatial coordinate of the click event in map projection units
@@ -175,7 +195,7 @@ export class MapComponent {
         this.mapClicked.emit(local);
     };
 
-    createMapTile(map: any): any {
+    createMapTile(map: MapSource): any {
         return new ol.layer.Tile({
             title: map.name,
             source: new ol.source.TileWMS({

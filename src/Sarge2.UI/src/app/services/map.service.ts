@@ -13,7 +13,7 @@ import * as FileSaver from 'file-saver';
 @Injectable()
 export class MapService {
     private headers = new Headers({ 'Content-Type': 'application/json' });
-    private baseUrl: string = "http://localhost:62821";
+    private baseUrl: string = "http://localhost:5000";
 
     constructor(private http: Http) { }
 

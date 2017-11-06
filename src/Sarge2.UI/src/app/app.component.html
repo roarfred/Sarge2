@@ -23,8 +23,8 @@
 
 <mat-sidenav #sidenav mode="over" opened="false">
   <div class="example-scrolling-content">
-    <my-print-menu [location]="mapLocation"></my-print-menu>
+    <my-print-menu [location]="mapLocation" #printMenu></my-print-menu>
     <button mat-raised-button (click)="myMap.startDrawing()">Start Drawing</button>
   </div>
 </mat-sidenav>
-<my-map #myMap [lockIpp]="lock" [(ipp)]="ipp" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>
+<my-map #myMap [lockIpp]="lock" [(ipp)]="ipp" [(scale)]="printMenu.scale" [(paperSize)]="printMenu.scale" [(mapSource)]="printMenu.mapSource" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>
