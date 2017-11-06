@@ -1,0 +1,52 @@
+
+    <mat-form-field>
+        <input matInput placeholder="Name" [(ngModel)]="name" />
+    </mat-form-field>
+    <mat-form-field>
+        <mat-select placeholder="Map" [(ngModel)]="mapSource">
+            <mat-option *ngFor="let mapSource of mapSources" [value]="mapSource">
+                {{ mapSource.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-select placeholder="Scale" [(ngModel)]="scale">
+            <mat-option *ngFor="let scale of scales" [value]="scale">
+                {{ scale.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-select placeholder="Paper Size" [(ngModel)]="paperSize">
+            <mat-option *ngFor="let paperSize of paperSizes" [value]="paperSize">
+                {{ paperSize.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-grid-list cols="2">
+        <mat-grid-tile>
+            <mat-form-field>
+                <input matInput type="number" placeholder="R50" [(ngModel)]="r50" />
+                {{r50}}
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field>
+                <input matInput type="number" placeholder="R25" [(ngModel)]="r25" />
+                {{r25}}
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-checkbox [(ngModel)]="showCrossHair">Crosshair</mat-checkbox>
+    <mat-checkbox [(ngModel)]="showUtmGrid">UTM</mat-checkbox>
+    <mat-checkbox [(ngModel)]="showLatLonGrid">Lat / long</mat-checkbox>
+    
+    <mat-grid-list cols="2">
+        <mat-grid-tile>
+            <my-location [location]="location"></my-location>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <button mat-raised-button (click)="print()" [disabled]="downloading">Print</button>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-progress-bar mode="indeterminate" *ngIf="downloading"></mat-progress-bar>

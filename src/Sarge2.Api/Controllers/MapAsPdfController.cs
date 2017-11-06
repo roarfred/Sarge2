@@ -27,9 +27,30 @@ namespace Sarge2.Api.Controllers
             throw new NotImplementedException();
         }
 
+        //// POST api/values
+        //[HttpPost()]
+        //public async Task<Guid> Post([FromBody]MapSetup setup)
+        //{
+        //    if (setup == null)
+        //        throw new ArgumentException("Unable to parse MapSetup parameter", "setup");
+
+        //    MapLoader vLoader = new MapLoader(setup);
+        //    using (var vBitmap = await vLoader.CreateBitmapForPrintAsync())
+        //    {
+        //        Guid vFileID = Guid.NewGuid();
+        //        string vFilename = Path.Combine(Path.GetTempPath(), vFileID.ToString());
+        //        using (var vFile = System.IO.File.Create(vFilename))
+        //        {
+        //            await vLoader.CreatePDFWithPdfSharpAsync(vBitmap, setup.Title, null, vFile);
+        //        }
+
+        //        return vFileID;
+        //    }
+        //}
+
         // POST api/values
         [HttpPost()]
-        public async Task<Guid> Post([FromBody]MapSetup setup)
+        public async Task<IActionResult> Post([FromBody]MapSetup setup)
         {
             if (setup == null)
                 throw new ArgumentException("Unable to parse MapSetup parameter", "setup");
@@ -44,7 +65,7 @@ namespace Sarge2.Api.Controllers
                     await vLoader.CreatePDFWithPdfSharpAsync(vBitmap, setup.Title, null, vFile);
                 }
 
-                return vFileID;
+                return File(System.IO.File.ReadAllBytes(vFilename), "application/pdf");
             }
         }
 

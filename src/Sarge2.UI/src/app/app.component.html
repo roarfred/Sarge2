@@ -1,0 +1,30 @@
+<mat-toolbar color="primary">
+  <button mat-mini-fab class="example-fab" (click)="sidenav.toggle()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <span>&nbsp;SARGE2</span>
+
+  <!-- This fills the remaining space of the current row -->
+  <span class="example-fill-remaining-space">
+    <my-location [(location)]="mapLocation"></my-location>
+    <div *ngIf="clickedLocation" style="display: inline-block; width: 100px">
+      Clicked:
+      <br>
+      <my-location [location]="clickedLocation"></my-location>
+    </div>
+  </span>
+
+  <div *ngIf="ipp" style="display: inline-block; width: 100px">
+    <my-location [location]="ipp"></my-location>
+  </div>
+  <mat-slide-toggle [(ngModel)]="lock" labelPosition="before">Lock IPP</mat-slide-toggle>
+</mat-toolbar>
+
+
+<mat-sidenav #sidenav mode="over" opened="false">
+  <div class="example-scrolling-content">
+    <my-print-menu [location]="mapLocation"></my-print-menu>
+    <button mat-raised-button (click)="myMap.startDrawing()">Start Drawing</button>
+  </div>
+</mat-sidenav>
+<my-map #myMap [lockIpp]="lock" [(ipp)]="ipp" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>

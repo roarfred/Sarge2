@@ -29,6 +29,7 @@ namespace Sarge2.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddCors();
             services.AddMvc();
         }
 
@@ -42,6 +43,11 @@ namespace Sarge2.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(config =>
+            {
+                config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
 
             app.UseMvc(config =>
             {

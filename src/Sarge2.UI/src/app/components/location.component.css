@@ -1,0 +1,25 @@
+div.main {
+    font: 9pt Calibri;
+    display: inline-block;
+    width: 80px;
+    margin-top: -20px;
+}
+
+.zone {
+    position: fixed;
+    font-size: 14pt;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+    width: 80px;
+}
+.location {
+    position: fixed;
+    display: inline-block;
+    vertical-align: middle;
+}
+.location-number {
+    text-align: right;
+    display: block;
+    width: 80px;
+}
