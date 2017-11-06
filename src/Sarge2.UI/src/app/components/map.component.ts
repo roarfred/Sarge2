@@ -28,8 +28,8 @@ export class MapComponent {
     
     _mapLocation = new Location(33, 300000, 6550000);
     _ipp: Location;
-    _radiusR25: number;
-    _radiusR50: number;
+    _radiusR25: number = null;
+    _radiusR50: number = null;
     _zoom: number = 5;
 
     @Output() zoomChange = new EventEmitter<number>(); 
@@ -164,9 +164,9 @@ export class MapComponent {
         }));
 
         this.map.on('postrender', (event: any) => {
+            this.drawRadius();
             this.drawPaper();
             this.drawCrossHair();
-            this.drawRadius();
         });
 
         this.map.on('moveend', (event: any) => {
@@ -180,12 +180,18 @@ export class MapComponent {
         this.map.on('click', (event: any) => { this.mapClick(event, this) });
     };
     setMap(map: MapSource): void {
+        let mapLayer = this.createMapTile(map);
+        
         var layerGroup = new ol.layer.Group({
             layers: [
-                this.createMapTile(map)
+                mapLayer
             ]
         })
         this.map.setLayerGroup(layerGroup);
+
+        this.radiusFeature = null;
+        this.paperFeature = null;
+        this.crossHairFeature = null;
     };
 
     mapClick(event: any, map: MapComponent): void {
@@ -259,13 +265,14 @@ export class MapComponent {
                 name: 'radius',
                 style: lineStyle,
                 source: new ol.source.Vector({
-                    features: vFeatures
+                    features: []
                 }),
                 updateWhileInteracting: true,
                 updateWhileAnimating: true,
                 renderBuffer: 200
             });
 
+            layerRadius.setZIndex(10);
             this.map.addLayer(layerRadius);
             this.radiusFeature = layerRadius;
         }
@@ -304,6 +311,8 @@ export class MapComponent {
                 updateWhileAnimating: true,
                 renderBuffer: 200
             });
+            
+            layerLines.setZIndex(10);
             this.map.addLayer(layerLines);
             this.crossHairFeature = layerLines;
         }
@@ -376,6 +385,7 @@ export class MapComponent {
                 updateWhileAnimating: true
             });
 
+            layer.setZIndex(10);
             this.map.addLayer(layer);
             this.paperFeature = feature;
         }

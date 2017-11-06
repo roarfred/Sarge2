@@ -9,7 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { 
   MatButtonModule, MatCheckboxModule, MatSlideToggleModule, MatToolbarModule, 
   MatIconModule, MatSidenavModule, MatOptionModule, MatSelectModule, 
-  MatGridListModule, MatInputModule, MatProgressSpinnerModule, MatProgressBarModule
+  MatGridListModule, MatInputModule, MatProgressSpinnerModule, MatProgressBarModule,
+  MatCardModule
 } from '@angular/material';
 
 import { MapService } from './services/map.service';
@@ -19,6 +20,9 @@ import { MapComponent } from './components/map.component';
 import { LocationComponent } from './components/location.component';
 import { UtmLocationPipe } from './pipes/utm-location.pipe';
 import { PrintMenuComponent } from './components/print-menu.component';
+import { TracksMenuComponent } from './components/tracks-menu.component';
+import { AreasMenuComponent } from './components/areas-menu.component';
+import { PoiMenuComponent } from './components/poi-menu.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +30,9 @@ import { PrintMenuComponent } from './components/print-menu.component';
     MapComponent,
     LocationComponent,
     PrintMenuComponent,
+    TracksMenuComponent,
+    AreasMenuComponent,
+    PoiMenuComponent,
     UtmLocationPipe
   ],
   imports: [
@@ -36,6 +43,7 @@ import { PrintMenuComponent } from './components/print-menu.component';
     MatButtonModule, MatCheckboxModule, MatSlideToggleModule, MatToolbarModule, 
     MatIconModule, MatSidenavModule, MatOptionModule, MatSelectModule, 
     MatGridListModule, MatInputModule, MatProgressSpinnerModule, MatProgressBarModule,
+    MatCardModule,
 
     FormsModule,
     HttpModule

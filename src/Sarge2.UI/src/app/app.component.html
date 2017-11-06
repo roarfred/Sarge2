@@ -1,30 +1,60 @@
 <mat-toolbar color="primary">
-  <button mat-mini-fab class="example-fab" (click)="sidenav.toggle()">
-    <mat-icon>add</mat-icon>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('location')">
+    <mat-icon>info_outline</mat-icon>
   </button>
-  <span>&nbsp;SARGE2</span>
-
+  <button mat-button class="toolbar-button" (click)="toggleMenu('print')">
+    <mat-icon>print</mat-icon>
+  </button>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('tracks')">
+    <mat-icon>gesture</mat-icon>
+  </button>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('poi')">
+    <mat-icon>flag</mat-icon>
+  </button>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('areas')">
+    <mat-icon>format_shapes</mat-icon>
+  </button>
   <!-- This fills the remaining space of the current row -->
-  <span class="example-fill-remaining-space">
-    <my-location [(location)]="mapLocation"></my-location>
-    <div *ngIf="clickedLocation" style="display: inline-block; width: 100px">
-      Clicked:
-      <br>
-      <my-location [location]="clickedLocation"></my-location>
-    </div>
-  </span>
-
-  <div *ngIf="ipp" style="display: inline-block; width: 100px">
-    <my-location [location]="ipp"></my-location>
+  <div class="example-fill-remaining-space">
+    <span>&nbsp;SARGE2&nbsp;</span>
   </div>
-  <mat-slide-toggle [(ngModel)]="lock" labelPosition="before">Lock IPP</mat-slide-toggle>
+  <div>
+    <my-location *ngIf="ipp" [location]="ipp"></my-location>
+    <mat-slide-toggle [(ngModel)]="lock" labelPosition="before">Lock IPP</mat-slide-toggle>
+  </div>
 </mat-toolbar>
 
+<mat-sidenav #menu mode="over" opened="false">
+  <my-print-menu [location]="mapLocation" #printMenu [hidden]="menuName != 'print'"></my-print-menu>
+  <div class="positions-menu" [hidden]="menuName != 'location'">
+    <mat-card>
+      <mat-card-title>Map Center</mat-card-title>
+      <mat-card-content>
+        <my-location [(location)]="mapLocation"></my-location>
+      </mat-card-content>
+    </mat-card>
 
-<mat-sidenav #sidenav mode="over" opened="false">
-  <div class="example-scrolling-content">
-    <my-print-menu [location]="mapLocation" #printMenu></my-print-menu>
-    <button mat-raised-button (click)="myMap.startDrawing()">Start Drawing</button>
+    <mat-card *ngIf="ipp">
+      <mat-card-title>IPP</mat-card-title>
+      <mat-card-content>
+        <my-location [location]="ipp"></my-location>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="clickedLocation">
+      <mat-card-title>Last clicked</mat-card-title>
+      <mat-card-content>
+        <my-location [location]="clickedLocation"></my-location>
+      </mat-card-content>
+    </mat-card>
   </div>
+  <my-tracks-menu [hidden]="menuName != 'tracks'"></my-tracks-menu>
+  <my-poi-menu [hidden]="menuName != 'poi'"></my-poi-menu>
+  <my-areas-menu [hidden]="menuName != 'areas'"></my-areas-menu>
 </mat-sidenav>
-<my-map #myMap [lockIpp]="lock" [(ipp)]="ipp" [(scale)]="printMenu.scale" [(paperSize)]="printMenu.scale" [(mapSource)]="printMenu.mapSource" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>
+
+<my-map #myMap [lockIpp]="lock" [radiusR25]="printMenu.r25" [radiusR50]="printMenu.r50" [(ipp)]="ipp" [scale]="printMenu.scale"
+  [paperSize]="printMenu.paperSize" [mapSource]="printMenu.mapSource" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>
+
+
+<button mat-raised-button (click)="myMap.startDrawing()">Start Drawing</button>
