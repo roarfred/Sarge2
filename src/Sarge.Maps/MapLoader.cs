@@ -424,10 +424,12 @@ namespace Sarge.Maps
                     vState = vGraphics.Save();
                     var vFont = new XFont(this.Font.Name, this.Font.Size);
                     var vFontSize = vGraphics.MeasureString(pTitle, vFont);
-                    vFontSize = new XSize(vFontSize.Width + 2, vFontSize.Height + 2);
-                    var vFontRectangle = new XRect(new XPoint(15, 24 - vFontSize.Height), vFontSize);
-                    vGraphics.DrawRectangle(new PdfSharp.Drawing.XSolidBrush(XColors.White), vFontRectangle);
-                    vGraphics.DrawString(pTitle, vFont, XBrushes.Black, 16, 20);
+                    vFontSize = new XSize(vFontSize.Width + 10, vFontSize.Height + 2);
+                    var vRectangle = new RectangleF(new PointF((float)vPage.Width / 2f - (float)vFontSize.Width / 2f, 24 - (float)vFontSize.Height), vFontSize.ToSizeF());
+                    var vFontRectangle = new XRect(vRectangle);
+
+                    vGraphics.DrawRectangle(new PdfSharp.Drawing.XSolidBrush(XColors.LightGray), vRectangle);
+                    vGraphics.DrawString(pTitle, vFont, XBrushes.Black, vRectangle, XStringFormats.Center);
                     vGraphics.DrawRectangle(XPens.Black, vFontRectangle);
                     vGraphics.Restore(vState);
                 }
