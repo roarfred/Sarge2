@@ -34,7 +34,7 @@ export class PrintMenuComponent implements OnInit {
 
     r25Change = new EventEmitter<number>();
     r50Change = new EventEmitter<number>();
-    
+
     _mapSource: MapSource;
     _paperSize: PaperSize;
     _scale: ScaleAndTileSize;
@@ -42,7 +42,7 @@ export class PrintMenuComponent implements OnInit {
     _r50: number;
 
     name: string;
-    
+
     @Input()
     get r25(): number {
         return this._r25;
@@ -51,7 +51,7 @@ export class PrintMenuComponent implements OnInit {
         this._r25 = radius;
         this.r25Change.emit(this._r25);
     }
-    
+
     @Input()
     get r50(): number {
         return this._r50;
@@ -114,8 +114,7 @@ export class PrintMenuComponent implements OnInit {
             .catch((error) => console.error(error));
 
         this._mapService.getPaperSizes()
-            .then((result) => 
-            {
+            .then((result) => {
                 this.paperSizes = result;
                 if (this.savedSettings)
                     this.paperSize = result.find(v => v.name == this.savedSettings.paperSize.name);
@@ -159,14 +158,28 @@ export class PrintMenuComponent implements OnInit {
 
     loadSettings() {
         let temp = localStorage.getItem("printSettings");
+
         if (temp) {
             this.savedSettings = JSON.parse(temp);
-            this.name = this.savedSettings.title;
-            this.r25 = this.savedSettings.radiusR25;
-            this.r50 = this.savedSettings.radiusR50;
-            this.showCrossHair = this.savedSettings.showCrossHair;
-            this.showLatLonGrid = this.savedSettings.showLatLonGrid;
-            this.showUtmGrid = this.savedSettings.showUtmGrid;
         }
+        else // load defaults
+        {
+            this.savedSettings = new PrintSettings();
+            this.savedSettings.mapName = 'topo2';
+            this.savedSettings.radiusR25 = 500;
+            this.savedSettings.radiusR50 = 2500;
+            this.savedSettings.paperSize = { name: "A4 Landscape", width: 0.29725, height: 0.21025 };
+            this.savedSettings.scaleAndTileSize = { "scale": 50000.0, "tileSizeInMeters": 2708.0, "name": "1:50000 (Hi)" };
+            this.savedSettings.showCrossHair = true;
+            this.savedSettings.showLatLonGrid = false;
+            this.savedSettings.showUtmGrid = true;
+        }
+ 
+        this.name = this.savedSettings.title;
+        this.r25 = this.savedSettings.radiusR25;
+        this.r50 = this.savedSettings.radiusR50;
+        this.showCrossHair = this.savedSettings.showCrossHair;
+        this.showLatLonGrid = this.savedSettings.showLatLonGrid;
+        this.showUtmGrid = this.savedSettings.showUtmGrid;
     }
 }

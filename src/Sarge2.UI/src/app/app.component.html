@@ -55,6 +55,3 @@
 
 <my-map #myMap [lockIpp]="lock" [radiusR25]="printMenu.r25" [radiusR50]="printMenu.r50" [(ipp)]="ipp" [scale]="printMenu.scale"
   [paperSize]="printMenu.paperSize" [mapSource]="printMenu.mapSource" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>
-
-
-<button mat-raised-button (click)="myMap.startDrawing()">Start Drawing</button>
