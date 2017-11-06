@@ -25,7 +25,7 @@
 </mat-toolbar>
 
 <mat-sidenav #menu mode="over" opened="false">
-  <my-print-menu [location]="mapLocation" #printMenu [hidden]="menuName != 'print'"></my-print-menu>
+  <my-print-menu [location]="ipp || mapLocation" #printMenu [hidden]="menuName != 'print'"></my-print-menu>
   <div class="positions-menu" [hidden]="menuName != 'location'">
     <mat-card>
       <mat-card-title>Map Center</mat-card-title>
