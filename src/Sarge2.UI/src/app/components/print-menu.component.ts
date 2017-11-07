@@ -85,7 +85,7 @@ export class PrintMenuComponent implements OnInit {
             this._mapService.getScales(this._mapSource.name)
                 .then((result) => {
                     this.scales = result;
-                    if (this.savedSettings)
+                    if (this.savedSettings && result)
                         this.scale = result.find(v => v.name == this.savedSettings.scaleAndTileSize.name);
                 })
                 .catch((error) => console.error(error));
@@ -108,7 +108,7 @@ export class PrintMenuComponent implements OnInit {
         this._mapService.getMapSources()
             .then((result) => {
                 this.mapSources = result;
-                if (this.savedSettings)
+                if (this.savedSettings && result)
                     this.mapSource = result.find(v => v.name == this.savedSettings.mapName);
             })
             .catch((error) => console.error(error));
@@ -116,7 +116,7 @@ export class PrintMenuComponent implements OnInit {
         this._mapService.getPaperSizes()
             .then((result) => {
                 this.paperSizes = result;
-                if (this.savedSettings)
+                if (this.savedSettings && result)
                     this.paperSize = result.find(v => v.name == this.savedSettings.paperSize.name);
             })
             .catch((error) => console.error(error));

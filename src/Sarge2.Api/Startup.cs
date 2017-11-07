@@ -44,11 +44,6 @@ namespace Sarge2.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(config =>
-            {
-                config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            });
-
             //app.UseMvc(config =>
             //{
             //    config.MapRoute("Default", "{controller}/{action}/{id?}",
@@ -59,6 +54,11 @@ namespace Sarge2.Api
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            app.UseCors(config =>
+            {
+                config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
         }
     }
 }
