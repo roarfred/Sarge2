@@ -1,0 +1,58 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "project": {
+      "name": "Sarge2.UI"
+    },
+    "apps": [
+      {
+        "root": "src",
+        "outDir": "../Web/wwwroot",
+        "assets": [
+          "assets",
+          "favicon.ico"
+        ],
+        "index": "index.html",
+        "main": "main.ts",
+        "tsconfig": "tsconfig.json",
+        "styles": [
+          "../node_modules/openlayers/dist/ol.css",
+          "../node_modules/font-awesome/scss/font-awesome.scss",
+          "../node_modules/angular-bootstrap-md/scss/bootstrap/bootstrap.scss",
+          "../node_modules/angular-bootstrap-md/scss/mdb-free.scss",
+          "./styles.scss"
+        ],
+        "scripts": [
+            "../node_modules/openlayers/dist/ol.js",
+            "../node_modules/chart.js/dist/Chart.js",
+            "../node_modules/hammerjs/hammer.min.js"
+        ]
+      }
+    ],
+    "defaults": {
+      "styleExt": "scss",
+      "component": {
+        "spec": false,
+        "inlineStyle": true,
+        "inlineTemplate": true
+      },
+      "directive": {
+        "spec": false
+      },
+      "class": {
+        "spec": false
+      },
+      "guard": {
+        "spec": false
+      },
+      "module": {
+        "spec": false
+      },
+      "pipe": {
+        "spec": false
+      },
+      "service": {
+        "spec": false
+      } 
+    }
+  }
+  

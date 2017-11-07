@@ -1,0 +1,17 @@
+<my-map #myMap [lockIpp]="lock" [(ipp)]="ipp" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>
+<label class="checkbox-inline">
+    <input type="checkbox" [(ngModel)]="lock"> Lock IPP
+</label>
+<input type="button" (click)="myMap.startDrawing()" value="Start Drawing" />
+<div>&nbsp;</div>
+<div style="display: inline-block; width: 100px">
+    Center:<br><my-location [(location)]="mapLocation"></my-location>
+</div>
+<div *ngIf="ipp" style="display: inline-block; width: 100px">
+    IPP:<br><my-location [(location)]="ipp"></my-location>
+</div>
+<div *ngIf="clickedLocation"style="display: inline-block; width: 100px">
+    Clicked:<br><my-location [location]="clickedLocation"></my-location>
+</div>
+    
+    

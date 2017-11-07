@@ -1,0 +1,57 @@
+<mat-toolbar color="primary">
+  <button mat-button class="toolbar-button" (click)="toggleMenu('location')">
+    <mat-icon>info_outline</mat-icon>
+  </button>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('print')">
+    <mat-icon>print</mat-icon>
+  </button>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('tracks')">
+    <mat-icon>gesture</mat-icon>
+  </button>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('poi')">
+    <mat-icon>flag</mat-icon>
+  </button>
+  <button mat-button class="toolbar-button" (click)="toggleMenu('areas')">
+    <mat-icon>format_shapes</mat-icon>
+  </button>
+  <!-- This fills the remaining space of the current row -->
+  <div class="example-fill-remaining-space">
+    <span>&nbsp;SARGE2&nbsp;</span>
+  </div>
+  <div>
+    <my-location *ngIf="ipp" [location]="ipp"></my-location>
+    <mat-slide-toggle [(ngModel)]="lock" labelPosition="before">Lock IPP</mat-slide-toggle>
+  </div>
+</mat-toolbar>
+
+<mat-sidenav #menu mode="over" opened="false">
+  <my-print-menu [location]="ipp || mapLocation" #printMenu [hidden]="menuName != 'print'"></my-print-menu>
+  <div class="positions-menu" [hidden]="menuName != 'location'">
+    <mat-card>
+      <mat-card-title>Map Center</mat-card-title>
+      <mat-card-content>
+        <my-location [(location)]="mapLocation"></my-location>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="ipp">
+      <mat-card-title>IPP</mat-card-title>
+      <mat-card-content>
+        <my-location [location]="ipp"></my-location>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="clickedLocation">
+      <mat-card-title>Last clicked</mat-card-title>
+      <mat-card-content>
+        <my-location [location]="clickedLocation"></my-location>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <my-tracks-menu [hidden]="menuName != 'tracks'"></my-tracks-menu>
+  <my-poi-menu [hidden]="menuName != 'poi'"></my-poi-menu>
+  <my-areas-menu [hidden]="menuName != 'areas'"></my-areas-menu>
+</mat-sidenav>
+
+<my-map #myMap [lockIpp]="lock" [radiusR25]="printMenu.r25" [radiusR50]="printMenu.r50" [(ipp)]="ipp" [scale]="printMenu.scale"
+  [paperSize]="printMenu.paperSize" [mapSource]="printMenu.mapSource" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"></my-map>

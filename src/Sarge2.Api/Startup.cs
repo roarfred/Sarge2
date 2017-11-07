@@ -29,6 +29,7 @@ namespace Sarge2.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddCors();
             services.AddMvc();
         }
 
@@ -43,14 +44,21 @@ namespace Sarge2.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc(config =>
+            app.UseCors(config =>
             {
-                config.MapRoute("Default", "{controller}/{action}/{id?}",
-                    new { controller = "Home", action = "Index" });
+                config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
 
+            //app.UseMvc(config =>
+            //{
+            //    config.MapRoute("Default", "{controller}/{action}/{id?}",
+            //        new { controller = "Home", action = "Index" });
+            //});
+
+            app.UseMvc();
+
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-           
         }
     }
 }
