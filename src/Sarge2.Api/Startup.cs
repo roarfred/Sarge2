@@ -49,16 +49,18 @@ namespace Sarge2.Api
             //    config.MapRoute("Default", "{controller}/{action}/{id?}",
             //        new { controller = "Home", action = "Index" });
             //});
-
-            app.UseMvc();
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
+            
+            // Cors must appear before the UseMvc to have any effect
             app.UseCors(config =>
             {
                 config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
+
+            // Please note the order of these
+            app
+                .UseMvc()
+                .UseDefaultFiles()
+                .UseStaticFiles();
         }
     }
 }
