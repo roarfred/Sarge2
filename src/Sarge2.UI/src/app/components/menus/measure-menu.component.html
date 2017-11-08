@@ -1,0 +1,38 @@
+<mat-card>
+    <mat-card-title>
+        <button mat-button class="toolbar-button" (click)="measureLine()">
+            <mat-icon>straighten</mat-icon>
+        </button>
+        <span>Distance</span>
+    </mat-card-title>
+    <mat-card-content>
+        Distance: {{distance | distance}}
+        <br> Direction: {{direction | direction}}
+    </mat-card-content>
+</mat-card>
+
+<mat-card>
+    <mat-card-title>
+        <button mat-button class="toolbar-button">
+            <mat-icon>format_shapes</mat-icon>
+        </button>
+        <span>Area</span>
+    </mat-card-title>
+    <mat-card-content>
+        Circumference: {{null | distance}}
+        <br> Area: {{null | direction}}
+    </mat-card-content>
+</mat-card>
+
+<mat-card>
+    <mat-card-title>
+        <button mat-button class="toolbar-button">
+            <mat-icon>gesture</mat-icon>
+        </button>
+        <span>Track</span>
+    </mat-card-title>
+    <mat-card-content>
+        Total distance: {{null | distance}}
+        <br> Straight: {{null | distance}}
+    </mat-card-content>
+</mat-card>

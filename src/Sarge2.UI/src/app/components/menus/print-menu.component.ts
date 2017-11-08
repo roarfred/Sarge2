@@ -1,11 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Location } from '../models/location.model';
-import { MapService } from '../services/map.service';
-import { PaperSize } from '../models/paper-size.model';
-import { ScaleAndTileSize } from '../models/scale-and-tile-size.model';
-import { MapSource } from '../models/map-source.model';
-import { PrintSettings } from '../models/print-settings.model';
-import { Margins } from '../models/margins.model';
+import { Location, PaperSize, ScaleAndTileSize, MapSource, Margins, PrintSettings } from '../../models';
+import { MapService } from '../../services/map.service';
 
 @Component({
     selector: 'my-print-menu',

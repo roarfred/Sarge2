@@ -33,6 +33,28 @@ export class Location {
             return this.getLatLongLocation().getLocalLocation();
     }
 
+    getDistanceTo(other:Location) : number {
+        if (this.zone != other.zone)
+            return(this.getDistanceTo(other.getLocation(this.zone)));
+        else {
+            let n = Math.abs(this.northing - other.northing);
+            let e = Math.abs(this.easting - other.easting);
+            return Math.sqrt(Math.pow(n, 2) + Math.pow(e, 2));
+        }
+    }
+
+    getDirectionTo(other:Location) : number {
+        if (this.zone != other.zone)
+            return(this.getDistanceTo(other.getLocation(this.zone)));
+        else {
+            let n = other.northing - this.northing;
+            let e = other.easting - this.easting;
+            var rad = Math.atan2(e, n); // In radians
+            var deg = rad * (180 / Math.PI);
+            return (deg + 360) % 360; // Make 'em all positive
+        }
+    }
+
     getLocation(zone:number)
     {
         if (zone == this.zone)

@@ -1,8 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Location } from '../models/location.model';
-import { PaperSize } from '../models/paper-size.model';
-import { ScaleAndTileSize } from '../models/scale-and-tile-size.model';
-import { MapSource } from '../models/map-source.model';
+import { Location, PaperSize, ScaleAndTileSize, MapSource } from '../models';
 
 declare var ol: any;
 
@@ -13,6 +10,8 @@ declare var ol: any;
 })
 export class MapComponent {
     name: string = "Map";
+    
+    @Input()
     map: any;
 
     radiusFeature: any;
