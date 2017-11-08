@@ -153,7 +153,10 @@ export class MapComponent {
 
         this.map = new ol.Map({
             target: 'map',
-            view: view
+            view: view,
+            controls: ol.control.defaults().extend([
+                new ol.control.FullScreen()
+            ])
         });
 
         if (this._mapSource != null)
@@ -296,6 +299,8 @@ export class MapComponent {
                 features: vFeatures
             }));
         }
+        else
+            this.radiusFeature.setSource(null);
     };
 
     drawCrossHair(): void {
