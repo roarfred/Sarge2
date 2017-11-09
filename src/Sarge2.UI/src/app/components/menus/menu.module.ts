@@ -8,6 +8,7 @@ import { LocationComponent } from '../../components/location.component';
 import { UtmLocationPipe } from '../../pipes/utm-location.pipe';
 import { DirectionPipe } from '../../pipes/direction.pipe';
 import { DistancePipe } from '../../pipes/distance.pipe';
+import { AreaPipe } from '../../pipes/area.pipe';
 
 import { MeasureMenuComponent } from './measure-menu.component';
 import { PrintMenuComponent } from './print-menu.component';
@@ -18,6 +19,7 @@ import { PoiMenuComponent } from './poi-menu.component';
 import { MeasureLineComponent } from './measure/measure-line.component';
 import { MeasureAreaComponent } from './measure/measure-area.component';
 import { MeasureTrackComponent } from './measure/measure-track.component';
+
 
 @NgModule({
     declarations: [
@@ -34,7 +36,8 @@ import { MeasureTrackComponent } from './measure/measure-track.component';
 
         UtmLocationPipe,
         DistancePipe,
-        DirectionPipe
+        DirectionPipe,
+        AreaPipe
     ],
     imports: [
         BrowserModule,

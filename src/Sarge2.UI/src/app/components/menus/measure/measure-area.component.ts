@@ -27,54 +27,68 @@ export class MeasureAreaComponent {
 
     draw: any = null;
     drawingLayer: any = null;
-    startPosition: Location;
+    started: boolean;
+    track: any;
 
     distance: number;
-    direction: number;
+    area: number;
 
     measure(): void {
         this.distance = null;
-        this.direction = null;
-        
+        this.started = false;
+
         this.stopDraw();
+
+        var style = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: "red",
+                width: 4
+            }),
+            image: new ol.style.Circle({
+                radius: 7,
+                fill: new ol.style.Fill({
+                    color: '#33ccff'
+                })
+            })
+        });
 
         var source = new ol.source.Vector({ wrapX: false });
         this.drawingLayer = new ol.layer.Vector({
-            source: source
+            source: source,
+            style: style
         });
         this.map.addLayer(this.drawingLayer);
 
-        var value = 'LineString';
+        var value = 'Polygon';
         this.draw = new ol.interaction.Draw({
             source: source,
+            style: style,
             type: /** @type {ol.geom.GeometryType} */ (value),
-            maxPoints: 2,
             minPoints: 2
         });
 
         this.draw.on('drawstart', (event) => {
             let sketch = event.feature;
-            let position = sketch.getGeometry().getCoordinates()[0];
-            this.startPosition = new Location(33, position[0], position[1]).getLocalLocation();
+            this.track = sketch.getGeometry();
+            let position = this.track.getCoordinates()[0];
+            this.distances = new Array<number>();
+            this.started = true;
             this.mouseTracker = this.trackMeasureDistance;
         }, this);
+
+        this.draw.on('change', (event) => {
+            console.log("change");
+        });
 
         this.draw.on('drawend', (event) => {
             this.map.removeInteraction(this.draw);
             this.mouseTracker = null;
 
             // avoid more mouse move events
-            let from = this.startPosition;
-            this.startPosition = null;
-
-            let sketch = event.feature;
-            let position = sketch.getGeometry().getCoordinates()[1];
-            let to = new Location(33, position[0], position[1]).getLocalLocation();
-
-            this.measureDistance(from, to);
+            this.started = false;
         }, this);
 
-        
+
         this.map.addInteraction(this.draw);
 
         /*
@@ -97,17 +111,48 @@ export class MeasureAreaComponent {
             this.mouseTracker(event);
     };
 
-    trackMeasureDistance(event) : void {
-        if (this.startPosition) {
-            var current = event.coordinate;
-            var to = new Location(33, current[0], current[1]).getLocalLocation();
-            this.measureDistance(this.startPosition, to);
+    distances: Array<number>;
+    
+    trackMeasureDistance(event): void {
+        if (this.started) {
+            let coords = this.track.getCoordinates()[0];
+            if (coords.length < 3) return;
+
+            // coords contains each point, but the last one and first one is the same
+            // the last point is also the current mouse position, so just skip that
+            if (coords.length > this.distances.length + 3) {
+                for (let i = this.distances.length; i < coords.length - 3; i++) {
+                    let prev = new Location(33, coords[i][0], coords[i][1]);
+                    let next = new Location(33, coords[i + 1][0], coords[i + 1][1]);
+                    let dist = prev.getDistanceTo(next);
+                    this.distances.push(dist);
+                }
+            }
+
+            let dist = 0;
+            this.distances.forEach(v => dist += v);
+
+            // now, let's add in the distance to the current mouse position and then back to start
+            let secondLastCoord = coords[coords.length - 3];
+            let secondLast = new Location(33, secondLastCoord[0], secondLastCoord[1]).getLocalLocation();
+
+            let lastCoord = coords[coords.length - 2];
+            let last = new Location(33, lastCoord[0], lastCoord[1]).getLocalLocation();
+            dist += secondLast.getDistanceTo(last);
+
+            let firstCoord = coords[coords.length - 1];
+            let first = new Location(33, firstCoord[0], firstCoord[1]).getLocalLocation();
+            dist += last.getDistanceTo(first);
+
+            this.distance = dist;
+
+            // Not quite sure if this will make much of an error, but should maybe be calculated from the local projection
+            this.area = ol.Sphere.getArea(this.track, { projection: Location.getProjectionName(33) });
         }
     }
 
     measureDistance(from: Location, to: Location): void {
         this.distance = from.getDistanceTo(to);
-        this.direction = from.getDirectionTo(to);
     }
 
     stopDraw(): void {
