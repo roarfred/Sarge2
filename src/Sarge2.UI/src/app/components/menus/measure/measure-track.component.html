@@ -6,8 +6,8 @@
         </button>
     </mat-card-title>
     <mat-card-content>
-        Total distance: {{distance | distance}}
-        <br> Straight: {{straightDistance | distance}}
-        <br> Direction: {{direction | direction}}
+        <div class="measurement"><div class="label">Total distance:</div><div class="data">{{distance | distance}}</div></div>
+        <div class="measurement"><div class="label">Straight:</div><div class="data">{{straightDistance | distance}}</div></div>
+        <div class="measurement"><div class="label">Heading:</div><div class="data">{{direction | direction}}</div></div>
     </mat-card-content>
 </mat-card>

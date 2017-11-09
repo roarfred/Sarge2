@@ -6,3 +6,8 @@
     font-size: large;
     padding: 0px 12px 0px 12px;
   }
+
+  .data {
+    text-align: right;
+    font-weight: bold;
+  }

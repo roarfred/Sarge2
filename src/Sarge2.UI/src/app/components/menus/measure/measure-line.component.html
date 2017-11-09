@@ -6,7 +6,13 @@
         </button>
     </mat-card-title>
     <mat-card-content>
-        Distance: {{distance | distance}}
-        <br> Direction: {{direction | direction}}
+        <div class="measurement">
+            <div class="label">Distance</div>
+            <div class="data">{{distance | distance}}</div>
+        </div>
+        <div class="measurement">
+            <div class="label">Heading</div>
+            <div class="data">{{direction | direction}}</div>
+        </div>
     </mat-card-content>
 </mat-card>

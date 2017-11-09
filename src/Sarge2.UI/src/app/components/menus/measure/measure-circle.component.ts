@@ -83,6 +83,12 @@ export class MeasureCircleComponent {
             // avoid more mouse move events
             let from = this.startPosition;
             this.startPosition = null;
+
+            let sketch = event.feature;
+            let position = sketch.getGeometry().getCoordinates()[1];
+            let to = new Location(33, position[0], position[1]).getLocalLocation();
+
+            this.measureDistance(from, to);
         }, this);
 
         

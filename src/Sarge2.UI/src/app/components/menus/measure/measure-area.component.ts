@@ -81,6 +81,8 @@ export class MeasureAreaComponent {
         });
 
         this.draw.on('drawend', (event) => {
+            this.trackMeasureDistance(null);
+
             this.map.removeInteraction(this.draw);
             this.mouseTracker = null;
 
