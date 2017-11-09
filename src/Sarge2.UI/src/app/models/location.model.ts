@@ -43,6 +43,11 @@ export class Location {
         }
     }
 
+    getCircularArea(other:Location) : number {
+        let radius = this.getDistanceTo(other);
+        return Math.PI * Math.pow(radius, 2);
+    }
+
     getDirectionTo(other:Location) : number {
         if (this.zone != other.zone)
             return(this.getDistanceTo(other.getLocation(this.zone)));

@@ -19,6 +19,7 @@ import { PoiMenuComponent } from './poi-menu.component';
 import { MeasureLineComponent } from './measure/measure-line.component';
 import { MeasureAreaComponent } from './measure/measure-area.component';
 import { MeasureTrackComponent } from './measure/measure-track.component';
+import { MeasureCircleComponent } from './measure/measure-circle.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { MeasureTrackComponent } from './measure/measure-track.component';
         MeasureLineComponent,
         MeasureAreaComponent,
         MeasureTrackComponent,
+        MeasureCircleComponent,
 
         UtmLocationPipe,
         DistancePipe,
