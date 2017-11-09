@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { MaterialModule } from '../../material.module';
+
 import { LocationComponent } from '../../components/location.component';
 import { UtmLocationPipe } from '../../pipes/utm-location.pipe';
 import { DirectionPipe } from '../../pipes/direction.pipe';
@@ -12,7 +14,10 @@ import { PrintMenuComponent } from './print-menu.component';
 import { TracksMenuComponent } from './tracks-menu.component';
 import { AreasMenuComponent } from './areas-menu.component';
 import { PoiMenuComponent } from './poi-menu.component';
-import { MaterialModule } from '../../material.module';
+
+import { MeasureLineComponent } from './measure/measure-line.component';
+import { MeasureAreaComponent } from './measure/measure-area.component';
+import { MeasureTrackComponent } from './measure/measure-track.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +27,11 @@ import { MaterialModule } from '../../material.module';
         AreasMenuComponent, 
         PoiMenuComponent,
         LocationComponent,
+
+        MeasureLineComponent,
+        MeasureAreaComponent,
+        MeasureTrackComponent,
+
         UtmLocationPipe,
         DistancePipe,
         DirectionPipe

@@ -1,0 +1,13 @@
+<mat-card>
+    <mat-card-title>
+        <button mat-raised-button color="accent" class="toolbar-button" (click)="measure()">
+            <mat-icon>gesture</mat-icon>
+            <span>Track</span>
+        </button>
+    </mat-card-title>
+    <mat-card-content>
+        Total distance: {{distance | distance}}
+        <br> Straight: {{straightDistance | distance}}
+        <br> Direction: {{direction | direction}}
+    </mat-card-content>
+</mat-card>
