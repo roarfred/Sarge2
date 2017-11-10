@@ -82,6 +82,7 @@ export class MeasureTrackComponent {
         });
 
         this.draw.on('drawend', (event) => {
+            this.trackMeasureDistance(null);
             this.map.removeInteraction(this.draw);
             this.mouseTracker = null;
 
@@ -134,7 +135,8 @@ export class MeasureTrackComponent {
             // add inn the distance to current cursor position
             let lastCoord = coords[coords.length-2];
             let last = new Location(33, lastCoord[0], lastCoord[1]).getLocalLocation();
-            var current = event.coordinate;
+            
+            var current = coords[coords.length-1];
             var to = new Location(33, current[0], current[1]).getLocalLocation();
             dist += last.getDistanceTo(to);
             this.distance = dist;
