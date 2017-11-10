@@ -1,1 +1,0 @@
-{"version":3,"file":"scale-and-tile-size.model.js","sourceRoot":"","sources":["scale-and-tile-size.model.ts"],"names":[],"mappings":";;AAAA;IACI,0BAAY,IAAY,EAAE,KAAa,EAAE,gBAAwB;QAC7D,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;QACjB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,gBAAgB,GAAG,gBAAgB,CAAC;IAC7C,CAAC;IAIL,uBAAC;AAAD,CAAC,AATD,IASC;AATY,4CAAgB"}

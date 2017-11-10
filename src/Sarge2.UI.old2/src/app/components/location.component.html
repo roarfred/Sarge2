@@ -1,7 +1,0 @@
-<div *ngIf="location != null">
-    <div class="zone">{{location.getUtmZone()}}{{location.getUtmZoneLetter()}}</div>
-    <div class="location">
-        <div class="location-number easting">{{location.getLocalLocation().easting | utmLocation }}</div>
-        <div class="location-number northing">{{location.getLocalLocation().northing | utmLocation}}</div>
-    </div>
-</div>
