@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChil
 import { MapComponent } from './components/map.component';
 import { Location } from './models/location.model';
 import { MatSidenav } from '@angular/material';
+import { KovaApiService } from './services/kova-api.service';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   _saveTimeout: number = 0;
   menuName: string;
   menuNameChange = new EventEmitter<string>();
+  maps: any;
+  pois: any;
 
+  constructor(private kovaApi: KovaApiService) {
+    this.kovaApi.authenticated.subscribe(() => {
+      this.kovaApi.getMaps().then(maps => {
+        this.maps = maps;
+      })
+    });
+  }
   @Output() mapLocationChange = new EventEmitter();
 
   @Input()
@@ -77,4 +87,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   setMapClickedLocation(location: Location): void {
     this.clickedLocation = location;
   };
+
+  changeMap(map: any) {
+    this.myMap.mapLocation = new Location(0, map.long, map.lat);
+    this.myMap.zoom = map.zoom - 2;
+    this.loadMapData(map.primKey);
+  }
+
+  loadMapData(mapRef: string): void {
+    this.kovaApi.getPois(mapRef).then(pois => this.pois = pois); 
+  }
 }

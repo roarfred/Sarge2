@@ -63,4 +63,23 @@ export class KovaApiService {
             });
         //.catch((error) => console.error(error));
     }
+
+    getHeaders(): Headers {
+        return new Headers({ 'Authorization': `Bearer ${this.authentication.access_token}` });
+    }
+    getMaps(): any {
+        if (!this.isAuthenticated)
+            return null;
+        return this.http.get(`${this.baseUrl}/api/map`, { headers: this.getHeaders() })
+            .toPromise()
+            .then(result => result.json());
+    }
+    getPois(mapRef: string): any {
+        if (!this.isAuthenticated)
+            return null;
+    return this.http.get(`${this.baseUrl}/api/map/${mapRef}/poi`, { headers: this.getHeaders() })
+            .toPromise()
+            .then(result => result.json());
+    }
+    
 }

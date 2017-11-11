@@ -10,7 +10,20 @@ declare var ol: any;
 })
 export class MapComponent {
     name: string = "Map";
-    
+    private _pois: any;
+    private poiSource: any;
+
+    @Input()
+    get pois(): any {
+        return this._pois;
+    }
+    set pois(pois: any) {
+        this._pois = pois;
+        if (pois) {
+            this.drawPois(pois);
+        }
+    }
+
     @Input()
     map: any;
 
@@ -22,25 +35,25 @@ export class MapComponent {
     paperSize: PaperSize = new PaperSize("A4", 0.30, 0.20);
     @Input()
     scale: ScaleAndTileSize = new ScaleAndTileSize("1:50000", 50000, 0);
-    
+
     _mapSource = new MapSource("topo2");
-    
+
     _mapLocation = new Location(33, 300000, 6550000);
     _ipp: Location;
     _radiusR25: number = null;
     _radiusR50: number = null;
     _zoom: number = 5;
 
-    @Output() zoomChange = new EventEmitter<number>(); 
+    @Output() zoomChange = new EventEmitter<number>();
     @Output() radiusR25Change = new EventEmitter<number>();
     @Output() radiusR50Change = new EventEmitter<number>();
     @Output() lockIppChange = new EventEmitter<boolean>();
     @Output() ippChange = new EventEmitter<Location>();
     @Output() mapLocationChange = new EventEmitter<Location>();
     @Output() mapClicked = new EventEmitter<Location>();
-    
+
     @Input()
-    get mapSource() : MapSource {
+    get mapSource(): MapSource {
         return this._mapSource;
     }
     set mapSource(map: MapSource) {
@@ -64,7 +77,7 @@ export class MapComponent {
     get radiusR25(): number {
         return this._radiusR25;
     };
-    set radiusR25(value:number) {
+    set radiusR25(value: number) {
         this._radiusR25 = value;
         this.radiusR25Change.emit(this._radiusR25);
     }
@@ -72,7 +85,7 @@ export class MapComponent {
     get radiusR50(): number {
         return this._radiusR50;
     };
-    set radiusR50(value:number) {
+    set radiusR50(value: number) {
         this._radiusR50 = value;
         this.radiusR50Change.emit(this._radiusR50);
     }
@@ -160,7 +173,7 @@ export class MapComponent {
 
         if (this._mapSource != null)
             this.setMap(this._mapSource);
-        
+
         this.map.addControl(new ol.control.Zoom({
             className: 'custom-zoom'
         }));
@@ -183,7 +196,7 @@ export class MapComponent {
     };
     setMap(map: MapSource): void {
         let mapLayer = this.createMapTile(map);
-        
+
         var layerGroup = new ol.layer.Group({
             layers: [
                 mapLayer
@@ -315,7 +328,7 @@ export class MapComponent {
                 updateWhileAnimating: true,
                 renderBuffer: 200
             });
-            
+
             layerLines.setZIndex(10);
             this.map.addLayer(layerLines);
             this.crossHairFeature = layerLines;
@@ -366,6 +379,43 @@ export class MapComponent {
         this.crossHairFeature.setSource(vSource);
     };
 
+    drawPois(pois: any): void {
+        if (!this.poiSource) {
+            var source = new ol.source.Vector({
+                features: [],
+            });
+
+            var layer = new ol.layer.Vector({
+                source: source,
+                style: new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        snapToPixel: false,
+                        fill: new ol.style.Fill({ color: 'white' }),
+                        stroke: new ol.style.Stroke({
+                            color: 'black', width: 2
+                        })
+                    })
+                }),
+                updateWhileInteracting: true,
+                updateWhileAnimating: true
+            });
+
+            layer.setZIndex(10);
+            this.map.addLayer(layer);
+            this.poiSource = source;
+        }
+
+        this.poiSource.clear();
+        pois.forEach(poi => {
+            var utm33point = new Location(0, poi.position.lat, poi.position.long).getLocation(33);
+            var iconFeature = new ol.Feature({
+                geometry: new ol.geom.Point([utm33point.easting, utm33point.northing]),
+                name: poi.name
+            });
+            this.poiSource.addFeature(iconFeature);
+        });
+    }
     drawPaper(): void {
         if (!this.paperSize || !this.scale)
             return;

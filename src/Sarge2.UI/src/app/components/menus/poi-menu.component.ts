@@ -1,10 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'my-poi-menu',
-    template: `<i>POI are coming soon</i>`,
+    templateUrl: './poi-menu.component.html',
     styles: ['']
 })
 export class PoiMenuComponent {
+    
+    _pois: any;
+    map: any;
 
+    @Input()
+    get pois() : any {
+        return this._pois;
+    }
+    set pois(pois: any) {
+        this._pois = pois;
+    }
 }
