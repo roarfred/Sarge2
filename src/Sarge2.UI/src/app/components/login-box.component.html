@@ -1,0 +1,23 @@
+<div class="login-box" #loginBox>
+    <h1 mat-dialog-title>Login</h1>
+    <div>
+        <mat-form-field>
+            <input matInput type="username" placeholder="e-mail" [(ngModel)]="data.user">
+            <br>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field>
+            <input matInput type="password" placeholder="password" [(ngModel)]="data.password">
+            <br>
+        </mat-form-field>
+    </div>
+    <mat-dialog-actions>
+        <button mat-raised-button (click)="onNoClick()">
+            Cancel
+        </button>
+        <button mat-raised-button (click)="onOkClick()">
+            Login
+        </button>
+    </mat-dialog-actions>
+</div>

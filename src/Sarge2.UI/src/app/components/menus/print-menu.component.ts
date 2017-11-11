@@ -130,6 +130,8 @@ export class PrintMenuComponent implements OnInit {
     }
 
     getSettings(): PrintSettings {
+        if (!this._mapSource)
+            return null;
         let settings: PrintSettings = {
             title: this.name,
             mapName: this._mapSource.name,

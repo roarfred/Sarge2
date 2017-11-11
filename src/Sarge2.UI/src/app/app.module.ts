@@ -5,16 +5,22 @@ import { FormsModule } from '@angular/forms';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapService } from './services/map.service';
+import { KovaApiService } from './services/kova-api.service';
+
+import { MenuModule } from './components/menus/menu.module';
+import { MaterialModule } from './material.module';
 
 import { AppComponent } from './app.component';
 import { MapComponent } from './components/map.component';
-import { MenuModule } from './components/menus/menu.module';
-import { MaterialModule } from './material.module';
+import { UserComponent } from './components/user.component';
+import { LoginBoxComponent } from "./components/login-box.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    MapComponent
+    MapComponent,
+    UserComponent,
+    LoginBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -25,8 +31,12 @@ import { MaterialModule } from './material.module';
     HttpModule
   ],
   providers: [
-    MapService
+    MapService,
+    KovaApiService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    LoginBoxComponent
+  ]
 })
 export class AppModule { }
