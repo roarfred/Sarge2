@@ -85,7 +85,7 @@ export class MeasureCircleComponent {
             this.startPosition = null;
 
             let sketch = event.feature;
-            let position = sketch.getGeometry().getCoordinates()[1];
+            let position = sketch.getGeometry().getLastCoordinate();
             let to = new Location(33, position[0], position[1]).getLocalLocation();
 
             this.measureDistance(from, to);

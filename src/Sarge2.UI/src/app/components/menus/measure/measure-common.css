@@ -6,8 +6,16 @@
     font-size: large;
     padding: 0px 12px 0px 12px;
   }
-
+.measurement {
+  display: block;
+  clear: both;
+}
+  .label {
+    float: left;
+    
+  }
   .data {
     text-align: right;
     font-weight: bold;
+    float: right;
   }
