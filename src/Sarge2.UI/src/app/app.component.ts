@@ -13,7 +13,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('myMap') myMap: MapComponent;
   @ViewChild('menu') menu: MatSidenav;
 
-  title = 'app';
+  title = 'SARGE2';
   lock: boolean;
   ipp: Location;
   clickedLocation: Location;
@@ -74,10 +74,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   toggleMenu(name: string) {
-    if (this.menu.opened && this.menuName == name) {
+    if (this.menu.opened && (this.menuName == name || !name)) {
       this.menu.close();
     }
-    else {
+    else if (name) {
       this.menuName = name;
       this.menuNameChange.emit(this.menuName);
       this.menu.open();
@@ -92,6 +92,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.myMap.mapLocation = new Location(0, map.long, map.lat);
     this.myMap.zoom = map.zoom - 2;
     this.loadMapData(map.primKey);
+
+    this.title = "SARGE2 - " + map.name;
   }
 
   loadMapData(mapRef: string): void {

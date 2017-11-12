@@ -3,12 +3,15 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../../material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { LocationComponent } from '../../components/location.component';
 import { UtmLocationPipe } from '../../pipes/utm-location.pipe';
 import { DirectionPipe } from '../../pipes/direction.pipe';
 import { DistancePipe } from '../../pipes/distance.pipe';
 import { AreaPipe } from '../../pipes/area.pipe';
+
+import { MenuButtonsComponent } from './menu-buttons.component';
 
 import { MeasureMenuComponent } from './measure-menu.component';
 import { PrintMenuComponent } from './print-menu.component';
@@ -24,6 +27,8 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
 
 @NgModule({
     declarations: [
+        MenuButtonsComponent,
+
         PrintMenuComponent, 
         MeasureMenuComponent,
         TracksMenuComponent, 
@@ -44,8 +49,9 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
     imports: [
         BrowserModule,
         FormsModule,
-        MaterialModule      
+        MaterialModule,
+        FlexLayoutModule
     ],
-    exports: [ MeasureMenuComponent, PrintMenuComponent, TracksMenuComponent, AreasMenuComponent, PoiMenuComponent, LocationComponent ]
+    exports: [ MenuButtonsComponent, MeasureMenuComponent, PrintMenuComponent, TracksMenuComponent, AreasMenuComponent, PoiMenuComponent, LocationComponent ]
 })
 export class MenuModule { };

@@ -5,7 +5,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: "http://localhost:5000",
+  apiUrl: "http://sarge2.ro4r.no",
+//  apiUrl: "http://localhost:5000",
   kovaApiUrl: "https://api.kova.no"
 //  kovaApiUrl: "http://localhost:5001"
 };

@@ -16,14 +16,6 @@
   padding-top: 10px;
 }
 
-.toolbar-button {
-  min-width: 35px;
-  padding: 0px;
-}
-  .example-spacer {
-    flex: 1 1 auto;
-  }
-
   mat-sidenav {
     display: flex;
     overflow: hidden;
@@ -38,3 +30,8 @@
   }
 
   mat-card {margin-bottom: 10px}
+
+  .toolbar-button {
+    min-width: 35px;
+    padding: 0px;
+  }

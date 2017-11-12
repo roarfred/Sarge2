@@ -1,0 +1,18 @@
+<div>
+    <button fxHide.gt-sm mat-button class="toolbar-button" [matMenuTriggerFor]="menu2" (click)="toggleMenu(null)">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu2="matMenu" color="primary">
+        <button mat-button class="toolbar-button">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <button mat-button class="toolbar-button" *ngFor="let item of menuItems" (click)="toggleMenu(item.name)">
+            <mat-icon>{{item.icon}}</mat-icon>
+        </button>
+    </mat-menu>
+    <div fxHide.lt-md>
+        <button mat-button class="toolbar-button" *ngFor="let item of menuItems" (click)="toggleMenu(item.name)">
+            <mat-icon>{{item.icon}}</mat-icon>
+        </button>
+    </div>
+</div>
