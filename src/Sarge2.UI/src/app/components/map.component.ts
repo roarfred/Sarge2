@@ -387,16 +387,30 @@ export class MapComponent {
 
             var layer = new ol.layer.Vector({
                 source: source,
-                style: new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 7,
-                        snapToPixel: false,
-                        fill: new ol.style.Fill({ color: 'white' }),
-                        stroke: new ol.style.Stroke({
-                            color: 'black', width: 2
+                style: function (feature, resolution) {
+                    return new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 5,
+                            snapToPixel: false,
+                            fill: new ol.style.Fill({ color: 'white' }),
+                            stroke: new ol.style.Stroke({
+                                color: 'black', width: 1.5
+                            })
+                        }),
+                        text: new ol.style.Text({
+                            text: resolution < 20 ? feature.getProperties().name : "",
+                            offsetY: -20,
+                            scale: 1.3,
+                            fill: new ol.style.Fill({
+                              color: '#003399'
+                            }),
+                            stroke: new ol.style.Stroke({
+                              color: '#FFFFFF',
+                              width: 1.5
+                            })
                         })
-                    })
-                }),
+                    });
+                },
                 updateWhileInteracting: true,
                 updateWhileAnimating: true
             });

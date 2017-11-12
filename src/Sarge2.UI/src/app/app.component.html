@@ -1,22 +1,26 @@
 <mat-toolbar color="primary">
-  <button mat-button class="toolbar-button" (click)="toggleMenu('print')">
-    <mat-icon>print</mat-icon>
-  </button>
-  <button mat-button class="toolbar-button" (click)="toggleMenu('location')">
-    <mat-icon>info_outline</mat-icon>
-  </button>
-  <button mat-button class="toolbar-button" (click)="toggleMenu('measure')">
-    <mat-icon>straighten</mat-icon>
-  </button>
-  <button mat-button class="toolbar-button" (click)="toggleMenu('tracks')">
-    <mat-icon>gesture</mat-icon>
-  </button>
-  <button mat-button class="toolbar-button" (click)="toggleMenu('poi')">
-    <mat-icon>flag</mat-icon>
-  </button>
-  <button mat-button class="toolbar-button" (click)="toggleMenu('areas')">
-    <mat-icon>format_shapes</mat-icon>
-  </button>
+  <div>
+    <button mat-button class="toolbar-button" (click)="toggleMenu('print')">
+      <mat-icon>print</mat-icon>
+    </button>
+  </div>
+  <div fxHide.xs>
+    <button mat-button class="toolbar-button" (click)="toggleMenu('location')">
+      <mat-icon>info_outline</mat-icon>
+    </button>
+    <button mat-button class="toolbar-button" (click)="toggleMenu('measure')">
+      <mat-icon>straighten</mat-icon>
+    </button>
+    <button mat-button class="toolbar-button" (click)="toggleMenu('tracks')">
+      <mat-icon>gesture</mat-icon>
+    </button>
+    <button mat-button class="toolbar-button" (click)="toggleMenu('poi')">
+      <mat-icon>flag</mat-icon>
+    </button>
+    <button mat-button class="toolbar-button" (click)="toggleMenu('areas')">
+      <mat-icon>format_shapes</mat-icon>
+    </button>
+  </div>
   <!-- This fills the remaining space of the current row -->
   <div class="example-fill-remaining-space">
     <span *ngIf="!user.loggedIn">&nbsp;SARGE2&nbsp;</span>
@@ -68,5 +72,4 @@
 
 <my-map #myMap [lockIpp]="lock" [radiusR25]="printMenu.r25" [radiusR50]="printMenu.r50" [(ipp)]="ipp" [scale]="printMenu.scale"
   [paperSize]="printMenu.paperSize" [mapSource]="printMenu.mapSource" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"
-  [pois]="pois"
-  ></my-map>
+  [pois]="pois"></my-map>

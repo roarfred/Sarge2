@@ -4,6 +4,8 @@ import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 import { MapService } from './services/map.service';
 import { KovaApiService } from './services/kova-api.service';
 
@@ -26,6 +28,7 @@ import { LoginBoxComponent } from "./components/login-box.component";
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
+    FlexLayoutModule,
     MenuModule,
     MaterialModule,
     HttpModule
