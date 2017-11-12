@@ -48,6 +48,7 @@ export class KovaApiService {
 
     authenticate(user: string, password: string) {
         let body = "username=" + user + "&password=" + password;
+        this.isAuthenticated = false;
         return this.http
             .post(`${this.baseUrl}/api/token`,
             body,
@@ -56,6 +57,7 @@ export class KovaApiService {
             })
             .toPromise()
             .then((result) => {
+                this.isAuthenticated = true;
                 this.authentication = result.json();
                 localStorage.setItem("authentication", JSON.stringify(this.authentication));
                 this.authenticated.emit(this.authentication);
@@ -67,19 +69,19 @@ export class KovaApiService {
     getHeaders(): Headers {
         return new Headers({ 'Authorization': `Bearer ${this.authentication.access_token}` });
     }
-    getMaps(): any {
+    getMaps(): Promise<any> {
         if (!this.isAuthenticated)
-            return null;
+            throw ("User is not logged in");
         return this.http.get(`${this.baseUrl}/api/map`, { headers: this.getHeaders() })
             .toPromise()
             .then(result => result.json());
     }
     getPois(mapRef: string): any {
         if (!this.isAuthenticated)
-            return null;
-    return this.http.get(`${this.baseUrl}/api/map/${mapRef}/poi`, { headers: this.getHeaders() })
+            throw ("User is not logged in");
+        return this.http.get(`${this.baseUrl}/api/map/${mapRef}/poi`, { headers: this.getHeaders() })
             .toPromise()
             .then(result => result.json());
     }
-    
+
 }

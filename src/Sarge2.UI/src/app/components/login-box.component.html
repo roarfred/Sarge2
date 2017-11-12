@@ -12,6 +12,10 @@
             <br>
         </mat-form-field>
     </div>
+    <div>
+        <mat-checkbox [(ngModel)]="data.rememberMe">Remember me</mat-checkbox>
+        <br>
+    </div>
     <mat-dialog-actions>
         <button mat-raised-button (click)="onNoClick()">
             Cancel

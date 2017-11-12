@@ -24,22 +24,16 @@ export class UserComponent implements OnInit {
     login(): void {
         let dialogRef = this.dialog.open(LoginBoxComponent, {
             width: '250px',
-            data: { user: "", password: "" }
+            data: {}
         });
 
         dialogRef.afterClosed().subscribe(result => {
-        console.log(`The dialog was closed: ${result.user}`);
+            console.log(`The dialog was closed: ${result.user}`);
             if (result) {
                 this.kovaApiService.authenticate(
                     result.user,
                     result.password
-                ).then(v => {
-                    this.loggedIn = true;
-                    this.name = v.user.name
-                }).catch(e => {
-                    console.log(e);
-                    this.loggedIn = false;
-                })
+                );
             };
         });
     }

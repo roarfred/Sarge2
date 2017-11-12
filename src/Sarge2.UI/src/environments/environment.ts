@@ -6,5 +6,6 @@
 export const environment = {
   production: false,
   apiUrl: "http://localhost:5000",
-  kovaApiUrl: "http://localhost:5001"
+  kovaApiUrl: "https://api.kova.no"
+//  kovaApiUrl: "http://localhost:5001"
 };
