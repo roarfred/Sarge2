@@ -408,7 +408,7 @@ export class MapComponent {
 
         this.poiSource.clear();
         pois.forEach(poi => {
-            var utm33point = new Location(0, poi.position.lat, poi.position.long).getLocation(33);
+            var utm33point = new Location(0, poi.position.long, poi.position.lat).getLocation(33);
             var iconFeature = new ol.Feature({
                 geometry: new ol.geom.Point([utm33point.easting, utm33point.northing]),
                 name: poi.name
