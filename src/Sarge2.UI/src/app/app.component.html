@@ -15,8 +15,10 @@
     </mat-menu>
   </div>
   <div>
-    <my-location *ngIf="ipp" [location]="ipp"></my-location>
+    <my-location class="ipp" *ngIf="ipp" [location]="ipp"></my-location>
     <mat-slide-toggle [(ngModel)]="lock" labelPosition="before">Lock IPP</mat-slide-toggle>
+  </div>
+  <div>
     <my-user #user></my-user>
   </div>
 </mat-toolbar>

@@ -11,6 +11,11 @@
   bottom: 6px;
 }
 
+my-location.ipp {
+  float: left;
+  margin-right: 10px;
+}
+
 .example-fill-remaining-space my-location {
   padding: 5px;
   padding-top: 10px;

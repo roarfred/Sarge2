@@ -1,3 +1,5 @@
+/*
+
 div.main {
     font: 9pt Calibri;
     display: inline-block;
@@ -24,12 +26,29 @@ div.main {
     clear: right;
 }
 
+*/
+div.main {
+    font: 9pt Calibri;
+}
+
+
+.zone {
+    font-size: 12pt;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.location-number {
+    text-align: right;
+    margin-left: 3px;
+}
+
 input.location-number {
     margin: 1px; 
     font-size: x-small;
     width: 50px;
-    float: right;
 }
+
 
 mat-icon.small {
     font-size: smaller;
