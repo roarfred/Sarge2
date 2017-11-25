@@ -1,7 +1,14 @@
-<div class="main" *ngIf="location != null">
-    <div class="zone">{{location.getUtmZone()}}{{location.getUtmZoneLetter()}}</div>
-    <div class="location">
-        <div class="location-number easting">{{location.getLocalLocation().easting | utmLocation }}</div>
-        <div class="location-number northing">{{location.getLocalLocation().northing | utmLocation}}</div>
+<div class="main" *ngIf="location != null" fxLayout="row">
+    <div class="zone" fxFlex="30">{{location.getUtmZone()}}{{location.getUtmZoneLetter()}}</div>
+    <div class="location" fxFlex="70">
+        <div class="location-number easting" *ngIf="!editMode">{{location.getLocalLocation().easting | utmLocation }}</div>
+        <input class="location-number easting" type="text" *ngIf="editMode" [(ngModel)]="editEasting">
+        <div class="location-number northing" *ngIf="!editMode">{{location.getLocalLocation().northing | utmLocation}}</div>
+        <input class="location-number northing" type="text" *ngIf="editMode" [(ngModel)]="editNorthing">
+    </div>
+    <div class="edit-button" *ngIf="editable">
+        <button mat-button (click)="edit()">
+            <mat-icon class="size-16">mode_edit</mat-icon>
+        </button>
     </div>
 </div>

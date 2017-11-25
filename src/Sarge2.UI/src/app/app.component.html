@@ -27,14 +27,14 @@
     <mat-card>
       <mat-card-title>Map Center</mat-card-title>
       <mat-card-content>
-        <my-location [(location)]="mapLocation"></my-location>
+        <my-location [(location)]="mapLocation" editable="true"></my-location>
       </mat-card-content>
     </mat-card>
 
     <mat-card *ngIf="ipp">
       <mat-card-title>IPP</mat-card-title>
       <mat-card-content>
-        <my-location [location]="ipp"></my-location>
+        <my-location [(location)]="ipp" editable="true"></my-location>
       </mat-card-content>
     </mat-card>
 
