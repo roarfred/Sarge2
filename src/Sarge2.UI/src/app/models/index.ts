@@ -4,3 +4,4 @@ export * from './margins.model';
 export * from './paper-size.model';
 export * from './print-settings.model';
 export * from './scale-and-tile-size.model';
+export * from './geo-data';

@@ -48,4 +48,8 @@
     <ProjectReference Include="..\Sarge.Maps\Sarge.Maps.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

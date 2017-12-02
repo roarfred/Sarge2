@@ -53,7 +53,12 @@ namespace Sarge2.Api
             // Cors must appear before the UseMvc to have any effect
             app.UseCors(config =>
             {
-                config.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                config
+                    //.WithOrigins(new[] {"http://localhost"})
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .AllowAnyHeader();
             });
 
             // Please note the order of these

@@ -9,6 +9,14 @@ namespace Sarge.Maps
 {
     public struct UtmPosition
     {
+        public UtmPosition(double longitude, double latitude) : this()
+        {
+            Zone = GetUtmZone(latitude, longitude);
+            var temp = new UtmPosition(0, longitude, latitude).TransformFromWGS(Zone);
+            Easting = temp.Easting;
+            Northing = temp.Northing;
+        }
+
         public UtmPosition(int pZone, double pEasting, double pNorthing) : this()
         {
             Zone = pZone;

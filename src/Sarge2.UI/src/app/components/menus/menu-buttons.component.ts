@@ -13,6 +13,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
         {name: "tracks", icon: "gesture"},
         {name: "pois", icon: "flag"},
         {name: "areas", icon: "format_shapes"},
+        {name: "import", icon: "backup"}
     ];
     @Output()
     public menuClick = new EventEmitter<string>();

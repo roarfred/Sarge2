@@ -1,0 +1,12 @@
+.my-drop-zone { border: dotted 3px lightgray; width: 150px; height: 100px; }
+.nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+.another-file-over-class { border: dotted 3px green; }
+
+.track {font-size: smaller}
+.trackDetails {color: gray}
+
+
+.geo-list {
+    height: 400px;
+    overflow-y: scroll;
+}

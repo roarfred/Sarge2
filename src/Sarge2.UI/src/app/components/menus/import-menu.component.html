@@ -1,0 +1,20 @@
+<div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader"
+    class="well my-drop-zone">
+    Drop GPX file
+</div>
+<mat-progress-bar mode="indeterminate" *ngIf="uploading"></mat-progress-bar>
+
+<div *ngIf="geoData" class="geo-list">
+    Name: <input type="text" [(ngModel)]="geoData.name">
+    <a (click)="hideAll()">hide</a>
+    <a (click)="showAll()">show</a>
+    {{geoData.tracks.length}} tracks:
+    <div class="track" *ngFor="let track of geoData.tracks">
+        <div class="trackName">
+            <input type="checkbox" checked (click)="showTrack(track)"> {{track.name}}
+        </div>
+        <div class="trackDetails">
+            {{track.duration | timespan}} ({{track.pointCount}})
+        </div>
+    </div>
+</div>

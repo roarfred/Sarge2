@@ -52,6 +52,7 @@
   <my-tracks-menu [hidden]="menuName != 'tracks'"></my-tracks-menu>
   <my-poi-menu [hidden]="menuName != 'pois'" [pois]="pois"></my-poi-menu>
   <my-areas-menu [hidden]="menuName != 'areas'"></my-areas-menu>
+  <my-import-menu [hidden]="menuName != 'import'" [map]="myMap.map"></my-import-menu>
 </mat-sidenav>
 
 <my-map #myMap [lockIpp]="lock" [radiusR25]="printMenu.r25" [radiusR50]="printMenu.r50" [(ipp)]="ipp" [scale]="printMenu.scale"
