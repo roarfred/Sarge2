@@ -16,5 +16,6 @@ namespace Sarge.Maps.GeoData
             }
         }
         public int PointCount => Points.Count();
+
     }
 }

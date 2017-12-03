@@ -15,35 +15,61 @@ namespace Sarge.Maps.GeoData
 
         public static GeoData FromStream(Stream stream, string name)
         {
-            var gpsData = Geo.Gps.GpsData.Parse(stream);
+            var gpxData = Gpx.Parser.Parse(stream);
 
+            return new GeoData()
+            {
+                Name = name,
+                Tracks = GetTracks(gpxData.Tracks),
+                Pois = GetPois(gpxData.Waypoints)
+            };
+        }
+
+        private static IEnumerable<Poi> GetPois(IEnumerable<Gpx.Waypoint> gpsWaypoints)
+        {
+            var pois = new List<Poi>();
+            foreach (var gpsWaypoint in gpsWaypoints)
+            {
+                pois.Add(new Poi()
+                {
+                    Name = gpsWaypoint.Name,
+                    Symbol = gpsWaypoint.Symbol,
+                    Position = new Position(gpsWaypoint.Longitude, gpsWaypoint.Latitude)
+                });
+            }
+            return pois;
+        }
+
+        private static IEnumerable<Track> GetTracks(IEnumerable<Gpx.Track> gpsTracks)
+        {
             var tracks = new List<Track>();
-            foreach (var gpsTrack in gpsData.Tracks)
+            foreach (var gpsTrack in gpsTracks)
             {
                 foreach (var gpsSegment in gpsTrack.Segments)
                 {
                     int i = 0;
                     var points = new List<TimePoint>();
 
-                    foreach (var gpsPoint in gpsSegment.Fixes)
+                    foreach (var gpsPoint in gpsSegment.Points)
                     {
-                        points.Add(new TimePoint(gpsPoint.TimeUtc, gpsPoint.Coordinate.Longitude, gpsPoint.Coordinate.Latitude));
+                        points.Add(new TimePoint(gpsPoint.Time, gpsPoint.Longitude, gpsPoint.Latitude));
                     }
+
+                    string trackName = gpsTrack.Name ?? "Unnamed Track";
+                    if (gpsTrack.Segments.Count > 1)
+                        trackName += $" ({i})";
 
                     tracks.Add(new Track()
                     {
-                        Name = name + $" track #{i + 1:000}",
+                        Name = trackName,
                         Points = points
                     });
 
                     i++;
                 }
             }
-            return new GeoData()
-            {
-                Name = name,
-                Tracks = tracks
-            };
+
+            return tracks;
         }
 
         public void SplitTracks(int maxDistance, TimeSpan maxTime, int minTrackPoints)
@@ -55,7 +81,7 @@ namespace Sarge.Maps.GeoData
                 var points = new List<TimePoint>(tracks[i].Points);
                 for (int j=1; j<points.Count; j++)
                 {
-                    if (GetDistance(points[j], points[j-1]) > maxDistance || GetTimeDifference(points[j], points[j - 1]) > maxTime)
+                    if (maxTime > TimeSpan.Zero && GetTimeDifference(points[j], points[j - 1]) > maxTime || maxDistance > 0 && GetDistance(points[j], points[j-1]) > maxDistance)
                     {
                         tracks[i].Points = points.Take(j - 1);
                         tracks.Insert(i + 1, new Track()
@@ -68,7 +94,9 @@ namespace Sarge.Maps.GeoData
                 }
             }
 
-            tracks.RemoveAll(t => t.Points.Count() < minTrackPoints);
+            if (minTrackPoints > 0)
+                tracks.RemoveAll(t => t.Points.Count() < minTrackPoints);
+
             this.Tracks = tracks;
         }
 
