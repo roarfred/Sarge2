@@ -17,7 +17,9 @@ export class Track {
 }
 
 export class Poi {
-    
+    public name: string;
+    public symbol: string;
+    public position: Position;
 }
 
 export class TimePoint {

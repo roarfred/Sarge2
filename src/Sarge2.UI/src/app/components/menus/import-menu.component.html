@@ -9,16 +9,27 @@
 <mat-progress-bar mode="indeterminate" *ngIf="uploading"></mat-progress-bar>
 
 <div *ngIf="geoData" class="geo-list">
-    Name: <input type="text" [(ngModel)]="geoData.name">
+    Name:
+    <input type="text" [(ngModel)]="geoData.name">
     <a (click)="hideAll()">hide</a>
     <a (click)="showAll()">show</a>
-    {{geoData.tracks.length}} tracks:
-    <div class="track" *ngFor="let track of geoData.tracks">
-        <div class="trackName">
-            <input type="checkbox" checked (click)="showTrack(track)"> {{track.name}}
+    <div *ngIf="geoData.tracks">
+        {{geoData.tracks.length}} tracks:
+        <div class="track" *ngFor="let track of geoData.tracks">
+            <div class="track-name">
+                <input type="checkbox" checked (click)="showTrack(track)"> {{track.name}}
+            </div>
+            <div class="track-details">
+                {{track.duration | timespan}} ({{track.pointCount}})
+            </div>
         </div>
-        <div class="trackDetails">
-            {{track.duration | timespan}} ({{track.pointCount}})
+    </div>
+    <div *ngIf="geoData.pois">
+        {{geoData.pois.length}} POIs:
+        <div class="poi" *ngFor="let poi of geoData.pois">
+            <div class="poi-name">
+                <input type="checkbox" checked (click)="showPoi(poi)"> {{poi.name}}
+            </div>
         </div>
     </div>
 </div>
