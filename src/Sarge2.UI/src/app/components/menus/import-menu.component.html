@@ -2,6 +2,10 @@
     class="well my-drop-zone">
     Drop GPX file
 </div>
+<input type="number" [(ngModel)]="maxDistance">
+<input type="number" [(ngModel)]="minTrackPoints">
+<input type="number" [(ngModel)]="maxTime">
+
 <mat-progress-bar mode="indeterminate" *ngIf="uploading"></mat-progress-bar>
 
 <div *ngIf="geoData" class="geo-list">

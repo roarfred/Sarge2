@@ -30,6 +30,10 @@ export class ImportMenuComponent implements OnInit {
     private layer: any;
     private trackFeatures: any = [];
 
+    public maxDistance:number = 1000;
+    public maxTime:number = 1;
+    public minTrackPoints:number = 10;
+    
     @Input()
     set map(map: any) {
         this._map = map;
@@ -41,7 +45,11 @@ export class ImportMenuComponent implements OnInit {
     constructor() {
         this.uploader.onBeforeUploadItem = (file: FileItem) => {
             this.uploading = true;
-            this.uploader.options.additionalParameter = { "myParam": "Hello" };
+            this.uploader.options.additionalParameter = { 
+                "maxDistance": this.maxDistance ,
+                "maxTime": this.secondsToTime(this.maxTime),
+                "minTrackPoints": this.minTrackPoints
+            };
         };
 
         this.uploader.onSuccessItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
@@ -56,6 +64,16 @@ export class ImportMenuComponent implements OnInit {
             this.uploading = false;
         }
     }
+
+    secondsToTime(seconds:number): string {
+        var hours:number = Math.floor(seconds / 60 / 60);
+        var minutes:number = Math.floor(seconds / 60) % 60;
+        seconds = seconds % 60;
+        var pad = (i:number):string => i < 10 ? "0" + i : i.toFixed(0);
+        return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+    }
+
+
     hideAll() {
         this.clearMap();
     }
