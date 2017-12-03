@@ -15,8 +15,7 @@ namespace Sarge.Maps.GeoData
 
         public static double Distance(double lat1, double lon1, double lat2, double lon2)
         {
-            var wgs84 = ProjNet.CoordinateSystems.GeographicCoordinateSystem.WGS84;
-            var R = wgs84.HorizontalDatum.Ellipsoid.SemiMajorAxis;
+            var R = 6371008.8; // Earth mean radius
             var φ1 = lat1.toRadians();
             var φ2 = lat2.toRadians();
             var Δφ = (lat2 - lat1).toRadians();
