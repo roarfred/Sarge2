@@ -10,5 +10,10 @@
             Longitude = longitude;
             Latitude = latitude;
         }
+
+        public double DistanceTo(Position other)
+        {
+            return Haversine.Distance(this, other);
+        }
     }
 }

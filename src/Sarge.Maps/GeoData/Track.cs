@@ -16,6 +16,25 @@ namespace Sarge.Maps.GeoData
             }
         }
         public int PointCount => Points.Count();
+        public double Length => GetLength();
 
+        private double GetLength()
+        {
+            double length = 0.0;
+            TimePoint lastPoint = null;
+
+            foreach (var point in Points)
+            {
+                if (lastPoint == null)
+                    lastPoint = point;
+                else
+                {
+                    length += lastPoint.Position.DistanceTo(point.Position);
+                    lastPoint = point;
+                }
+            }
+
+            return length;
+        }
     }
 }

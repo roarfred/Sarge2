@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CreateBitmapProgressEventArgs.cs" />
     <Compile Include="GeoData\GeoData.cs" />
+    <Compile Include="GeoData\Haversine.cs" />
     <Compile Include="GeoData\Poi.cs" />
     <Compile Include="GeoData\Position.cs" />
     <Compile Include="GeoData\TimePoint.cs" />
