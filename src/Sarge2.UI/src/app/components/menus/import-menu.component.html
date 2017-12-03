@@ -2,10 +2,15 @@
     class="well my-drop-zone">
     Drop GPX file
 </div>
-<input type="number" [(ngModel)]="maxDistance">
-<input type="number" [(ngModel)]="minTrackPoints">
-<input type="number" [(ngModel)]="maxTime">
-
+<mat-form-field>
+    <input matInput placeholder="max distance" type="number" [(ngModel)]="maxDistance">
+</mat-form-field>
+<mat-form-field>
+    <input matInput placeholder="min track points" type="number" [(ngModel)]="minTrackPoints">
+</mat-form-field>
+<mat-form-field>
+    <input matInput placeholder="max time" type="number" [(ngModel)]="maxTime">
+</mat-form-field>
 <mat-progress-bar mode="indeterminate" *ngIf="uploading"></mat-progress-bar>
 
 <div *ngIf="geoData" class="geo-list">
@@ -17,10 +22,10 @@
         {{geoData.tracks.length}} tracks:
         <div class="track" *ngFor="let track of geoData.tracks">
             <div class="track-name">
-                <input type="checkbox" checked (click)="showTrack(track)"> {{track.name}}
+                <mat-checkbox checked="true" (change)="showTrack(track, true)">{{track.name}}</mat-checkbox>
             </div>
             <div class="track-details">
-                {{track.duration | timespan}} ({{track.pointCount}})
+                {{track.length | distance}} {{track.duration | timespan}} ({{track.pointCount}})
             </div>
         </div>
     </div>
@@ -28,7 +33,7 @@
         {{geoData.pois.length}} POIs:
         <div class="poi" *ngFor="let poi of geoData.pois">
             <div class="poi-name">
-                <input type="checkbox" checked (click)="showPoi(poi)"> {{poi.name}}
+                <mat-checkbox checked="true" (change)="showPoi(poi, true)">{{poi.name}}</mat-checkbox>
             </div>
         </div>
     </div>

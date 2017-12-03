@@ -35,9 +35,9 @@ export class ImportMenuComponent implements OnInit {
     private trackLayer: any;
     private trackFeatures: any = [];
 
-    public maxDistance: number = 1000;
-    public maxTime: number = 1;
-    public minTrackPoints: number = 10;
+    public maxDistance: number = 800; // 800 meters between points will split track
+    public maxTime: number = 600; // 10 minutes between points will split track
+    public minTrackPoints: number = 5; // skip tracks of less than 5 points
 
     @Input()
     set map(map: any) {
@@ -83,8 +83,8 @@ export class ImportMenuComponent implements OnInit {
         this.clearMap();
     }
     showAll() {
-        this.geoData.tracks.forEach(track => this.showTrack(track));
-        this.geoData.pois.forEach(poi => this.showPoi(poi));
+        this.geoData.tracks.forEach(track => this.showTrack(track, false));
+        this.geoData.pois.forEach(poi => this.showPoi(poi, false));
     }
 
     initPoiSource() {
@@ -136,19 +136,46 @@ export class ImportMenuComponent implements OnInit {
     }
 
     initTrackSource() {
-        var trackStyle = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: "blue",
-                width: 3
-            })
-        });
+
+        var map = this.map;
+
+        var trackStyle = function (feature, resolution) {
+            console.log("Resolution: " + resolution);
+            
+            var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+            var first = feature.getGeometry().getLastCoordinate();
+            var centerPixels = map.getPixelFromCoordinate(center);
+            var firstPixels = map.getPixelFromCoordinate(first);
+
+            var track = feature.getProperties().track;
+
+            return new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: "blue",
+                    width: 3
+                }),
+                text: new ol.style.Text({
+                    text: resolution < 10 ? track.name : "",
+                    offsetX: (firstPixels[0] - centerPixels[0]) / 2,
+                    offsetY: (firstPixels[1] - centerPixels[1]) / 2,
+                    scale: 1.5,
+                    fill: new ol.style.Fill({
+                        color: '#003399'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#FFFFFF',
+                        width: 2.0
+                    })
+                })
+            });
+        };
 
         this.trackSource = new ol.source.Vector({ wrapX: false, features: [] });
-        var trackLayer = new ol.layer.Vector({
+        this.trackLayer = new ol.layer.Vector({
             source: this.trackSource,
             style: trackStyle
         });
-        this.map.addLayer(trackLayer);
+        this.map.addLayer(this.trackLayer);
     }
 
     initMap() {
@@ -161,11 +188,13 @@ export class ImportMenuComponent implements OnInit {
             this.map.removeLayer(this.poiLayer);
             this.poiSource = null;
             this.poiFeatures = [];
+            this.poiLayer = null;
         }
         if (this.trackLayer) {
             this.map.removeLayer(this.trackLayer);
             this.trackSource = null;
             this.trackFeatures = [];
+            this.trackLayer = null;
         }
     }
 
@@ -181,7 +210,7 @@ export class ImportMenuComponent implements OnInit {
         this.hasAnotherDropZoneOver = e;
     }
 
-    public showPoi(poi: Poi) {
+    public showPoi(poi: Poi, centerMap: boolean) {
         var poiIndex = this.geoData.pois.indexOf(poi);
 
         if (!this.poiSource)
@@ -202,10 +231,13 @@ export class ImportMenuComponent implements OnInit {
 
             this.poiSource.addFeature(poiFeature);
             this.poiFeatures[poiIndex] = poiFeature;
+
+            if (centerMap)
+                this.map.getView().center(poiOnMap);
         }
     }
 
-    public showTrack(track: Track) {
+    public showTrack(track: Track, centerMap: boolean) {
         var trackIndex = this.geoData.tracks.indexOf(track);
 
         if (!this.trackSource)
@@ -219,7 +251,8 @@ export class ImportMenuComponent implements OnInit {
 
             var trackOnMap = new ol.geom.LineString([]);
             var trackFeature = new ol.Feature({
-                geometry: trackOnMap
+                geometry: trackOnMap,
+                track: track
             });
 
             track.points.forEach((point: TimePoint) => {
@@ -229,6 +262,11 @@ export class ImportMenuComponent implements OnInit {
 
             this.trackSource.addFeature(trackFeature);
             this.trackFeatures[trackIndex] = trackFeature;
+
+            if (centerMap) {
+                var center = ol.extent.getCenter(trackOnMap.getExtent());
+                this.map.getView().setCenter(center);
+            }
         }
     }
 }
