@@ -6,7 +6,7 @@ import { MatSidenav } from '@angular/material';
 import { AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
 import { GeoData } from './models/index';
 import { Observable } from 'rxjs/Observable';
-import { AngularFireAuth } from 'angularfire2/auth';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +33,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     private db: AngularFireDatabase,
-    public auth: AngularFireAuth
+    private route: ActivatedRoute
   ) {
     this.mapData = db.object('data').valueChanges();
   }
@@ -60,6 +60,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadSettings();
+    this.route.params.subscribe(params => {
+      console.log("Entered map: " + params["id"]);
+    });
   };
   ngAfterViewInit(): void {
   };

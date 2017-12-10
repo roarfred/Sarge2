@@ -1,7 +1,7 @@
 <button mat-mini-fab [color]="loggedIn ? 'warn' : 'primary'" (click)="loginButtonClick()" #loginButton>
     <mat-icon>perm_identity</mat-icon>
 </button>
-<span *ngIf="fireBaseAuth.authState | async; let user; else showLogin">
-    <span class="user-name" fxHide.lt-md>{{user.displayName}}</span>
+<span *ngIf="loggedIn">
+    <span class="user-name" fxHide.lt-md>{{userName}}</span>
 </span>
 

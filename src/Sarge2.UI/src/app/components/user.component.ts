@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatButton } from '@angular/material';
-import { AngularFireAuth } from 'angularfire2/auth';
-import * as firebase from 'firebase/app';
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: "my-user",
@@ -10,23 +9,30 @@ import * as firebase from 'firebase/app';
 })
 export class UserComponent implements OnInit {
     @ViewChild("loginButton") loginButton: MatButton;
+    public get userName(): string {
+        return this.auth.userName;
+    }
 
-    constructor(public fireBaseAuth: AngularFireAuth) {
+    constructor(private auth: AuthService) {
     }
     login(): void {
-        this.fireBaseAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        this.auth.login();
     }
     ngOnInit(): void {
     }
 
     loginButtonClick() {
-        if (this.fireBaseAuth.auth.currentUser)
+        if (this.auth.loggedIn)
             this.logout();
         else
             this.login();
     }
 
     logout(): void {
-        this.fireBaseAuth.auth.signOut();
+        this.auth.logout();
+    }
+
+    get loggedIn() : boolean {
+        return this.auth.loggedIn;
     }
 }

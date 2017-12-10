@@ -20,6 +20,11 @@ import { AngularFireModule, FirebaseAppConfig } from 'angularfire2/angularfire2'
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
 
+import { Routes, RouterModule } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';
+import { AuthGuardService } from './services/auth-guard.service';
+import { AuthService } from './services/auth.service';
+
   // Initialize Firebase
   var fireBaseConfig : FirebaseAppConfig = {
     apiKey: "AIzaSyClG4XsgFDTcrDhBlSAtGy9RkrS2dCUDc4",
@@ -47,10 +52,14 @@ import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/dat
     HttpModule,
     AngularFireModule.initializeApp(fireBaseConfig),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    RouterModule.forRoot([]),
+    AppRoutingModule
   ],
   providers: [
-    MapService
+    MapService,
+    AuthGuardService,
+    AuthService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
