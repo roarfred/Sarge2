@@ -24,16 +24,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthGuardService } from './services/auth-guard.service';
 import { AuthService } from './services/auth.service';
-
-  // Initialize Firebase
-  var fireBaseConfig : FirebaseAppConfig = {
-    apiKey: "AIzaSyClG4XsgFDTcrDhBlSAtGy9RkrS2dCUDc4",
-    authDomain: "sarge2-41ef7.firebaseapp.com",
-    databaseURL: "https://sarge2-41ef7.firebaseio.com",
-    projectId: "sarge2-41ef7",
-    storageBucket: "",
-    messagingSenderId: "1091128158107"
-  };
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -44,22 +35,22 @@ import { AuthService } from './services/auth.service';
   ],
   imports: [
     BrowserModule,
+    AngularFireModule.initializeApp(environment.fireBase),    
+    AngularFireDatabaseModule,
+    AngularFireAuthModule,
     FormsModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
     MenuModule,
     MaterialModule,
     HttpModule,
-    AngularFireModule.initializeApp(fireBaseConfig),
-    AngularFireDatabaseModule,
-    AngularFireAuthModule,
     RouterModule.forRoot([]),
     AppRoutingModule
   ],
   providers: [
     MapService,
     AuthGuardService,
-    AuthService
+    AuthService,
   ],
   bootstrap: [AppComponent],
   entryComponents: [
