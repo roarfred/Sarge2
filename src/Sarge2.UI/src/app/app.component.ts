@@ -2,7 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChil
 import { MapComponent } from './components/map.component';
 import { Location } from './models/location.model';
 import { MatSidenav } from '@angular/material';
-import { KovaApiService } from './services/kova-api.service';
+
+import { AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
+import { GeoData } from './models/index';
+import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +17,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('myMap') myMap: MapComponent;
   @ViewChild('menu') menu: MatSidenav;
 
+  public mapData: Observable<{}>;
+  public name: string;
   title = 'SARGE2';
   lock: boolean;
   ipp: Location;
@@ -25,13 +31,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   maps: any;
   pois: any;
 
-  constructor(private kovaApi: KovaApiService) {
-    this.kovaApi.authenticated.subscribe(() => {
-      this.kovaApi.getMaps().then(maps => {
-        this.maps = maps;
-      })
-    });
+  constructor(
+    private db: AngularFireDatabase,
+    private route: ActivatedRoute
+  ) {
+    this.mapData = db.object('data').valueChanges();
   }
+
+  save() :any {
+    this.db.object('data').set({ "name": this.name });
+  }
+
   @Output() mapLocationChange = new EventEmitter();
 
   @Input()
@@ -50,6 +60,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadSettings();
+    this.route.params.subscribe(params => {
+      console.log("Entered map: " + params["id"]);
+    });
   };
   ngAfterViewInit(): void {
   };
@@ -87,16 +100,4 @@ export class AppComponent implements OnInit, AfterViewInit {
   setMapClickedLocation(location: Location): void {
     this.clickedLocation = location;
   };
-
-  changeMap(map: any) {
-    this.myMap.mapLocation = new Location(0, map.long, map.lat);
-    this.myMap.zoom = map.zoom - 2;
-    this.loadMapData(map.primKey);
-
-    this.title = "SARGE2 - " + map.name;
-  }
-
-  loadMapData(mapRef: string): void {
-    this.kovaApi.getPois(mapRef).then(pois => this.pois = pois); 
-  }
 }

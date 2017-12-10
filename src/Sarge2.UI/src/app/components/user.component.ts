@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { KovaApiService } from "../services/kova-api.service";
-import { MatButton, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { LoginBoxComponent } from "./login-box.component";
+import { MatButton } from '@angular/material';
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: "my-user",
@@ -10,47 +9,30 @@ import { LoginBoxComponent } from "./login-box.component";
 })
 export class UserComponent implements OnInit {
     @ViewChild("loginButton") loginButton: MatButton;
+    public get userName(): string {
+        return this.auth.userName;
+    }
 
-    loggedIn: boolean = false;
-    showLoginBox: boolean = false;
-    name: string;
-
-    constructor(private kovaApiService: KovaApiService, public dialog: MatDialog) {
-        kovaApiService.authenticated.subscribe(() => {
-            this.loggedIn = true;
-            this.name = this.kovaApiService.name;
-        });
+    constructor(private auth: AuthService) {
     }
     login(): void {
-        let dialogRef = this.dialog.open(LoginBoxComponent, {
-            width: '250px',
-            data: {}
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log(`The dialog was closed: ${result.user}`);
-            if (result) {
-                this.kovaApiService.authenticate(
-                    result.user,
-                    result.password
-                );
-            };
-        });
+        this.auth.login();
     }
     ngOnInit(): void {
-        this.loggedIn = this.kovaApiService.isAuthenticated;
     }
 
     loginButtonClick() {
-        if (this.loggedIn)
+        if (this.auth.loggedIn)
             this.logout();
         else
             this.login();
     }
 
     logout(): void {
-        this.kovaApiService.logout();
-        this.loggedIn = false;
-        this.name = "";
+        this.auth.logout();
+    }
+
+    get loggedIn() : boolean {
+        return this.auth.loggedIn;
     }
 }

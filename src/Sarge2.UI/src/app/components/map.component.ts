@@ -12,7 +12,11 @@ export class MapComponent {
     name: string = "Map";
     private _pois: any;
     private poiSource: any;
+    private _map: any;
 
+    constructor() {
+        this._map = new ol.Map();
+    }
     @Input()
     get pois(): any {
         return this._pois;
@@ -24,8 +28,14 @@ export class MapComponent {
         }
     }
 
+    @Output() mapChange = new EventEmitter<any>();
     @Input()
-    map: any;
+    public get map(): any {
+        return this._map;
+    }
+    public set map(map) {
+        this._map = map;
+    }
 
     radiusFeature: any;
     paperFeature: any;
@@ -162,8 +172,8 @@ export class MapComponent {
             center: center,
             zoom: this._zoom
         });
-
-        this.map = new ol.Map({
+        
+        this._map = new ol.Map({
             target: 'map',
             view: view,
             controls: ol.control.defaults().extend([
@@ -200,10 +210,12 @@ export class MapComponent {
         var layerGroup = new ol.layer.Group({
             layers: [
                 mapLayer
-            ]
-        })
+            ],
+            zIndex: -1
+        });
         this.map.setLayerGroup(layerGroup);
-
+        layerGroup.setZIndex(0);
+        
         this.radiusFeature = null;
         this.paperFeature = null;
         this.crossHairFeature = null;
@@ -227,7 +239,8 @@ export class MapComponent {
                     'FORMAT': 'image/png',
                     'TILED': true
                 }
-            })
+            }),
+            zIndex: 0
         });
     };
 
