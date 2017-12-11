@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import { ColorPickerModule, ColorPickerComponent } from 'ngx-color-picker';
+
 import { MapService } from './services/map.service';
 
 import { MenuModule } from './components/menus/menu.module';
@@ -45,7 +47,8 @@ import { environment } from '../environments/environment';
     MaterialModule,
     HttpModule,
     RouterModule.forRoot([]),
-    AppRoutingModule
+    AppRoutingModule,
+    ColorPickerModule
   ],
   providers: [
     MapService,

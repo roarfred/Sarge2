@@ -1,0 +1,10 @@
+mat-slider {
+    width: 150px;
+  }
+
+.color-picker {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid black
+}

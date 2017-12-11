@@ -8,9 +8,13 @@ declare var ol: any;
 @Component({
     selector: 'my-areas-menu',
     templateUrl: 'areas-menu.component.html',
-    styles: ['']
+    styleUrls: ['areas-menu.component.css']
 })
 export class AreasMenuComponent implements OnInit {
+    public defaultFillColor: string = "#ffff9911";
+    public defaultStrokeColor: string = "#9900ff99";
+    public defaultStrokeWidth: number = 2;
+    
     private drawingLayer: any;
     private displayLayer: any;
     private displaySource: any;
@@ -53,7 +57,22 @@ export class AreasMenuComponent implements OnInit {
                         
                         polygon.transform("EPSG:4326", "EPSG:32633");
                         // Create feature with polygon.
-                        var feature = new ol.Feature(polygon);
+                        var feature = new ol.Feature({
+                            geometry: polygon
+                        });
+                        feature.setStyle(new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: action.payload.child("strokeColor").val() || "blue",
+                                width: action.payload.child("strokeWidth").val() || 2
+                            }),
+                            fill: new ol.style.Fill({
+                                color: action.payload.child("fillColor").val() || "#ffff0011"
+                            }),
+                            text: new ol.style.Text({
+                                
+                                text: action.payload.child("name").val()
+                            })
+                        }));
     
     
                         if (this.displaySource == null)
@@ -131,7 +150,13 @@ export class AreasMenuComponent implements OnInit {
             area.transform("EPSG:32633", "EPSG:4326");
             let coords = area.getCoordinates();
 
-            this.itemsRef.push({"name": "area", "coords": coords});
+            this.itemsRef.push({
+                "name": "area", 
+                "strokeColor": this.defaultStrokeColor,
+                "strokeWidth": this.defaultStrokeWidth,
+                "fillColor": this.defaultFillColor,
+                "coords": coords
+            });
 
             this.map.removeInteraction(this.draw);
 

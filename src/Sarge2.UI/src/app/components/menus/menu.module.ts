@@ -6,6 +6,7 @@ import { MaterialModule } from '../../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { LocationComponent } from '../../components/location.component';
 import { UtmLocationPipe } from '../../pipes/utm-location.pipe';
@@ -57,7 +58,8 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
         FormsModule,
         MaterialModule,
         FlexLayoutModule,
-        FileUploadModule
+        FileUploadModule,
+        ColorPickerModule
     ],
     exports: [ 
         MenuButtonsComponent, 
