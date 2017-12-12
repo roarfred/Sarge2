@@ -30,10 +30,11 @@ export class AreasMenuComponent implements OnInit {
     items: Observable<any[]>;
     areaFeatures: any = {};
 
-    constructor(db: AngularFireDatabase, route: ActivatedRoute) {
-        var mapName = route.params["id"] || "test";
+    constructor(private db: AngularFireDatabase, private route: ActivatedRoute) {
+    }
 
-        this.itemsRef = db.list('maps/' + mapName + "/areas");
+    private loadMapData(map: string) {
+        this.itemsRef = this.db.list('maps/' + map + "/areas");
         
         // Use snapshotChanges().map() to store the key
         this.items = this.itemsRef.snapshotChanges().map(changes => {
@@ -120,7 +121,13 @@ export class AreasMenuComponent implements OnInit {
             style: this.style,
             zIndex: 100
         });
+
         this.map.addLayer(this.drawingLayer);
+
+        this.route.params.subscribe(params => {
+            let map = params["id"] || "demo";
+            this.loadMapData(map);
+        });
     }
     public startDrawing(): void {
         var value = 'Polygon';

@@ -14,6 +14,7 @@ import { MenuModule } from './components/menus/menu.module';
 import { MaterialModule } from './material.module';
 
 import { AppComponent } from './app.component';
+import { MainComponent } from './main.component';
 import { MapComponent } from './components/map.component';
 import { UserComponent } from './components/user.component';
 import { LoginBoxComponent } from "./components/login-box.component";
@@ -31,6 +32,7 @@ import { environment } from '../environments/environment';
 @NgModule({
   declarations: [
     AppComponent,
+    MainComponent,
     MapComponent,
     UserComponent,
     LoginBoxComponent
