@@ -16,7 +16,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('myMap') myMap: MapComponent;
   @ViewChild('menu') menu: MatSidenav;
 
-  public mapData: Observable<{}>;
   public name: string;
   title = 'SARGE2';
   lock: boolean;
@@ -30,11 +29,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   maps: any;
   pois: any;
 
-  constructor(
-    private db: AngularFireDatabase,
-    private route: ActivatedRoute
-  ) {
-    this.mapData = db.object('data').valueChanges();
+  constructor() {
   }
 
   @Output() mapLocationChange = new EventEmitter();
@@ -55,9 +50,6 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadSettings();
-    this.route.params.subscribe(params => {
-      console.log("Entered map: " + params["id"]);
-    });
   };
 
   ngAfterViewInit(): void {

@@ -211,11 +211,9 @@ export class MapComponent {
             layers: [
                 mapLayer
             ],
-            zIndex: -1
         });
         this.map.setLayerGroup(layerGroup);
-        layerGroup.setZIndex(0);
-        
+
         this.radiusFeature = null;
         this.paperFeature = null;
         this.crossHairFeature = null;
