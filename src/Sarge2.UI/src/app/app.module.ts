@@ -9,6 +9,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ColorPickerModule, ColorPickerComponent } from 'ngx-color-picker';
 
 import { MapService } from './services/map.service';
+import { MapDataService } from './services/map-data.service';
 
 import { MenuModule } from './components/menus/menu.module';
 import { MaterialModule } from './material.module';
@@ -56,6 +57,7 @@ import { environment } from '../environments/environment';
     MapService,
     AuthGuardService,
     AuthService,
+    MapDataService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

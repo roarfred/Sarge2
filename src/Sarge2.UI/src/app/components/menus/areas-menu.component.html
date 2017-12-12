@@ -1,5 +1,5 @@
 <button (click)="startDrawing()">Start</button>
-<ul *ngFor="let item of items | async">
+<ul *ngFor="let item of mapData.areas | async">
     <li>{{item.name}} <button (click)="deleteItem(item)">X</button> </li>
 </ul>
 <div>Style for new areas:</div>
