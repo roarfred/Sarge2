@@ -1,0 +1,11 @@
+.main {width: 200px; height: 300px;}
+.color-picker {
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    border: 1px solid black;
+    margin: 5px;
+}
+mat-slider {
+    width: 150px;
+  }
