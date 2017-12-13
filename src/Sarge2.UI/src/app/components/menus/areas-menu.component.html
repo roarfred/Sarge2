@@ -1,12 +1,7 @@
+<div class="area-preview" [style.backgroundColor]="defaultFillColor" [style.borderColor]="defaultStrokeColor" [style.borderWidth]="defaultStrokeWidth" (click)="openDialog()">set style</div>
 <button (click)="startDrawing()">Start</button>
 <ul *ngFor="let item of mapData.areas | async">
     <li>{{item.name}} <button (click)="deleteItem(item)">X</button> </li>
 </ul>
-<div>Style for new areas:</div>
-<div>
-    Stroke: <div class="color-picker" cpWidth="150" cpHeight="50" [(colorPicker)]="defaultStrokeColor" cpPosition="bottom" [style.background]="defaultStrokeColor" cpAlphaChannel="always"></div>
-</div>
-Width ({{defaultStrokeWidth}}): <mat-slider min="1" max="10" step="1" [(ngModel)]="defaultStrokeWidth"></mat-slider>
-<div>
-Fill: <div class="color-picker" cpWidth="150" cpHeight="50" [(colorPicker)]="defaultFillColor" cpPosition="bottom" [style.background]="defaultFillColor" cpAlphaChannel="always"></div>
-</div>
+
+

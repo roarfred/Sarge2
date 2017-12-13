@@ -206,14 +206,19 @@ export class MapComponent {
     };
     setMap(map: MapSource): void {
         let mapLayer = this.createMapTile(map);
+        
+        var oldLayers = this.map.getLayers().getArray();
+        if (oldLayers.length > 0)
+            oldLayers.splice(0, 1, mapLayer);
+        else
+            oldLayers = [ mapLayer ];
 
         var layerGroup = new ol.layer.Group({
-            layers: [
-                mapLayer
-            ],
+            layers: oldLayers
         });
+        
         this.map.setLayerGroup(layerGroup);
-
+        
         this.radiusFeature = null;
         this.paperFeature = null;
         this.crossHairFeature = null;

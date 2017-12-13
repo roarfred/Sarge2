@@ -21,6 +21,7 @@ import { MeasureMenuComponent } from './measure-menu.component';
 import { PrintMenuComponent } from './print-menu.component';
 import { TracksMenuComponent } from './tracks-menu.component';
 import { AreasMenuComponent } from './areas-menu.component';
+import { AreasStyleDialog } from './areas-style.dialog';
 import { PoiMenuComponent } from './poi-menu.component';
 import { ImportMenuComponent } from './import-menu.component';
 
@@ -38,6 +39,7 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
         MeasureMenuComponent,
         TracksMenuComponent, 
         AreasMenuComponent, 
+        AreasStyleDialog,
         PoiMenuComponent,
         LocationComponent,
         ImportMenuComponent,
@@ -60,6 +62,9 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
         FlexLayoutModule,
         FileUploadModule,
         ColorPickerModule
+    ],
+    entryComponents: [
+        AreasStyleDialog
     ],
     exports: [ 
         MenuButtonsComponent, 

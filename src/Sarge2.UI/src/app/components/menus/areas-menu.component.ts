@@ -1,8 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Inject, Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { ActivatedRoute } from '@angular/router';
 import { MapDataService } from '../../services/map-data.service';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { AreasStyleDialog } from './areas-style.dialog';
 
 declare var ol: any;
 
@@ -15,28 +17,42 @@ export class AreasMenuComponent implements OnInit {
     public defaultFillColor: string = "#ffff9911";
     public defaultStrokeColor: string = "#9900ff99";
     public defaultStrokeWidth: number = 2;
-    
+
     private drawingLayer: any;
     private displayLayer: any;
     private displaySource: any;
     private draw: any;
     private style: any;
     private source: any;
-    
+
     @Input()
     public map: any;
     areaFeatures: any = {};
 
-    constructor(private mapData: MapDataService) {
+    constructor(private mapData: MapDataService, public dialog: MatDialog) {
         mapData.areaAdded(area => this.areaAdded(area));
         mapData.areaRemoved(area => this.areaRemoved(area));
     }
 
-    areaAdded(area:any):void {
-        if (this.areaFeatures[area.key] == null)
-        {
+    openDialog(): void {
+        let dialogRef = this.dialog.open(AreasStyleDialog, {
+            width: '250px',
+            data: { fillColor: this.defaultFillColor, strokeColor: this.defaultStrokeColor, strokeWidth: this.defaultStrokeWidth }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.defaultFillColor = result.fillColor;
+                this.defaultStrokeColor = result.strokeColor;
+                this.defaultStrokeWidth = result.strokeWidth;
+            }
+        });
+    }
+
+    areaAdded(area: any): void {
+        if (this.areaFeatures[area.key] == null) {
             let polygon = new ol.geom.Polygon(area.coords);
-            
+
             polygon.transform("EPSG:4326", "EPSG:32633");
             // Create feature with polygon.
             var feature = new ol.Feature({
@@ -56,8 +72,7 @@ export class AreasMenuComponent implements OnInit {
             }));
 
 
-            if (this.displaySource == null)
-            {
+            if (this.displaySource == null) {
                 this.displaySource = new ol.source.Vector({ wrapX: false });
                 this.displayLayer = new ol.layer.Vector({
                     source: this.displaySource,
@@ -67,11 +82,10 @@ export class AreasMenuComponent implements OnInit {
             }
             this.displaySource.addFeature(feature);
             this.areaFeatures[area.key] = feature;
-        }        
+        }
     }
-    areaRemoved(area:any): void {
-        if (this.areaFeatures[area.key] != null)
-        {
+    areaRemoved(area: any): void {
+        if (this.areaFeatures[area.key] != null) {
             this.displaySource.removeFeature(this.areaFeatures[area.key]);
             this.areaFeatures[area.key] = null;
         }
@@ -117,7 +131,7 @@ export class AreasMenuComponent implements OnInit {
             let coords = area.getCoordinates();
 
             this.mapData.addArea({
-                "name": "area", 
+                "name": "area",
                 "strokeColor": this.defaultStrokeColor,
                 "strokeWidth": this.defaultStrokeWidth,
                 "fillColor": this.defaultFillColor,
@@ -134,4 +148,4 @@ export class AreasMenuComponent implements OnInit {
     deleteItem(item): void {
         this.mapData.removeArea(item);
     }
-}
+} 
