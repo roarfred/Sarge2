@@ -11,11 +11,13 @@ import { Action } from 'rxjs/scheduler/Action';
 export class MapDataService {
     private areasRef: AngularFireList<any>;
     private areaKeys: Array<string> = [];
+    private selectedAreaKeys: Array<string> = [];
     private areaRemovedCallbacks: Array<(any) => void> = [];
     private areaAddedCallbacks: Array<(any) => void> = [];
+    private areaUpdatedCallbacks: Array<(any) => void> = [];
 
     public areas: Observable<any[]>;
-    
+
     constructor(private db: AngularFireDatabase, private route: ActivatedRoute) {
         this.route.params.subscribe(params => {
             let map = params["id"] || "demo";
@@ -26,11 +28,18 @@ export class MapDataService {
 
     private loadMapData(map: string) {
         this.areasRef = this.db.list('maps/' + map + "/areas");
-
+        var mapData = this;
         // Use snapshotChanges().map() to store the key
         this.areas = this.areasRef.snapshotChanges().map(changes => {
             return changes.map(c => ({
                 key: c.payload.key,
+                get selected(): boolean { return mapData.selectedAreaKeys.indexOf(this.key) >= 0 },
+                set selected(value: boolean) {
+                    if (value && mapData.selectedAreaKeys.indexOf(this.key) < 0)
+                        mapData.selectedAreaKeys.push(this.key)
+                    else if (!value && mapData.selectedAreaKeys.indexOf(this.key) >= 0)
+                        mapData.selectedAreaKeys.splice(mapData.selectedAreaKeys.indexOf(this.key), 1);
+                },
                 ...c.payload.val()
             }));
         });
@@ -47,6 +56,11 @@ export class MapDataService {
                             callback(area);
                         });
                     }
+                }
+                else if (action.type == "child_changed") {
+                    this.areaUpdatedCallbacks.forEach(callback => {
+                        callback(area);
+                    });
                 }
                 else if (action.type == "child_removed") {
                     if (this.areaKeys.indexOf(action.key) >= 0) {
@@ -75,6 +89,10 @@ export class MapDataService {
         this.areaAddedCallbacks.push(callback);
     }
 
+    public areaUpdated(callback: (any) => void) {
+        this.areaUpdatedCallbacks.push(callback);
+    }
+
     public areaRemoved(callback: (any) => void) {
         this.areaRemovedCallbacks.push(callback);
     }
@@ -85,5 +103,29 @@ export class MapDataService {
     public removeArea(area: any): void {
         this.areasRef.remove(area.key);
     }
+    public updateArea(area: any): void {
+        this.areasRef.update(area.key, area);
+    }
 
+    public getSelectedAreas(): Observable<any> {
+        return Observable.create(observer => {
+            this.areas.subscribe(areas => {
+                areas.forEach(area => {
+                    if (this.selectedAreaKeys.indexOf(area.key) >= 0)
+                        observer.next(area);
+                });
+            });
+        });
+    }
+
+    public selectAllAreas(selected = true): void {
+        this.selectedAreaKeys = [];
+        if (selected) {
+            this.areas.subscribe(areas => {
+                areas.forEach(area => {
+                    this.selectedAreaKeys.push(area.key);
+                });
+            });
+        }
+    }
 }

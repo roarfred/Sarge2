@@ -1,7 +1,39 @@
-<div class="area-preview" [style.backgroundColor]="defaultFillColor" [style.borderColor]="defaultStrokeColor" [style.borderWidth]="defaultStrokeWidth" (click)="openDialog()">set style</div>
-<button (click)="startDrawing()">Start</button>
-<ul *ngFor="let item of mapData.areas | async">
-    <li>{{item.name}} <button (click)="deleteItem(item)">X</button> </li>
-</ul>
-
-
+<div class="menu-content">
+    <div fxLayout="row">
+        <div fxFlex>
+            <div class="area-preview" [style.backgroundColor]="defaultFillColor" [style.borderColor]="defaultStrokeColor" [style.borderWidth]="defaultStrokeWidth"
+                (click)="openDialog()">set style</div>
+        </div>
+        <div fxFlex="20">
+            <button mat-mini-fab color="primary" (click)="startDrawing()">
+                <mat-icon aria-label="Add new area">add</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div fxLayout="row">
+        <div style="background-color: red" fxFlex="20">a</div>
+        <div style="background-color: blue" fxFlex>b</div>
+        <div style="background-color: green" fxFlex="30">c</div>
+    </div>
+    <button mat-icon-button (click)="selectAll()">
+        <mat-icon aria-label="Delete area">select_all</mat-icon>
+    </button>
+    <div fxLayout="row" *ngFor="let item of mapData.areas | async">
+        <div fxflex="20" fxLayoutAlign="center center">
+            <mat-checkbox [(ngModel)]="item.selected"></mat-checkbox>
+        </div>
+        <div fxflex>
+            <mat-form-field style="width: 125px">
+                <input matInput [(ngModel)]="item.name">
+            </mat-form-field>
+        </div>
+        <div fxflex="30" fxLayoutAlign="center center">
+            <button mat-icon-button color="warn" (click)="saveItem(item)">
+                <mat-icon aria-label="Save area">save</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteItem(item)">
+                <mat-icon aria-label="Delete area">clear</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

@@ -21,8 +21,8 @@
   </mat-toolbar>
   
   <mat-sidenav #menu mode="over" opened="false">
-    <my-print-menu [location]="ipp || mapLocation" #printMenu [hidden]="menuName != 'print'"></my-print-menu>
-    <div class="positions-menu" [hidden]="menuName != 'location'">
+    <my-print-menu class="menu-content" [location]="ipp || mapLocation" #printMenu [hidden]="menuName != 'print'"></my-print-menu>
+    <div class="positions-menu menu-content" [hidden]="menuName != 'location'">
       <mat-card>
         <mat-card-title>Map Center</mat-card-title>
         <mat-card-content>
@@ -45,11 +45,11 @@
       </mat-card>
     </div>
   
-    <my-measure-menu [hidden]="menuName != 'measure'" [map]="myMap.map"></my-measure-menu>
-    <my-tracks-menu [hidden]="menuName != 'tracks'"></my-tracks-menu>
-    <my-poi-menu [hidden]="menuName != 'pois'" [pois]="pois"></my-poi-menu>
-    <my-areas-menu [hidden]="menuName != 'areas'" [map]="myMap.map"></my-areas-menu>
-    <my-import-menu [hidden]="menuName != 'import'" [map]="myMap.map"></my-import-menu>
+    <my-measure-menu class="menu-content" [hidden]="menuName != 'measure'" [map]="myMap.map"></my-measure-menu>
+    <my-tracks-menu class="menu-content" [hidden]="menuName != 'tracks'"></my-tracks-menu>
+    <my-poi-menu class="menu-content" [hidden]="menuName != 'pois'" [pois]="pois"></my-poi-menu>
+    <my-areas-menu class="menu-content" [hidden]="menuName != 'areas'" [map]="myMap.map"></my-areas-menu>
+    <my-import-menu class="menu-content" [hidden]="menuName != 'import'" [map]="myMap.map"></my-import-menu>
   </mat-sidenav>
   
   <my-map #myMap [lockIpp]="lock" [radiusR25]="printMenu.r25" [radiusR50]="printMenu.r50" [(ipp)]="ipp" [scale]="printMenu.scale"

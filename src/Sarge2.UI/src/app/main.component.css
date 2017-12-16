@@ -1,3 +1,7 @@
+.menu-content {
+  width: 200px
+}
+
 .example-fill-remaining-space {
     flex: 1 1 auto;
     text-align: center;

@@ -32,6 +32,7 @@ export class AreasMenuComponent implements OnInit {
     constructor(private mapData: MapDataService, public dialog: MatDialog) {
         mapData.areaAdded(area => this.areaAdded(area));
         mapData.areaRemoved(area => this.areaRemoved(area));
+        mapData.areaUpdated(area => this.areaUpdated(area));
     }
 
     openDialog(): void {
@@ -45,6 +46,26 @@ export class AreasMenuComponent implements OnInit {
                 this.defaultFillColor = result.fillColor;
                 this.defaultStrokeColor = result.strokeColor;
                 this.defaultStrokeWidth = result.strokeWidth;
+
+                this.mapData.getSelectedAreas().subscribe(area => {
+                    area.strokeColor = this.defaultStrokeColor;
+                    area.strokeWidth = this.defaultStrokeWidth;
+                    area.fillColor = this.defaultFillColor;
+                    this.saveItem(area);
+
+                    this.areaFeatures[area.key].setStyle(new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: area.strokeColor,
+                            width: area.strokeWidth
+                        }),
+                        fill: new ol.style.Fill({
+                            color: area.fillColor
+                        }),
+                        text: new ol.style.Text({
+                            text: area.text
+                        })
+                    }));
+                });
             }
         });
     }
@@ -84,6 +105,31 @@ export class AreasMenuComponent implements OnInit {
             this.areaFeatures[area.key] = feature;
         }
     }
+
+    areaUpdated(area: any): void {
+        console.log("Area updated: " + area.name);
+        console.log(area);
+
+        var feature = this.areaFeatures[area.key];
+        if (feature) {
+            let polygon = new ol.geom.Polygon(area.coords);
+            polygon.transform("EPSG:4326", "EPSG:32633");
+            feature.setGeometry(polygon);
+            feature.setStyle(new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: area.strokeColor,
+                    width: area.strokeWidth
+                }),
+                fill: new ol.style.Fill({
+                    color: area.fillColor
+                }),
+                text: new ol.style.Text({
+                    text: area.text
+                })
+            }));
+        }
+    }
+
     areaRemoved(area: any): void {
         if (this.areaFeatures[area.key] != null) {
             this.displaySource.removeFeature(this.areaFeatures[area.key]);
@@ -147,5 +193,14 @@ export class AreasMenuComponent implements OnInit {
 
     deleteItem(item): void {
         this.mapData.removeArea(item);
+    }
+    saveItem(area: any): void {
+        this.mapData.updateArea(area);
+    }
+
+    private selectAllOption = true;
+    selectAll(): void {
+        this.mapData.selectAllAreas(this.selectAllOption);
+        this.selectAllOption = !this.selectAllOption;
     }
 } 
