@@ -8,3 +8,8 @@
     vertical-align: middle;
     font-size: x-small;
 }
+.item-button {
+    min-width: 25px;
+    width: 25px;
+    padding: 0px;
+  }

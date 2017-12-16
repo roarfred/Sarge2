@@ -21,10 +21,10 @@
             <input [(ngModel)]="item.name" (change)="saveItem(item)" style="width: 100px">
         </div>
         <div fxflex="30" fxLayoutAlign="end center">
-            <button mat-icon-button color="warn" (click)="editItem(item)" [color]="edit?.area == item.key ? 'primary' : 'accent'">
+            <button class="item-button" mat-icon-button color="warn" (click)="editItem(item)" [color]="edit?.area == item.key ? 'primary' : 'accent'">
                 <mat-icon aria-label="Edit area">edit</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="deleteItem(item)">
+            <button class="item-button" mat-icon-button color="warn" (click)="deleteItem(item)">
                 <mat-icon aria-label="Delete area">clear</mat-icon>
             </button>
         </div>
