@@ -10,26 +10,19 @@
             </button>
         </div>
     </div>
-    <div fxLayout="row">
-        <div style="background-color: red" fxFlex="20">a</div>
-        <div style="background-color: blue" fxFlex>b</div>
-        <div style="background-color: green" fxFlex="30">c</div>
-    </div>
-    <button mat-icon-button (click)="selectAll()">
-        <mat-icon aria-label="Delete area">select_all</mat-icon>
+    <button mat-icon-button color="primary" (click)="selectAll()" aria-label="Select all">
+        <mat-icon aria-label="Select all/none">{{selectAllOption ? 'check_box_outline_blank' : 'check_box'}}</mat-icon>select all ({{itemCount}})
     </button>
-    <div fxLayout="row" *ngFor="let item of mapData.areas | async">
-        <div fxflex="20" fxLayoutAlign="center center">
-            <mat-checkbox [(ngModel)]="item.selected"></mat-checkbox>
+    <div fxLayout="row" fxLayoutAlign="space-around center" *ngFor="let item of mapData.areas.items | async">
+        <div fxflex="20" fxLayoutAlign="start center">
+            <mat-checkbox [checked]="mapData.areas.isSelected(item)" (change)="mapData.areas.setSelected(item, $event.checked)"></mat-checkbox>
         </div>
-        <div fxflex>
-            <mat-form-field style="width: 125px">
-                <input matInput [(ngModel)]="item.name">
-            </mat-form-field>
+        <div fxflex fxLayoutAlign="center center">
+            <input [(ngModel)]="item.name" (change)="saveItem(item)" style="width: 100px">
         </div>
-        <div fxflex="30" fxLayoutAlign="center center">
-            <button mat-icon-button color="warn" (click)="saveItem(item)">
-                <mat-icon aria-label="Save area">save</mat-icon>
+        <div fxflex="30" fxLayoutAlign="end center">
+            <button mat-icon-button color="warn" (click)="editItem(item)" [color]="edit?.area == item.key ? 'primary' : 'accent'">
+                <mat-icon aria-label="Edit area">edit</mat-icon>
             </button>
             <button mat-icon-button color="warn" (click)="deleteItem(item)">
                 <mat-icon aria-label="Delete area">clear</mat-icon>

@@ -24,15 +24,20 @@ export class AreasMenuComponent implements OnInit {
     private draw: any;
     private style: any;
     private source: any;
+    public itemCount: number = 0;
+    public selectAllOption = true;
 
     @Input()
     public map: any;
     areaFeatures: any = {};
 
     constructor(private mapData: MapDataService, public dialog: MatDialog) {
-        mapData.areaAdded(area => this.areaAdded(area));
-        mapData.areaRemoved(area => this.areaRemoved(area));
-        mapData.areaUpdated(area => this.areaUpdated(area));
+        mapData.areas.itemAdded(area => this.areaAdded(area));
+        mapData.areas.itemRemoved(area => this.areaRemoved(area));
+        mapData.areas.itemUpdated(area => this.areaUpdated(area));
+        mapData.areas.items.subscribe(items => {
+            this.itemCount = items.length;
+        })
     }
 
     openDialog(): void {
@@ -47,7 +52,7 @@ export class AreasMenuComponent implements OnInit {
                 this.defaultStrokeColor = result.strokeColor;
                 this.defaultStrokeWidth = result.strokeWidth;
 
-                this.mapData.getSelectedAreas().subscribe(area => {
+                this.mapData.areas.getSelected().then(areas => areas.forEach(area => {
                     area.strokeColor = this.defaultStrokeColor;
                     area.strokeWidth = this.defaultStrokeWidth;
                     area.fillColor = this.defaultFillColor;
@@ -65,8 +70,8 @@ export class AreasMenuComponent implements OnInit {
                             text: area.text
                         })
                     }));
-                });
-            }
+                }));
+            };
         });
     }
 
@@ -79,19 +84,7 @@ export class AreasMenuComponent implements OnInit {
             var feature = new ol.Feature({
                 geometry: polygon
             });
-            feature.setStyle(new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: area.strokeColor,
-                    width: area.strokeWidth
-                }),
-                fill: new ol.style.Fill({
-                    color: area.fillColor
-                }),
-                text: new ol.style.Text({
-                    text: area.text
-                })
-            }));
-
+            feature.setStyle(this.getAreaStyle(area));
 
             if (this.displaySource == null) {
                 this.displaySource = new ol.source.Vector({ wrapX: false });
@@ -115,19 +108,23 @@ export class AreasMenuComponent implements OnInit {
             let polygon = new ol.geom.Polygon(area.coords);
             polygon.transform("EPSG:4326", "EPSG:32633");
             feature.setGeometry(polygon);
-            feature.setStyle(new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: area.strokeColor,
-                    width: area.strokeWidth
-                }),
-                fill: new ol.style.Fill({
-                    color: area.fillColor
-                }),
-                text: new ol.style.Text({
-                    text: area.text
-                })
-            }));
+            feature.setStyle(this.getAreaStyle(area));
         }
+    }
+
+    private getAreaStyle(area: any): any {
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: area.strokeColor,
+                width: area.strokeWidth
+            }),
+            fill: new ol.style.Fill({
+                color: area.fillColor
+            }),
+            text: new ol.style.Text({
+                text: area.text
+            })
+        });
     }
 
     areaRemoved(area: any): void {
@@ -176,7 +173,7 @@ export class AreasMenuComponent implements OnInit {
             area.transform("EPSG:32633", "EPSG:4326");
             let coords = area.getCoordinates();
 
-            this.mapData.addArea({
+            this.mapData.areas.addItem({
                 "name": "area",
                 "strokeColor": this.defaultStrokeColor,
                 "strokeWidth": this.defaultStrokeWidth,
@@ -191,16 +188,65 @@ export class AreasMenuComponent implements OnInit {
         this.map.addInteraction(this.draw);
     }
 
-    deleteItem(item): void {
-        this.mapData.removeArea(item);
-    }
-    saveItem(area: any): void {
-        this.mapData.updateArea(area);
+    private edit: any = null;
+    public editItem(area: any): void {
+        if (this.edit) {
+            this.map.removeInteraction(this.edit.interaction);
+            this.map.removeLayer(this.edit.layer);
+
+            if (this.edit.area == area.key)
+            {
+                this.edit = null;
+                return;
+            }
+        }
+        
+        let feature = this.areaFeatures[area.key].clone();
+        feature.setStyle(this.style);
+        
+        // Center map on area
+        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+        this.map.getView().setCenter(center);
+
+        let source = new ol.source.Vector({ wrapX: false });
+        source.addFeature(feature);
+        let modifyInteraction = new ol.interaction.Modify({
+            source: source,
+            style: this.style
+        });
+        let layer = new ol.layer.Vector({
+            source: source,
+            style: this.style,
+            zIndex: 150
+        });
+        this.map.addLayer(layer);
+        this.map.addInteraction(modifyInteraction);
+
+        modifyInteraction.on('modifyend', (function (evt) {
+            let feature = evt.features.item(0).clone();
+            let geometry = feature.getGeometry();
+            geometry.transform("EPSG:32633", "EPSG:4326");
+            let coords = geometry.getCoordinates();
+            area.coords = coords;
+            this.saveItem(area);
+        }).bind(this));
+
+        this.edit = {
+            interaction: modifyInteraction,
+            layer: layer,
+            area: area.key
+        };
     }
 
-    private selectAllOption = true;
+    deleteItem(item): void {
+        this.mapData.areas.removeItem(item);
+    }
+    saveItem(area: any): void {
+        this.mapData.areas.updateItem(area);
+    }
+
     selectAll(): void {
-        this.mapData.selectAllAreas(this.selectAllOption);
+        this.mapData.areas.selectAll(this.selectAllOption);
         this.selectAllOption = !this.selectAllOption;
     }
 } 
