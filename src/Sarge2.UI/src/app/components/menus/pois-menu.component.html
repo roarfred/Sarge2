@@ -1,0 +1,43 @@
+<div class="menu-content">
+    <div fxLayout="row">
+        <div fxFlex>
+            <img [src]="getSymbolUrl(defaultSymbol)" width="20" /> 
+        </div>
+        <div fxFlex="20">
+            <button mat-mini-fab color="primary" (click)="startDrawing()">
+                <mat-icon aria-label="Add new poi">add</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div flLayout="row">
+        <mat-form-field>
+            <input [(ngModel)]="defaultSymbol" matInput placeholder="Symbol" aria-label="Symbol" [matAutocomplete]="auto" [formControl]="symbolCtrl">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let symbol of filteredSymbols | async" [value]="symbol">
+                    <img style="vertical-align:middle;" aria-hidden [src]="getSymbolUrl(symbol)" height="25" />
+                    <span>{{ symbol }}</span>
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <button mat-icon-button color="primary" (click)="selectAll()" aria-label="Select all">
+        <mat-icon aria-label="Select all/none">{{selectAllOption ? 'check_box_outline_blank' : 'check_box'}}</mat-icon>select all ({{itemCount}})
+    </button>
+    <div fxLayout="row" fxLayoutAlign="space-around center" *ngFor="let item of mapData.pois.items | async">
+        <div fxflex="20" fxLayoutAlign="start center">
+            <mat-checkbox [checked]="mapData.pois.isSelected(item)" (change)="mapData.pois.setSelected(item, $event.checked)"></mat-checkbox>
+        </div>
+        <div fxflex fxLayoutAlign="center center">
+            <img [src]="getSymbolUrl(item.symbol)" width="20" /> 
+            <input [(ngModel)]="item.name" (change)="saveItem(item)" style="width: 80px">
+        </div>
+        <div fxflex="30" fxLayoutAlign="end center">
+            <button class="item-button" mat-icon-button color="warn" (click)="editItem(item)" [color]="edit?.poi == item.key ? 'primary' : 'accent'">
+                <mat-icon aria-label="Edit poi">edit</mat-icon>
+            </button>
+            <button class="item-button" mat-icon-button color="warn" (click)="deleteItem(item)">
+                <mat-icon aria-label="Delete poi">clear</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

@@ -159,8 +159,8 @@ export class PrintMenuComponent implements OnInit {
         if (temp) {
             this.savedSettings = JSON.parse(temp);
         }
-        else // load defaults
-        {
+
+        if (this.savedSettings == null) {
             this.savedSettings = new PrintSettings();
             this.savedSettings.mapName = 'topo2';
             this.savedSettings.radiusR25 = 500;

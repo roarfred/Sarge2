@@ -10,6 +10,12 @@ namespace Sarge2.Api.Controllers
     [Route("api/[controller]")]
     public class SymbolsController : Controller
     {
+        [HttpGet]
+        public string[] GetSymbolNames()
+        {
+            return PoiSymbols.GetSymbolNames();
+        }
+
         [HttpGet("{name}")]
         public ActionResult GetSymbol(string name)
         {

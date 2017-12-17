@@ -52,4 +52,12 @@ export class MapService {
             })
             .catch((error) => console.error(error));
     }
+
+    getPoiSymbolNames(): Promise<Array<string>> {
+        return this.http
+            .get(`${this.baseUrl}/api/symbols`, { headers: this.headers })
+            .toPromise()
+            .then((result) => { return result.json(); })
+            .catch((error) => console.error(error));
+    };
 }

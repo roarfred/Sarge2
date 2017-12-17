@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -22,7 +22,7 @@ import { PrintMenuComponent } from './print-menu.component';
 import { TracksMenuComponent } from './tracks-menu.component';
 import { AreasMenuComponent } from './areas-menu.component';
 import { AreasStyleDialog } from './areas-style.dialog';
-import { PoiMenuComponent } from './poi-menu.component';
+import { PoisMenuComponent } from './pois-menu.component';
 import { ImportMenuComponent } from './import-menu.component';
 
 import { MeasureLineComponent } from './measure/measure-line.component';
@@ -40,7 +40,7 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
         TracksMenuComponent, 
         AreasMenuComponent, 
         AreasStyleDialog,
-        PoiMenuComponent,
+        PoisMenuComponent,
         LocationComponent,
         ImportMenuComponent,
 
@@ -58,6 +58,7 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
     imports: [
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         MaterialModule,
         FlexLayoutModule,
         FileUploadModule,
@@ -72,7 +73,7 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
         PrintMenuComponent, 
         TracksMenuComponent, 
         AreasMenuComponent, 
-        PoiMenuComponent, 
+        PoisMenuComponent, 
         LocationComponent,
         ImportMenuComponent
     ]

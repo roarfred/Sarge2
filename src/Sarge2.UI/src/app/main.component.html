@@ -47,7 +47,7 @@
   
     <my-measure-menu class="menu-content" [hidden]="menuName != 'measure'" [map]="myMap.map"></my-measure-menu>
     <my-tracks-menu class="menu-content" [hidden]="menuName != 'tracks'"></my-tracks-menu>
-    <my-poi-menu class="menu-content" [hidden]="menuName != 'pois'" [pois]="pois"></my-poi-menu>
+    <my-poi-menu class="menu-content" [hidden]="menuName != 'pois'" [map]="myMap.map"></my-poi-menu>
     <my-areas-menu class="menu-content" [hidden]="menuName != 'areas'" [map]="myMap.map"></my-areas-menu>
     <my-import-menu class="menu-content" [hidden]="menuName != 'import'" [map]="myMap.map"></my-import-menu>
   </mat-sidenav>

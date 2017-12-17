@@ -13,14 +13,17 @@ import { AuthService } from './auth.service';
 export class MapDataService {
 
     public areas: MapDataItems;
+    public pois: MapDataItems;
 
     constructor(private db: AngularFireDatabase, private route: ActivatedRoute, private auth: AuthService) {
         this.areas = new MapDataItems(db, this.getAreaFromAction);
+        this.pois = new MapDataItems(db, this.getPoiFromAction);
 
         this.route.params.subscribe(params => {
             let map = params["id"] || "demo";
             console.log("MapData: Loading map '" + map + "'");
             this.areas.loadData(map, "areas", auth.userName);
+            this.pois.loadData(map, "pois", auth.userName);
         });
     }
 
@@ -31,6 +34,14 @@ export class MapDataService {
             strokeColor: action.payload.child("strokeColor").val() || "blue",
             strokeWidth: action.payload.child("strokeWidth").val() || 2,
             fillColor: action.payload.child("fillColor").val() || "#ffff0011",
+            name: action.payload.child("name").val()
+        };
+    }
+    private getPoiFromAction(action: AngularFireAction<firebase.database.DataSnapshot>) {
+        return {
+            key: action.key,
+            coords: action.payload.child("coords").val(),
+            symbol: action.payload.child("symbol").val() || "flag",
             name: action.payload.child("name").val()
         };
     }
