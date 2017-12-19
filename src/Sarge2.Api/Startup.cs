@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace Sarge2.Api
 {
@@ -49,7 +50,19 @@ namespace Sarge2.Api
             //    config.MapRoute("Default", "{controller}/{action}/{id?}",
             //        new { controller = "Home", action = "Index" });
             //});
-            
+
+            // Let all requests direct to root, for SPA to catch all urls
+            app.Use(async (c, next) =>
+            {
+                await next();
+
+                if (c.Response.StatusCode == 404 && !Path.HasExtension(c.Request.Path.Value))
+                {
+                    c.Request.Path = "/index.html";
+                    await next();
+                }
+            });
+
             // Cors must appear before the UseMvc to have any effect
             app.UseCors(config =>
             {
