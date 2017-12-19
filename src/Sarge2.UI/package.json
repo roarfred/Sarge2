@@ -27,7 +27,7 @@
     "angularfire2": "^5.0.0-rc.4",
     "core-js": "^2.4.1",
     "file-saver": "^1.3.3",
-    "firebase": "^4.8.0",
+    "firebase": "^4.8.1",
     "hammerjs": "^2.0.8",
     "ng2-file-upload": "^1.3.0",
     "ngx-color-picker": "^4.5.0",
@@ -37,7 +37,7 @@
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "@angular/cli": "^1.6.0",
+    "@angular/cli": "^1.6.1",
     "@angular/compiler-cli": "^5.0.0",
     "@angular/language-service": "^5.0.0",
     "@types/file-saver": "0.0.1",
@@ -56,6 +56,6 @@
     "protractor": "~5.1.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
-    "typescript": "^2.4.2"
+    "typescript": ">=2.4.2 <2.5.0"
   }
 }
