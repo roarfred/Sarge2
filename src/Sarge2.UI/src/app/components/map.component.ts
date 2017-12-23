@@ -8,7 +8,7 @@ declare var ol: any;
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.css']
 })
-export class MapComponent {
+export class MapComponent implements OnInit {
     name = 'Map';
     private _pois: any;
     private poiSource: any;
@@ -139,6 +139,10 @@ export class MapComponent {
             }
         }
         this.mapLocationChange.emit(this._mapLocation);
+    }
+
+    ngOnInit(): void {
+        this.createMap();
     }
 
     startDrawing(): void {
@@ -381,7 +385,9 @@ export class MapComponent {
 
         const features = [];
         lines.forEach(line => {
-            features.push(new ol.Feature({ geometry: line }));
+            features.push(new ol.Feature({ 
+                geometry: new ol.geom.LineString(line) 
+            }));
         });
 
         const lineStyle = new ol.style.Style({

@@ -16,7 +16,7 @@ export class PrintSettings {
     showUtmGrid: boolean;
     showLatLonGrid: boolean;
     showCrossHair: boolean;
-    
+
     radiusR50: number;
     radiusR25: number;
 }

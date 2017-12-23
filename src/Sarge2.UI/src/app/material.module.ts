@@ -21,4 +21,4 @@ import {
         MatCardModule, MatMenuModule, MatSliderModule, MatAutocompleteModule, MatFormFieldModule,
         MatDialogModule]
 })
-export class MaterialModule { };
+export class MaterialModule { }

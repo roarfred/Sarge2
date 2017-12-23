@@ -45,11 +45,11 @@
       </mat-card>
     </div>
   
-    <app-measure-menu class='menu-content' [hidden]='menuName != 'measure'' [map]='myMap.map'></app-measure-menu>
-    <app-tracks-menu class='menu-content' [hidden]='menuName != 'tracks''></app-tracks-menu>
-    <app-poi-menu class='menu-content' [hidden]='menuName != 'pois'' [map]='myMap.map'></app-poi-menu>
-    <app-areas-menu class='menu-content' [hidden]='menuName != 'areas'' [map]='myMap.map'></app-areas-menu>
-    <app-import-menu class='menu-content' [hidden]='menuName != 'import'' [map]='myMap.map'></app-import-menu>
+    <app-measure-menu class='menu-content' [hidden]='menuName != "measure"' [map]='myMap.map'></app-measure-menu>
+    <app-tracks-menu class='menu-content' [hidden]='menuName != "tracks"'></app-tracks-menu>
+    <app-poi-menu class='menu-content' [hidden]='menuName != "pois"' [map]='myMap.map'></app-poi-menu>
+    <app-areas-menu class='menu-content' [hidden]='menuName != "areas"' [map]='myMap.map'></app-areas-menu>
+    <app-import-menu class='menu-content' [hidden]='menuName != "import"' [map]='myMap.map'></app-import-menu>
   </mat-sidenav>
   
   <app-map #myMap [lockIpp]='lock' [radiusR25]='printMenu.r25' [radiusR50]='printMenu.r50' [(ipp)]='ipp' [scale]='printMenu.scale'

@@ -1,5 +1,4 @@
 export class GeoData {
-    
     public tracks: Array<Track>;
     public pois: Array<Poi>;
     public name: string;
@@ -12,7 +11,6 @@ export class GeoData {
 export class Track {
     public name: string;
     public pointCount: number;
-    
     public points: Array<TimePoint>;
 }
 
@@ -31,4 +29,3 @@ export class Position {
     public longitude: number;
     public latitude: number;
 }
-    
