@@ -12,11 +12,11 @@ const routes: Routes = [
               component: MainComponent
             },
             {
-                path: "**",
+                path: '**',
                 component: MainComponent
             }
         ]
     }
 ];
 
-export const AppRoutingModule = RouterModule.forChild(routes);
+export const AppRoutingModule = RouterModule.forRoot(routes, { enableTracing: true });

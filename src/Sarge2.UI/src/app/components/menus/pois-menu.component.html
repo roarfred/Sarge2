@@ -21,7 +21,7 @@
         </mat-form-field>
     </div>
     <button mat-icon-button color="primary" (click)="selectAll()" aria-label="Select all">
-        <mat-icon aria-label="Select all/none">{{selectAllOption ? 'check_box_outline_blank' : 'check_box'}}</mat-icon>select all ({{itemCount}})
+        <mat-icon aria-label="Select all/none">{{selectAllOption ? 'check_box_outline_blank' : 'check_box'}}</mat-icon>select all ({{mapData.pois.count}})
     </button>
     <div fxLayout="row" fxLayoutAlign="space-around center" *ngFor="let item of mapData.pois.items | async">
         <div fxflex="20" fxLayoutAlign="start center">

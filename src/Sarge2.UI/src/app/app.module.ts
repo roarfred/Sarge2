@@ -49,7 +49,6 @@ import { environment } from '../environments/environment';
     MenuModule,
     MaterialModule,
     HttpModule,
-    RouterModule.forRoot([]),
     AppRoutingModule,
     ColorPickerModule
   ],

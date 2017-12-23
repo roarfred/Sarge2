@@ -7,6 +7,7 @@ import { AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
 import { GeoData } from './models/index';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
+import { MapDataService } from './services/map-data.service';
 
 @Component({
   templateUrl: './main.component.html',
@@ -29,7 +30,11 @@ export class MainComponent implements OnInit, AfterViewInit {
   maps: any;
   pois: any;
 
-  constructor() {
+  constructor(private route: ActivatedRoute, mapData: MapDataService) {
+    this.route.params.subscribe(params => {
+      console.log('MainComponent: ', params, params['id']);
+      mapData.loadMap(params['id']);
+    });
   }
 
   @Output() mapLocationChange = new EventEmitter();

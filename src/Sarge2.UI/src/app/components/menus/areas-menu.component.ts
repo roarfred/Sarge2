@@ -24,7 +24,6 @@ export class AreasMenuComponent implements OnInit {
     private draw: any;
     private style: any;
     private source: any;
-    public itemCount: number = 0;
     public selectAllOption = true;
 
     @Input()
@@ -32,12 +31,6 @@ export class AreasMenuComponent implements OnInit {
     areaFeatures: any = {};
 
     constructor(private mapData: MapDataService, public dialog: MatDialog) {
-        mapData.areas.itemAdded(area => this.areaAdded(area));
-        mapData.areas.itemRemoved(area => this.areaRemoved(area));
-        mapData.areas.itemUpdated(area => this.areaUpdated(area));
-        mapData.areas.items.subscribe(items => {
-            this.itemCount = items.length;
-        })
     }
 
     openDialog(): void {
@@ -135,6 +128,10 @@ export class AreasMenuComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.mapData.areas.itemAdded(area => this.areaAdded(area));
+        this.mapData.areas.itemRemoved(area => this.areaRemoved(area));
+        this.mapData.areas.itemUpdated(area => this.areaUpdated(area));
+
         this.style = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: "red",

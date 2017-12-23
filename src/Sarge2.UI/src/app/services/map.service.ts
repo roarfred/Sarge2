@@ -22,7 +22,7 @@ export class MapService {
         return this.http
             .get(`${this.baseUrl}/api/mapsource`, { headers: this.headers })
             .toPromise()
-            .then((result) => { return result.json(); })
+            .then((result) => result.json())
             .catch((error) => console.error(error));
     };
 

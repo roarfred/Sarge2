@@ -28,7 +28,7 @@ export class PoisMenuComponent implements OnInit {
     private draw: any;
     private style: any;
     private source: any;
-    public itemCount: number = 0;
+    
     public selectAllOption = true;
     public poiSymbols: Array<string>;
 
@@ -55,6 +55,7 @@ export class PoisMenuComponent implements OnInit {
             }));
         })
     }
+
     filterSymbols(name: string) {
         return this.poiSymbols.filter(symbol =>
             symbol.toLowerCase().indexOf(name.toLowerCase()) === 0);
@@ -62,42 +63,6 @@ export class PoisMenuComponent implements OnInit {
 
     public getSymbolUrl(symbol: string) {
         return environment.apiUrl + "/api/symbols/" + symbol;
-    }
-    openDialog(): void {
-        /*
-        let dialogRef = this.dialog.open(AreasStyleDialog, {
-            width: '250px',
-            data: { fillColor: this.defaultFillColor, strokeColor: this.defaultStrokeColor, strokeWidth: this.defaultStrokeWidth }
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.defaultFillColor = result.fillColor;
-                this.defaultStrokeColor = result.strokeColor;
-                this.defaultStrokeWidth = result.strokeWidth;
-
-                this.mapData.areas.getSelected().then(areas => areas.forEach(area => {
-                    area.strokeColor = this.defaultStrokeColor;
-                    area.strokeWidth = this.defaultStrokeWidth;
-                    area.fillColor = this.defaultFillColor;
-                    this.saveItem(area);
-
-                    this.areaFeatures[area.key].setStyle(new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: area.strokeColor,
-                            width: area.strokeWidth
-                        }),
-                        fill: new ol.style.Fill({
-                            color: area.fillColor
-                        }),
-                        text: new ol.style.Text({
-                            text: area.text
-                        })
-                    }));
-                }));
-            };
-        });
-        */
     }
 
     poiAdded(poi: any): void {
@@ -185,9 +150,6 @@ export class PoisMenuComponent implements OnInit {
         this.mapData.pois.itemAdded(poi => this.poiAdded(poi));
         this.mapData.pois.itemRemoved(poi => this.poiRemoved(poi));
         this.mapData.pois.itemUpdated(poi => this.poiUpdated(poi));
-        this.mapData.pois.items.subscribe(items => {
-            this.itemCount = items.length;
-        });
 
         this.mapService.getPoiSymbolNames().then(names => {
             this.poiSymbols = names;
