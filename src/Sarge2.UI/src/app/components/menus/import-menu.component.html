@@ -12,7 +12,7 @@
     <input matInput placeholder="max time" type="number" [(ngModel)]="maxTime">
 </mat-form-field>
 <mat-progress-bar mode="indeterminate" *ngIf="uploading"></mat-progress-bar>
-
+<button mat-button (click)="import()">Import</button>
 <div *ngIf="geoData" class="geo-list">
     Name:
     <input type="text" [(ngModel)]="geoData.name">

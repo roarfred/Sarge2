@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FileUploader, FileSelectDirective, FileDropDirective, ParsedResponseHeaders, FileItem } from 'ng2-file-upload/ng2-file-upload';
 import { environment } from '../../../environments/environment';
 import { GeoData, Track, TimePoint, Position, Poi, Location } from '../../models';
+import { MapDataService } from '../../services/map-data.service';
 
 declare var ol: any;
 
@@ -44,7 +45,7 @@ export class ImportMenuComponent implements OnInit {
         return this._map;
     }
 
-    constructor() {
+    constructor(private mapData: MapDataService) {
         this.uploader.onBeforeUploadItem = (file: FileItem) => {
             this.uploading = true;
             this.uploader.options.additionalParameter = {
@@ -262,5 +263,21 @@ export class ImportMenuComponent implements OnInit {
                 this.map.getView().setCenter(center);
             }
         }
+    }
+
+    public import() {
+        this.trackFeatures.forEach((track, index) => {
+            const geoTrack = this.geoData.tracks[index];
+            const geometry = track.getGeometry().clone();
+            geometry.transform('EPSG:32633', 'EPSG:4326');
+            const coords = geometry.getCoordinates();
+            console.log('Coordinates', coords);
+            this.mapData.tracks.addItem({
+                name: geoTrack.name,
+                coords: coords,
+                strokeWidth: 8,
+                strokeColor: '#00cc33cc'
+            });
+        });
     }
 }
