@@ -1,57 +1,57 @@
-<mat-toolbar color="primary">
-    <my-menu-buttons #menuButtons (menuClick)="toggleMenu(menuButtons.menuName)"></my-menu-buttons>
+<mat-toolbar color='primary'>
+    <app-menu-buttons #menuButtons (menuClick)='toggleMenu(menuButtons.menuName)'></app-menu-buttons>
     <!-- This fills the remaining space of the current row -->
-    <div class="example-fill-remaining-space">
+    <div class='example-fill-remaining-space'>
       <span>&nbsp;{{title}}&nbsp;</span>
-      <mat-menu #mapMenu="matMenu" color="primary">
-          <div *ngFor="let map of maps">
-        <button mat-button (click)="changeMap(map)">
+      <mat-menu #mapMenu='matMenu' color='primary'>
+          <div *ngFor='let map of maps'>
+        <button mat-button (click)='changeMap(map)'>
             <mat-icon>language</mat-icon>{{map.name}}
         </button>
       </div>  
       </mat-menu>
     </div>
     <div>
-      <my-location class="ipp" *ngIf="ipp" [location]="ipp"></my-location>
-      <mat-slide-toggle [(ngModel)]="lock" labelPosition="before">Lock IPP</mat-slide-toggle>
+      <app-location class='ipp' *ngIf='ipp' [location]='ipp'></app-location>
+      <mat-slide-toggle [(ngModel)]='lock' labelPosition='before'>Lock IPP</mat-slide-toggle>
     </div>
     <div>
-      <my-user #user></my-user>
+      <app-user #user></app-user>
     </div>
   </mat-toolbar>
   
-  <mat-sidenav #menu mode="over" opened="false">
-    <my-print-menu class="menu-content" [location]="ipp || mapLocation" #printMenu [hidden]="menuName != 'print'"></my-print-menu>
-    <div class="positions-menu menu-content" [hidden]="menuName != 'location'">
+  <mat-sidenav #menu mode='over' opened='false'>
+    <app-print-menu class='menu-content' [location]='ipp || mapLocation' #printMenu [hidden]='menuName != "print"'></app-print-menu>
+    <div class='positions-menu menu-content' [hidden]='menuName != "location"'>
       <mat-card>
         <mat-card-title>Map Center</mat-card-title>
         <mat-card-content>
-          <my-location [(location)]="mapLocation" editable="true"></my-location>
+          <app-location [(location)]='mapLocation' editable='true'></app-location>
         </mat-card-content>
       </mat-card>
   
-      <mat-card *ngIf="ipp">
+      <mat-card *ngIf='ipp'>
         <mat-card-title>IPP</mat-card-title>
         <mat-card-content>
-          <my-location [(location)]="ipp" editable="true"></my-location>
+          <app-location [(location)]='ipp' editable='true'></app-location>
         </mat-card-content>
       </mat-card>
   
-      <mat-card *ngIf="clickedLocation">
+      <mat-card *ngIf='clickedLocation'>
         <mat-card-title>Last clicked</mat-card-title>
         <mat-card-content>
-          <my-location [location]="clickedLocation"></my-location>
+          <app-location [location]='clickedLocation'></app-location>
         </mat-card-content>
       </mat-card>
     </div>
   
-    <my-measure-menu class="menu-content" [hidden]="menuName != 'measure'" [map]="myMap.map"></my-measure-menu>
-    <my-tracks-menu class="menu-content" [hidden]="menuName != 'tracks'"></my-tracks-menu>
-    <my-poi-menu class="menu-content" [hidden]="menuName != 'pois'" [map]="myMap.map"></my-poi-menu>
-    <my-areas-menu class="menu-content" [hidden]="menuName != 'areas'" [map]="myMap.map"></my-areas-menu>
-    <my-import-menu class="menu-content" [hidden]="menuName != 'import'" [map]="myMap.map"></my-import-menu>
+    <app-measure-menu class='menu-content' [hidden]='menuName != 'measure'' [map]='myMap.map'></app-measure-menu>
+    <app-tracks-menu class='menu-content' [hidden]='menuName != 'tracks''></app-tracks-menu>
+    <app-poi-menu class='menu-content' [hidden]='menuName != 'pois'' [map]='myMap.map'></app-poi-menu>
+    <app-areas-menu class='menu-content' [hidden]='menuName != 'areas'' [map]='myMap.map'></app-areas-menu>
+    <app-import-menu class='menu-content' [hidden]='menuName != 'import'' [map]='myMap.map'></app-import-menu>
   </mat-sidenav>
   
-  <my-map #myMap [lockIpp]="lock" [radiusR25]="printMenu.r25" [radiusR50]="printMenu.r50" [(ipp)]="ipp" [scale]="printMenu.scale"
-    [paperSize]="printMenu.paperSize" [mapSource]="printMenu.mapSource" [(mapLocation)]="mapLocation" (mapClicked)="setMapClickedLocation($event)"
-    [pois]="pois"></my-map>
+  <app-map #myMap [lockIpp]='lock' [radiusR25]='printMenu.r25' [radiusR50]='printMenu.r50' [(ipp)]='ipp' [scale]='printMenu.scale'
+    [paperSize]='printMenu.paperSize' [mapSource]='printMenu.mapSource' [(mapLocation)]='mapLocation' (mapClicked)='setMapClickedLocation($event)'
+    [pois]='pois'></app-map>

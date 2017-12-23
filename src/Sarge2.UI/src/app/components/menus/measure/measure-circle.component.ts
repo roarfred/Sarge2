@@ -3,7 +3,7 @@ import { Location } from '../../../models';
 declare var ol: any;
 
 @Component({
-    selector: 'my-measure-circle',
+    selector: 'app-measure-circle',
     templateUrl: './measure-circle.component.html',
     styleUrls: ['./measure-circle.component.css', './measure-common.css']
 })
@@ -15,7 +15,7 @@ export class MeasureCircleComponent {
         return this._map;
     }
     set map(map: any) {
-        if (map != this._map) {
+        if (map !== this._map) {
             this._map = map;
             if (this._map) {
                 this._map.on('pointermove', this.mouseMove, this);
@@ -36,12 +36,11 @@ export class MeasureCircleComponent {
     measure(): void {
         this.distance = null;
         this.area = null;
-        
         this.stopDraw();
 
-        var style = new ol.style.Style({
+        const style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: "red",
+                color: 'red',
                 width: 4
             }),
             image: new ol.style.Circle({
@@ -52,14 +51,14 @@ export class MeasureCircleComponent {
               })
         });
 
-        var source = new ol.source.Vector({ wrapX: false });
+        const source = new ol.source.Vector({ wrapX: false });
         this.drawingLayer = new ol.layer.Vector({
             source: source,
             style: style
         });
         this.map.addLayer(this.drawingLayer);
 
-        var value = 'Circle';
+        const value = 'Circle';
         this.draw = new ol.interaction.Draw({
             source: source,
             style: style,
@@ -69,9 +68,9 @@ export class MeasureCircleComponent {
         });
 
         this.draw.on('drawstart', (event) => {
-            let sketch = event.feature;
+            const sketch = event.feature;
             this.circle = sketch.getGeometry();
-            let position = this.circle.getFirstCoordinate();
+            const position = this.circle.getFirstCoordinate();
             this.startPosition = new Location(33, position[0], position[1]).getLocalLocation();
             this.mouseTracker = this.trackMeasureDistance;
         }, this);
@@ -81,17 +80,16 @@ export class MeasureCircleComponent {
             this.mouseTracker = null;
 
             // avoid more mouse move events
-            let from = this.startPosition;
+            const from = this.startPosition;
             this.startPosition = null;
 
-            let sketch = event.feature;
-            let position = sketch.getGeometry().getLastCoordinate();
-            let to = new Location(33, position[0], position[1]).getLocalLocation();
+            const sketch = event.feature;
+            const position = sketch.getGeometry().getLastCoordinate();
+            const to = new Location(33, position[0], position[1]).getLocalLocation();
 
             this.measureDistance(from, to);
         }, this);
 
-        
         this.map.addInteraction(this.draw);
 
         /*
@@ -107,19 +105,19 @@ export class MeasureCircleComponent {
         Polygon
         SimpleGeometry
         */
-    };
+    }
 
     private mouseMove(event): void {
-        if (this.mouseTracker)
+        if (this.mouseTracker) {
             this.mouseTracker(event);
-    };
+        }
+    }
 
-    trackMeasureDistance(event) : void {
+    trackMeasureDistance(event): void {
         if (this.startPosition) {
-            var current = event.coordinate;
-            var to = new Location(33, current[0], current[1]).getLocalLocation();
+            const current = event.coordinate;
+            const to = new Location(33, current[0], current[1]).getLocalLocation();
             this.measureDistance(this.startPosition, to);
-            
         }
     }
 
@@ -137,5 +135,4 @@ export class MeasureCircleComponent {
             this.drawingLayer = null;
         }
     }
-
 }

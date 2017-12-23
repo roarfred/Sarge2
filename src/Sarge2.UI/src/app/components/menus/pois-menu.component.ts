@@ -14,7 +14,7 @@ import { FormControl } from '@angular/forms';
 declare var ol: any;
 
 @Component({
-    selector: 'my-poi-menu',
+    selector: 'app-poi-menu',
     templateUrl: './pois-menu.component.html',
     styles: ['./pois-menu.component.css']
 })

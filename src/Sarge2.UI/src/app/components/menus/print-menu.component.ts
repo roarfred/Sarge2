@@ -3,7 +3,7 @@ import { Location, PaperSize, ScaleAndTileSize, MapSource, Margins, PrintSetting
 import { MapService } from '../../services/map.service';
 
 @Component({
-    selector: 'my-print-menu',
+    selector: 'app-print-menu',
     templateUrl: './print-menu.component.html',
     styleUrls: ['./print-menu.component.css']
 })
@@ -80,8 +80,9 @@ export class PrintMenuComponent implements OnInit {
             this._mapService.getScales(this._mapSource.name)
                 .then((result) => {
                     this.scales = result;
-                    if (this.savedSettings && result)
-                        this.scale = result.find(v => v.name == this.savedSettings.scaleAndTileSize.name);
+                    if (this.savedSettings && result) {
+                        this.scale = result.find(v => v.name === this.savedSettings.scaleAndTileSize.name);
+                    }
                 })
                 .catch((error) => console.error(error));
         }
@@ -103,24 +104,26 @@ export class PrintMenuComponent implements OnInit {
         this._mapService.getMapSources()
             .then((result) => {
                 this.mapSources = result;
-                if (this.savedSettings && result)
-                    this.mapSource = result.find(v => v.name == this.savedSettings.mapName);
+                if (this.savedSettings && result) {
+                    this.mapSource = result.find(v => v.name === this.savedSettings.mapName);
+                }
             })
             .catch((error) => console.error(error));
 
         this._mapService.getPaperSizes()
             .then((result) => {
                 this.paperSizes = result;
-                if (this.savedSettings && result)
-                    this.paperSize = result.find(v => v.name == this.savedSettings.paperSize.name);
+                if (this.savedSettings && result) {
+                    this.paperSize = result.find(v => v.name === this.savedSettings.paperSize.name);
+                }
             })
             .catch((error) => console.error(error));
     }
 
     print() {
-        let settings = this.getSettings();
+        const settings = this.getSettings();
 
-        console.log("Requesting map: " + JSON.stringify(settings));
+        console.log('Requesting map: ' + JSON.stringify(settings));
         this.downloading = true;
         this._mapService.downloadMap(settings)
             .then((result) => this.downloading = false)
@@ -130,9 +133,10 @@ export class PrintMenuComponent implements OnInit {
     }
 
     getSettings(): PrintSettings {
-        if (!this._mapSource)
+        if (!this._mapSource) {
             return null;
-        let settings: PrintSettings = {
+        }
+        const settings: PrintSettings = {
             title: this.name,
             mapName: this._mapSource.name,
             scaleAndTileSize: this._scale,
@@ -146,15 +150,15 @@ export class PrintMenuComponent implements OnInit {
             location: this.location
         };
         return settings;
-    };
+    }
 
     saveSettings() {
-        let settings = this.getSettings();
-        localStorage.setItem("printSettings", JSON.stringify(settings));
-    };
+        const settings = this.getSettings();
+        localStorage.setItem('printSettings', JSON.stringify(settings));
+    }
 
     loadSettings() {
-        let temp = localStorage.getItem("printSettings");
+        const temp = localStorage.getItem('printSettings');
 
         if (temp) {
             this.savedSettings = JSON.parse(temp);
@@ -165,13 +169,13 @@ export class PrintMenuComponent implements OnInit {
             this.savedSettings.mapName = 'topo2';
             this.savedSettings.radiusR25 = 500;
             this.savedSettings.radiusR50 = 2500;
-            this.savedSettings.paperSize = { name: "A4 Landscape", width: 0.29725, height: 0.21025 };
-            this.savedSettings.scaleAndTileSize = { "scale": 50000.0, "tileSizeInMeters": 2708.0, "name": "1:50000 (Hi)" };
+            this.savedSettings.paperSize = { name: 'A4 Landscape', width: 0.29725, height: 0.21025 };
+            this.savedSettings.scaleAndTileSize = { 'scale': 50000.0, 'tileSizeInMeters': 2708.0, 'name': '1:50000 (Hi)' };
             this.savedSettings.showCrossHair = true;
             this.savedSettings.showLatLonGrid = false;
             this.savedSettings.showUtmGrid = true;
         }
- 
+
         this.name = this.savedSettings.title;
         this.r25 = this.savedSettings.radiusR25;
         this.r50 = this.savedSettings.radiusR50;

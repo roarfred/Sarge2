@@ -1,5 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
-//import { FileUploader } from 'ng2-file-upload';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FileUploader, FileSelectDirective, FileDropDirective, ParsedResponseHeaders, FileItem } from 'ng2-file-upload/ng2-file-upload';
 import { environment } from '../../../environments/environment';
 import { GeoData, Track, TimePoint, Position, Poi, Location } from '../../models';
@@ -7,20 +6,18 @@ import { GeoData, Track, TimePoint, Position, Poi, Location } from '../../models
 declare var ol: any;
 
 const UPLOAD_URL = '/api/parsegpx/upload';
-//const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 
 @Component({
-    selector: 'my-import-menu',
+    selector: 'app-import-menu',
     templateUrl: 'import-menu.component.html',
     styleUrls: ['import-menu.component.css']
 })
 export class ImportMenuComponent implements OnInit {
     public uploader: FileUploader = new FileUploader({ url: environment.apiUrl + UPLOAD_URL, autoUpload: true });
-    //    public uploader:FileUploader = new FileUploader({url: URL, autoUpload: true});
 
-    public hasBaseDropZoneOver: boolean = false;
-    public hasAnotherDropZoneOver: boolean = false;
-    public uploading: boolean = false;
+    public hasBaseDropZoneOver = false;
+    public hasAnotherDropZoneOver = false;
+    public uploading = false;
     @Input()
     public geoData: GeoData;
     @Output()
@@ -35,9 +32,9 @@ export class ImportMenuComponent implements OnInit {
     private trackLayer: any;
     private trackFeatures: any = [];
 
-    public maxDistance: number = 800; // 800 meters between points will split track
-    public maxTime: number = 600; // 10 minutes between points will split track
-    public minTrackPoints: number = 5; // skip tracks of less than 5 points
+    public maxDistance = 800; // 800 meters between points will split track
+    public maxTime = 600; // 10 minutes between points will split track
+    public minTrackPoints = 5; // skip tracks of less than 5 points
 
     @Input()
     set map(map: any) {
@@ -51,9 +48,9 @@ export class ImportMenuComponent implements OnInit {
         this.uploader.onBeforeUploadItem = (file: FileItem) => {
             this.uploading = true;
             this.uploader.options.additionalParameter = {
-                "maxDistance": this.maxDistance,
-                "maxTime": this.secondsToTime(this.maxTime),
-                "minTrackPoints": this.minTrackPoints
+                'maxDistance': this.maxDistance,
+                'maxTime': this.secondsToTime(this.maxTime),
+                'minTrackPoints': this.minTrackPoints
             };
         };
 
@@ -67,15 +64,15 @@ export class ImportMenuComponent implements OnInit {
 
         this.uploader.onErrorItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
             this.uploading = false;
-        }
+        };
     }
 
     secondsToTime(seconds: number): string {
-        var hours: number = Math.floor(seconds / 60 / 60);
-        var minutes: number = Math.floor(seconds / 60) % 60;
+        const hours = Math.floor(seconds / 60 / 60);
+        const minutes = Math.floor(seconds / 60) % 60;
         seconds = seconds % 60;
-        var pad = (i: number): string => i < 10 ? "0" + i : i.toFixed(0);
-        return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+        const pad = (i: number): string => i < 10 ? '0' + i : i.toFixed(0);
+        return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
     }
 
 
@@ -88,8 +85,8 @@ export class ImportMenuComponent implements OnInit {
     }
 
     initPoiSource() {
-        var poiStyle = function (feature, resolution) {
-            var image = new ol.style.Circle({
+        const poiStyle = function (feature, resolution) {
+            let image = new ol.style.Circle({
                 radius: 5,
                 snapToPixel: false,
                 fill: new ol.style.Fill({ color: 'white' }),
@@ -98,21 +95,21 @@ export class ImportMenuComponent implements OnInit {
                 })
             });
 
-            var poi = feature.getProperties().poi;
+            const poi = feature.getProperties().poi;
             if (poi.symbol) {
                 image = new ol.style.Icon(/** @type {olx.style.IconOptions} */({
                     anchor: [0.5, 0.5],
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'fraction',
                     opacity: 0.75,
-                    src: environment.apiUrl + "/api/symbols/" + poi.symbol
-                }))
-            };
+                    src: environment.apiUrl + '/api/symbols/' + poi.symbol
+                }));
+            }
 
             return new ol.style.Style({
                 image: image,
                 text: new ol.style.Text({
-                    text: resolution < 20 ? poi.name : "",
+                    text: resolution < 20 ? poi.name : '',
                     offsetY: -20,
                     scale: 1.5,
                     fill: new ol.style.Fill({
@@ -137,25 +134,25 @@ export class ImportMenuComponent implements OnInit {
 
     initTrackSource() {
 
-        var map = this.map;
+        const map = this.map;
 
-        var trackStyle = function (feature, resolution) {
-            console.log("Resolution: " + resolution);
-            
-            var center = ol.extent.getCenter(feature.getGeometry().getExtent());
-            var first = feature.getGeometry().getLastCoordinate();
-            var centerPixels = map.getPixelFromCoordinate(center);
-            var firstPixels = map.getPixelFromCoordinate(first);
+        const trackStyle = function (feature, resolution) {
+            console.log('Resolution: ' + resolution);
 
-            var track = feature.getProperties().track;
+            const center = ol.extent.getCenter(feature.getGeometry().getExtent());
+            const first = feature.getGeometry().getLastCoordinate();
+            const centerPixels = map.getPixelFromCoordinate(center);
+            const firstPixels = map.getPixelFromCoordinate(first);
+
+            const track = feature.getProperties().track;
 
             return new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: "blue",
+                    color: 'blue',
                     width: 3
                 }),
                 text: new ol.style.Text({
-                    text: resolution < 10 ? track.name : "",
+                    text: resolution < 10 ? track.name : '',
                     offsetX: (firstPixels[0] - centerPixels[0]) / 2,
                     offsetY: (firstPixels[1] - centerPixels[1]) / 2,
                     scale: 1.5,
@@ -211,20 +208,18 @@ export class ImportMenuComponent implements OnInit {
     }
 
     public showPoi(poi: Poi, centerMap: boolean) {
-        var poiIndex = this.geoData.pois.indexOf(poi);
+        const poiIndex = this.geoData.pois.indexOf(poi);
 
-        if (!this.poiSource)
+        if (!this.poiSource) {
             this.initMap();
-
+        }
         if (poiIndex >= 0 && this.poiFeatures[poiIndex]) {
             this.poiSource.removeFeature(this.poiFeatures[poiIndex]);
             this.poiFeatures[poiIndex] = null;
-        }
-        else {
-
-            var pos = new Location(0, poi.position.longitude, poi.position.latitude).getLocation(33);
-            var poiOnMap = new ol.geom.Point([pos.easting, pos.northing]);
-            var poiFeature = new ol.Feature({
+        } else {
+            const pos = new Location(0, poi.position.longitude, poi.position.latitude).getLocation(33);
+            const poiOnMap = new ol.geom.Point([pos.easting, pos.northing]);
+            const poiFeature = new ol.Feature({
                 geometry: poiOnMap,
                 poi: poi
             });
@@ -232,31 +227,30 @@ export class ImportMenuComponent implements OnInit {
             this.poiSource.addFeature(poiFeature);
             this.poiFeatures[poiIndex] = poiFeature;
 
-            if (centerMap)
+            if (centerMap) {
                 this.map.getView().center(poiOnMap);
+            }
         }
     }
 
     public showTrack(track: Track, centerMap: boolean) {
-        var trackIndex = this.geoData.tracks.indexOf(track);
+        const trackIndex = this.geoData.tracks.indexOf(track);
 
-        if (!this.trackSource)
+        if (!this.trackSource) {
             this.initMap();
-
+        }
         if (trackIndex >= 0 && this.trackFeatures[trackIndex]) {
             this.trackSource.removeFeature(this.trackFeatures[trackIndex]);
             this.trackFeatures[trackIndex] = null;
-        }
-        else {
-
-            var trackOnMap = new ol.geom.LineString([]);
-            var trackFeature = new ol.Feature({
+        } else {
+            const trackOnMap = new ol.geom.LineString([]);
+            const trackFeature = new ol.Feature({
                 geometry: trackOnMap,
                 track: track
             });
 
             track.points.forEach((point: TimePoint) => {
-                var pos = new Location(0, point.position.longitude, point.position.latitude).getLocation(33);
+                const pos = new Location(0, point.position.longitude, point.position.latitude).getLocation(33);
                 trackOnMap.appendCoordinate([pos.easting, pos.northing]);
             });
 
@@ -264,7 +258,7 @@ export class ImportMenuComponent implements OnInit {
             this.trackFeatures[trackIndex] = trackFeature;
 
             if (centerMap) {
-                var center = ol.extent.getCenter(trackOnMap.getExtent());
+                const center = ol.extent.getCenter(trackOnMap.getExtent());
                 this.map.getView().setCenter(center);
             }
         }

@@ -15,12 +15,12 @@
   bottom: 6px;
 }
 
-my-location.ipp {
+app-location.ipp {
   float: left;
   margin-right: 10px;
 }
 
-.example-fill-remaining-space my-location {
+.example-fill-remaining-space app-location {
   padding: 5px;
   padding-top: 10px;
 }

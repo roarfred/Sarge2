@@ -9,7 +9,7 @@ import { AreasStyleDialog } from './areas-style.dialog';
 declare var ol: any;
 
 @Component({
-    selector: 'my-areas-menu',
+    selector: 'app-areas-menu',
     templateUrl: 'areas-menu.component.html',
     styleUrls: ['areas-menu.component.css']
 })

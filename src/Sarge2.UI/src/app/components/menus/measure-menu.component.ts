@@ -3,7 +3,7 @@ import { Location } from '../../models';
 declare var ol: any;
 
 @Component({
-    selector: 'my-measure-menu',
+    selector: 'app-measure-menu',
     templateUrl: './measure-menu.component.html',
     styleUrls: ['./measure-menu.component.css']
 })

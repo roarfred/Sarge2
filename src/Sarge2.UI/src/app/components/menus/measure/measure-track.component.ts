@@ -3,7 +3,7 @@ import { Location } from '../../../models';
 declare var ol: any;
 
 @Component({
-    selector: 'my-measure-track',
+    selector: 'app-measure-track',
     templateUrl: './measure-track.component.html',
     styleUrls: ['./measure-track.component.css', './measure-common.css']
 })
@@ -15,7 +15,7 @@ export class MeasureTrackComponent {
         return this._map;
     }
     set map(map: any) {
-        if (map != this._map) {
+        if (map !== this._map) {
             this._map = map;
             if (this._map) {
                 this._map.on('pointermove', this.mouseMove, this);
@@ -33,6 +33,7 @@ export class MeasureTrackComponent {
     distance: number;
     direction: number;
     straightDistance: number;
+    distances: Array<number>;
 
     measure(): void {
         this.distance = null;
@@ -40,9 +41,9 @@ export class MeasureTrackComponent {
 
         this.stopDraw();
 
-        var style = new ol.style.Style({
+        const style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: "red",
+                color: 'red',
                 width: 4
             }),
             image: new ol.style.Circle({
@@ -53,14 +54,14 @@ export class MeasureTrackComponent {
               })
         });
 
-        var source = new ol.source.Vector({ wrapX: false });
+        const source = new ol.source.Vector({ wrapX: false });
         this.drawingLayer = new ol.layer.Vector({
             source: source,
             style: style
         });
         this.map.addLayer(this.drawingLayer);
 
-        var value = 'LineString';
+        const value = 'LineString';
         this.draw = new ol.interaction.Draw({
             source: source,
             style: style,
@@ -69,17 +70,13 @@ export class MeasureTrackComponent {
         });
 
         this.draw.on('drawstart', (event) => {
-            let sketch = event.feature;
+            const sketch = event.feature;
             this.track = sketch.getGeometry();
-            let position = this.track.getCoordinates()[0];
+            const position = this.track.getCoordinates()[0];
             this.startPosition = new Location(33, position[0], position[1]).getLocalLocation();
             this.distances = new Array<number>();
             this.mouseTracker = this.trackMeasureDistance;
         }, this);
-
-        this.draw.on('change', (event) => {
-            console.log("change");
-        });
 
         this.draw.on('drawend', (event) => {
             this.trackMeasureDistance(null);
@@ -87,7 +84,7 @@ export class MeasureTrackComponent {
             this.mouseTracker = null;
 
             // avoid more mouse move events
-            let from = this.startPosition;
+            const from = this.startPosition;
             this.startPosition = null;
         }, this);
 
@@ -107,25 +104,24 @@ export class MeasureTrackComponent {
         Polygon
         SimpleGeometry
         */
-    };
+    }
 
     private mouseMove(event): void {
-        if (this.mouseTracker)
+        if (this.mouseTracker) {
             this.mouseTracker(event);
-    };
-
-    distances: Array<number>;
+        }
+    }
 
     trackMeasureDistance(event): void {
         if (this.startPosition) {
-            let coords = this.track.getCoordinates();
+            const coords = this.track.getCoordinates();
 
             if (coords.length > this.distances.length + 2) {
                 for (let i = this.distances.length; i < coords.length - 2; i++) {
-                    let prev = new Location(33, coords[i][0], coords[i][1]);
-                    let next = new Location(33, coords[i + 1][0], coords[i + 1][1]);
-                    let dist = prev.getDistanceTo(next);
-                    this.distances.push(dist);
+                    const prev = new Location(33, coords[i][0], coords[i][1]);
+                    const next = new Location(33, coords[i + 1][0], coords[i + 1][1]);
+                    const distance = prev.getDistanceTo(next);
+                    this.distances.push(distance);
                 }
             }
 
@@ -133,21 +129,16 @@ export class MeasureTrackComponent {
             this.distances.forEach(v => dist += v);
 
             // add inn the distance to current cursor position
-            let lastCoord = coords[coords.length-2];
-            let last = new Location(33, lastCoord[0], lastCoord[1]).getLocalLocation();
-            
-            var current = coords[coords.length-1];
-            var to = new Location(33, current[0], current[1]).getLocalLocation();
+            const lastCoord = coords[coords.length - 2];
+            const last = new Location(33, lastCoord[0], lastCoord[1]).getLocalLocation();
+
+            const current = coords[coords.length - 1];
+            const to = new Location(33, current[0], current[1]).getLocalLocation();
             dist += last.getDistanceTo(to);
             this.distance = dist;
 
             this.straightDistance = this.startPosition.getDistanceTo(to);
             this.direction = this.startPosition.getDirectionTo(to);
-            /*
-                        var current = event.coordinate;
-                        var to = new Location(33, current[0], current[1]).getLocalLocation();
-                        this.measureDistance(this.startPosition, to);
-                        */
         }
     }
 
@@ -165,5 +156,4 @@ export class MeasureTrackComponent {
             this.drawingLayer = null;
         }
     }
-
 }
