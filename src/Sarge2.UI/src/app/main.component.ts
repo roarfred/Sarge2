@@ -28,7 +28,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   menuName: string;
   menuNameChange = new EventEmitter<string>();
   maps: any;
-  pois: any;
 
   constructor(private route: ActivatedRoute, mapData: MapDataService) {
     this.route.params.subscribe(params => {

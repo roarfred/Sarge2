@@ -10,22 +10,10 @@ declare var ol: any;
 })
 export class MapComponent implements OnInit {
     name = 'Map';
-    private _pois: any;
-    private poiSource: any;
     private _map: any;
 
     constructor() {
         this._map = new ol.Map();
-    }
-    @Input()
-    get pois(): any {
-        return this._pois;
-    }
-    set pois(pois: any) {
-        this._pois = pois;
-        if (pois) {
-            this.drawPois(pois);
-        }
     }
 
     @Output() mapChange = new EventEmitter<any>();
@@ -385,8 +373,8 @@ export class MapComponent implements OnInit {
 
         const features = [];
         lines.forEach(line => {
-            features.push(new ol.Feature({ 
-                geometry: new ol.geom.LineString(line) 
+            features.push(new ol.Feature({
+                geometry: new ol.geom.LineString(line)
             }));
         });
 
@@ -403,57 +391,6 @@ export class MapComponent implements OnInit {
         this.crossHairFeature.setSource(source);
     }
 
-    drawPois(pois: any): void {
-        if (!this.poiSource) {
-            const source = new ol.source.Vector({
-                features: [],
-            });
-
-            const layer = new ol.layer.Vector({
-                source: source,
-                style: function (feature, resolution) {
-                    return new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: 5,
-                            snapToPixel: false,
-                            fill: new ol.style.Fill({ color: 'white' }),
-                            stroke: new ol.style.Stroke({
-                                color: 'black', width: 1.5
-                            })
-                        }),
-                        text: new ol.style.Text({
-                            text: resolution < 20 ? feature.getProperties().name : '',
-                            offsetY: -20,
-                            scale: 1.3,
-                            fill: new ol.style.Fill({
-                              color: '#003399'
-                            }),
-                            stroke: new ol.style.Stroke({
-                              color: '#FFFFFF',
-                              width: 1.5
-                            })
-                        })
-                    });
-                },
-                updateWhileInteracting: true,
-                updateWhileAnimating: true
-            });
-
-            layer.setZIndex(10);
-            this.map.addLayer(layer);
-            this.poiSource = source;
-        }
-
-        this.poiSource.clear();
-        pois.forEach(poi => {
-            const utm33point = new Location(0, poi.position.long, poi.position.lat).getLocation(33);
-            const iconFeature = new ol.Feature({
-                geometry: new ol.geom.Point([utm33point.easting, utm33point.northing]),
-                name: poi.name
-            });
-            this.poiSource.addFeature(iconFeature);
-        });
-    }
     drawPaper(): void {
         if (!this.paperSize || !this.scale) {
             return;
