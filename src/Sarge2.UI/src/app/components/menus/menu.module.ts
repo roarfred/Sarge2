@@ -20,8 +20,9 @@ import { MenuButtonsComponent } from './menu-buttons.component';
 import { MeasureMenuComponent } from './measure-menu.component';
 import { PrintMenuComponent } from './print-menu.component';
 import { TracksMenuComponent } from './tracks-menu.component';
+import { TracksStyleDialogComponent } from './tracks-style-dialog.component';
 import { AreasMenuComponent } from './areas-menu.component';
-import { AreasStyleDialog } from './areas-style.dialog';
+import { AreasStyleDialogComponent } from './areas-style-dialog.component';
 import { PoisMenuComponent } from './pois-menu.component';
 import { ImportMenuComponent } from './import-menu.component';
 
@@ -35,11 +36,12 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
     declarations: [
         MenuButtonsComponent,
 
-        PrintMenuComponent, 
+        PrintMenuComponent,
         MeasureMenuComponent,
-        TracksMenuComponent, 
-        AreasMenuComponent, 
-        AreasStyleDialog,
+        TracksMenuComponent,
+        TracksStyleDialogComponent,
+        AreasMenuComponent,
+        AreasStyleDialogComponent,
         PoisMenuComponent,
         LocationComponent,
         ImportMenuComponent,
@@ -65,17 +67,18 @@ import { MeasureCircleComponent } from './measure/measure-circle.component';
         ColorPickerModule
     ],
     entryComponents: [
-        AreasStyleDialog
+        AreasStyleDialogComponent,
+        TracksStyleDialogComponent
     ],
-    exports: [ 
-        MenuButtonsComponent, 
-        MeasureMenuComponent, 
-        PrintMenuComponent, 
-        TracksMenuComponent, 
-        AreasMenuComponent, 
-        PoisMenuComponent, 
+    exports: [
+        MenuButtonsComponent,
+        MeasureMenuComponent,
+        PrintMenuComponent,
+        TracksMenuComponent,
+        AreasMenuComponent,
+        PoisMenuComponent,
         LocationComponent,
         ImportMenuComponent
     ]
 })
-export class MenuModule { };
+export class MenuModule { }

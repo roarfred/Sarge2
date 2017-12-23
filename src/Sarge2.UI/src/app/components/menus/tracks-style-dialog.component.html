@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Set track style</h2>
+<mat-dialog-content>
+    <div class="main">
+        <div>Stroke: <div class="color-picker" cpWidth="150" cpHeight="50" [(colorPicker)]="strokeColor" cpPosition="bottom" [style.background]="strokeColor" cpAlphaChannel="always"></div></div>
+        <div>Width ({{strokeWidth}}): <mat-slider min="1" max="10" step="1" [(ngModel)]="strokeWidth"></mat-slider></div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>No</button>
+    <!-- Can optionally provide a result for the closing dialog. -->
+    <button mat-button (click)="onYesClick()">Yes</button>
+</mat-dialog-actions>

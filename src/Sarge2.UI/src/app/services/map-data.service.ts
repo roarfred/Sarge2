@@ -14,10 +14,12 @@ export class MapDataService {
 
     public areas: MapDataItems;
     public pois: MapDataItems;
+    public tracks: MapDataItems;
 
     constructor(private db: AngularFireDatabase, private route: ActivatedRoute, private auth: AuthService) {
         this.areas = new MapDataItems(db, this.getAreaFromAction);
         this.pois = new MapDataItems(db, this.getPoiFromAction);
+        this.tracks = new MapDataItems(db, this.getTrackFromAction);
     }
 
     public loadMap(mapName: string) {
@@ -25,8 +27,17 @@ export class MapDataService {
         console.log('MapData: Loading map [' + map + ']');
         this.areas.loadData(map, 'areas', this.auth.userName);
         this.pois.loadData(map, 'pois', this.auth.userName);
+        this.tracks.loadData(map, 'tracks', this.auth.userName);
     }
-
+    private getTrackFromAction(action: AngularFireAction<firebase.database.DataSnapshot>) {
+        return {
+            key: action.key,
+            coords: action.payload.child('coords').val(),
+            strokeColor: action.payload.child('strokeColor').val() || 'green',
+            strokeWidth: action.payload.child('strokeWidth').val() || 2,
+            name: action.payload.child('name').val()
+        };
+    }
     private getAreaFromAction(action: AngularFireAction<firebase.database.DataSnapshot>) {
         return {
             key: action.key,

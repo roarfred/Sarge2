@@ -1,0 +1,15 @@
+.track-preview {
+    display: inline-block;
+    border-style: solid; 
+    padding: 10px;
+    width: 40px;
+    height: 15px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: x-small;
+}
+.item-button {
+    min-width: 25px;
+    width: 25px;
+    padding: 0px;
+  }

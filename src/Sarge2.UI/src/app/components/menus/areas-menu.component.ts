@@ -4,7 +4,7 @@ import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { ActivatedRoute } from '@angular/router';
 import { MapDataService } from '../../services/map-data.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AreasStyleDialog } from './areas-style.dialog';
+import { AreasStyleDialogComponent } from './areas-style-dialog.component';
 
 declare var ol: any;
 
@@ -36,7 +36,7 @@ export class AreasMenuComponent implements OnInit {
     }
 
     openDialog(): void {
-        const dialogRef = this.dialog.open(AreasStyleDialog, {
+        const dialogRef = this.dialog.open(AreasStyleDialogComponent, {
             width: '250px',
             data: { fillColor: this.defaultFillColor, strokeColor: this.defaultStrokeColor, strokeWidth: this.defaultStrokeWidth }
         });
