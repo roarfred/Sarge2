@@ -22,7 +22,7 @@ export class MapDataItems {
     constructor(private db: AngularFireDatabase, private actionToItem: (action: AngularFireAction<firebase.database.DataSnapshot>) => any) {
     }
 
-    public loadData(map:string, collection: string, user: string) {
+    public loadData(map: string, collection: string, user: string) {
         this.user = user;
         this.itemsRef = this.db.list(`maps/${map}/${collection}`);
         const mapData = this;
@@ -42,18 +42,18 @@ export class MapDataItems {
         this.itemsRef.auditTrail().subscribe(actions => {
             actions.forEach(action => {
                 const item = this.actionToItem(action);
-                if (action.type == "child_added") {
+                if (action.type === 'child_added') {
                     if (this.itemKeys.indexOf(action.key) < 0) {
                         this.itemKeys.push(action.key);
                         this.itemAddedCallbacks.forEach(callback => {
                             callback(item);
                         });
                     }
-                } else if (action.type == "child_changed") {
+                } else if (action.type === 'child_changed') {
                     this.itemUpdatedCallbacks.forEach(callback => {
                         callback(item);
                     });
-                } else if (action.type == "child_removed") {
+                } else if (action.type === 'child_removed') {
                     if (this.itemKeys.indexOf(action.key) >= 0) {
                         this.itemKeys.splice(this.itemKeys.indexOf(action.key), 1);
                         this.itemRemovedCallbacks.forEach(callback => {

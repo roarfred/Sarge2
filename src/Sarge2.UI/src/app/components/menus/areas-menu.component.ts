@@ -14,9 +14,9 @@ declare var ol: any;
     styleUrls: ['areas-menu.component.css']
 })
 export class AreasMenuComponent implements OnInit {
-    public defaultFillColor: string = "#ffff9911";
-    public defaultStrokeColor: string = "#9900ff99";
-    public defaultStrokeWidth: number = 2;
+    public defaultFillColor = '#ffff9911';
+    public defaultStrokeColor = '#9900ff99';
+    public defaultStrokeWidth = 2;
 
     private drawingLayer: any;
     private displayLayer: any;
@@ -24,6 +24,8 @@ export class AreasMenuComponent implements OnInit {
     private draw: any;
     private style: any;
     private source: any;
+    private edit: any = null;
+
     public selectAllOption = true;
 
     @Input()
@@ -34,7 +36,7 @@ export class AreasMenuComponent implements OnInit {
     }
 
     openDialog(): void {
-        let dialogRef = this.dialog.open(AreasStyleDialog, {
+        const dialogRef = this.dialog.open(AreasStyleDialog, {
             width: '250px',
             data: { fillColor: this.defaultFillColor, strokeColor: this.defaultStrokeColor, strokeWidth: this.defaultStrokeWidth }
         });
@@ -64,17 +66,17 @@ export class AreasMenuComponent implements OnInit {
                         })
                     }));
                 }));
-            };
+            }
         });
     }
 
     areaAdded(area: any): void {
         if (this.areaFeatures[area.key] == null) {
-            let polygon = new ol.geom.Polygon(area.coords);
+            const polygon = new ol.geom.Polygon(area.coords);
 
-            polygon.transform("EPSG:4326", "EPSG:32633");
+            polygon.transform('EPSG:4326', 'EPSG:32633');
             // Create feature with polygon.
-            var feature = new ol.Feature({
+            const feature = new ol.Feature({
                 geometry: polygon
             });
             feature.setStyle(this.getAreaStyle(area));
@@ -93,13 +95,13 @@ export class AreasMenuComponent implements OnInit {
     }
 
     areaUpdated(area: any): void {
-        console.log("Area updated: " + area.name);
+        console.log('Area updated: ' + area.name);
         console.log(area);
 
-        var feature = this.areaFeatures[area.key];
+        const feature = this.areaFeatures[area.key];
         if (feature) {
-            let polygon = new ol.geom.Polygon(area.coords);
-            polygon.transform("EPSG:4326", "EPSG:32633");
+            const polygon = new ol.geom.Polygon(area.coords);
+            polygon.transform('EPSG:4326', 'EPSG:32633');
             feature.setGeometry(polygon);
             feature.setStyle(this.getAreaStyle(area));
         }
@@ -134,7 +136,7 @@ export class AreasMenuComponent implements OnInit {
 
         this.style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: "red",
+                color: 'red',
                 width: 4
             }),
             image: new ol.style.Circle({
@@ -156,7 +158,7 @@ export class AreasMenuComponent implements OnInit {
     }
 
     public startDrawing(): void {
-        var value = 'Polygon';
+        const value = 'Polygon';
         this.draw = new ol.interaction.Draw({
             source: this.source,
             style: this.style,
@@ -165,17 +167,17 @@ export class AreasMenuComponent implements OnInit {
         });
 
         this.draw.on('drawend', (event) => {
-            let sketch = event.feature;
-            let area = sketch.getGeometry();
-            area.transform("EPSG:32633", "EPSG:4326");
-            let coords = area.getCoordinates();
+            const sketch = event.feature;
+            const area = sketch.getGeometry();
+            area.transform('EPSG:32633', 'EPSG:4326');
+            const coords = area.getCoordinates();
 
             this.mapData.areas.addItem({
-                "name": "area",
-                "strokeColor": this.defaultStrokeColor,
-                "strokeWidth": this.defaultStrokeWidth,
-                "fillColor": this.defaultFillColor,
-                "coords": coords
+                'name': 'area',
+                'strokeColor': this.defaultStrokeColor,
+                'strokeWidth': this.defaultStrokeWidth,
+                'fillColor': this.defaultFillColor,
+                'coords': coords
             });
 
             this.map.removeInteraction(this.draw);
@@ -185,33 +187,31 @@ export class AreasMenuComponent implements OnInit {
         this.map.addInteraction(this.draw);
     }
 
-    private edit: any = null;
     public editItem(area: any): void {
         if (this.edit) {
             this.map.removeInteraction(this.edit.interaction);
             this.map.removeLayer(this.edit.layer);
 
-            if (this.edit.area == area.key)
-            {
+            if (this.edit.area === area.key) {
                 this.edit = null;
                 return;
             }
         }
-        
-        let feature = this.areaFeatures[area.key].clone();
+
+        const feature = this.areaFeatures[area.key].clone();
         feature.setStyle(this.style);
-        
+
         // Center map on area
-        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+        const center = ol.extent.getCenter(feature.getGeometry().getExtent());
         this.map.getView().setCenter(center);
 
-        let source = new ol.source.Vector({ wrapX: false });
+        const source = new ol.source.Vector({ wrapX: false });
         source.addFeature(feature);
-        let modifyInteraction = new ol.interaction.Modify({
+        const modifyInteraction = new ol.interaction.Modify({
             source: source,
             style: this.style
         });
-        let layer = new ol.layer.Vector({
+        const layer = new ol.layer.Vector({
             source: source,
             style: this.style,
             zIndex: 150
@@ -220,10 +220,10 @@ export class AreasMenuComponent implements OnInit {
         this.map.addInteraction(modifyInteraction);
 
         modifyInteraction.on('modifyend', (function (evt) {
-            let feature = evt.features.item(0).clone();
-            let geometry = feature.getGeometry();
-            geometry.transform("EPSG:32633", "EPSG:4326");
-            let coords = geometry.getCoordinates();
+            const modifiedFeature = evt.features.item(0).clone();
+            const geometry = modifiedFeature.getGeometry();
+            geometry.transform('EPSG:32633', 'EPSG:4326');
+            const coords = geometry.getCoordinates();
             area.coords = coords;
             this.saveItem(area);
         }).bind(this));
@@ -246,4 +246,4 @@ export class AreasMenuComponent implements OnInit {
         this.mapData.areas.selectAll(this.selectAllOption);
         this.selectAllOption = !this.selectAllOption;
     }
-} 
+}

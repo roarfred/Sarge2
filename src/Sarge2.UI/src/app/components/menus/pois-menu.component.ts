@@ -10,7 +10,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { MapService } from '../../services/map.service';
 import { FormControl } from '@angular/forms';
-//import { PoisStyleDialog } from './pois-style.dialog';
 
 declare var ol: any;
 
@@ -20,7 +19,7 @@ declare var ol: any;
     styles: ['./pois-menu.component.css']
 })
 export class PoisMenuComponent implements OnInit {
-    public defaultSymbol: string = "Flag";
+    public defaultSymbol = 'Flag';
 
     private drawingLayer: any;
     private displayLayer: any;
@@ -28,7 +27,8 @@ export class PoisMenuComponent implements OnInit {
     private draw: any;
     private style: any;
     private source: any;
-    
+    private edit: any = null;
+
     public selectAllOption = true;
     public poiSymbols: Array<string>;
 
@@ -43,17 +43,16 @@ export class PoisMenuComponent implements OnInit {
         this.symbolCtrl = new FormControl();
         this.filteredSymbols = this.symbolCtrl.valueChanges
             .pipe(
-            startWith(''),
-            map(symbol => symbol ? this.filterSymbols(symbol) : this.poiSymbols)
+                startWith(''),
+                map(symbol => symbol ? this.filterSymbols(symbol) : this.poiSymbols)
             );
-
 
         this.symbolCtrl.valueChanges.subscribe(value => {
             this.mapData.pois.getSelected().then(pois => pois.forEach(poi => {
                 poi.symbol = this.defaultSymbol;
                 this.saveItem(poi);
             }));
-        })
+        });
     }
 
     filterSymbols(name: string) {
@@ -62,16 +61,16 @@ export class PoisMenuComponent implements OnInit {
     }
 
     public getSymbolUrl(symbol: string) {
-        return environment.apiUrl + "/api/symbols/" + symbol;
+        return environment.apiUrl + '/api/symbols/' + symbol;
     }
 
     poiAdded(poi: any): void {
         if (this.poiFeatures[poi.key] == null) {
-            let point = new ol.geom.Point(poi.coords);
+            const point = new ol.geom.Point(poi.coords);
 
-            point.transform("EPSG:4326", "EPSG:32633");
+            point.transform('EPSG:4326', 'EPSG:32633');
             // Create feature with point.
-            var feature = new ol.Feature({
+            const feature = new ol.Feature({
                 geometry: point
             });
             feature.setStyle(this.getPoiStyle(poi));
@@ -90,18 +89,18 @@ export class PoisMenuComponent implements OnInit {
     }
 
     poiUpdated(poi: any): void {
-        var feature = this.poiFeatures[poi.key];
+        const feature = this.poiFeatures[poi.key];
         if (feature) {
-            let point = new ol.geom.Point(poi.coords);
-            point.transform("EPSG:4326", "EPSG:32633");
+            const point = new ol.geom.Point(poi.coords);
+            point.transform('EPSG:4326', 'EPSG:32633');
             feature.setGeometry(point);
             feature.setStyle(this.getPoiStyle(poi));
         }
     }
 
     private getPoiStyle(poi: any): any {
-        var poiStyle = (function (feature, resolution) {
-            var image = new ol.style.Circle({
+        const poiStyle = (function (feature, resolution) {
+            let image = new ol.style.Circle({
                 radius: 5,
                 snapToPixel: false,
                 fill: new ol.style.Fill({ color: 'white' }),
@@ -117,13 +116,13 @@ export class PoisMenuComponent implements OnInit {
                     anchorYUnits: 'fraction',
                     opacity: 0.75,
                     src: this.getSymbolUrl(poi.symbol)
-                }))
-            };
+                }));
+            }
 
             return new ol.style.Style({
                 image: image,
                 text: new ol.style.Text({
-                    text: resolution < 20 ? poi.name : "",
+                    text: resolution < 20 ? poi.name : '',
                     offsetY: -20,
                     scale: 1.5,
                     fill: new ol.style.Fill({
@@ -157,7 +156,7 @@ export class PoisMenuComponent implements OnInit {
 
         this.style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: "red",
+                color: 'red',
                 width: 4
             }),
             image: new ol.style.Circle({
@@ -179,7 +178,7 @@ export class PoisMenuComponent implements OnInit {
     }
 
     public startDrawing(): void {
-        var value = 'Point';
+        const value = 'Point';
         this.draw = new ol.interaction.Draw({
             source: this.source,
             style: this.style,
@@ -188,15 +187,15 @@ export class PoisMenuComponent implements OnInit {
         });
 
         this.draw.on('drawend', (event) => {
-            let sketch = event.feature;
-            let area = sketch.getGeometry();
-            area.transform("EPSG:32633", "EPSG:4326");
-            let coords = area.getCoordinates();
+            const sketch = event.feature;
+            const area = sketch.getGeometry();
+            area.transform('EPSG:32633', 'EPSG:4326');
+            const coords = area.getCoordinates();
 
             this.mapData.pois.addItem({
-                "name": "poi",
-                "symbol": this.defaultSymbol,
-                "coords": coords
+                'name': 'poi',
+                'symbol': this.defaultSymbol,
+                'coords': coords
             });
 
             this.map.removeInteraction(this.draw);
@@ -206,32 +205,31 @@ export class PoisMenuComponent implements OnInit {
         this.map.addInteraction(this.draw);
     }
 
-    private edit: any = null;
     public editItem(poi: any): void {
         if (this.edit) {
             this.map.removeInteraction(this.edit.interaction);
             this.map.removeLayer(this.edit.layer);
 
-            if (this.edit.poi == poi.key) {
+            if (this.edit.poi === poi.key) {
                 this.edit = null;
                 return;
             }
         }
 
-        let feature = this.poiFeatures[poi.key].clone();
+        const feature = this.poiFeatures[poi.key].clone();
         feature.setStyle(this.style);
 
         // Center map on area
-        var center = ol.extent.getCenter(feature.getGeometry().getExtent());
+        const center = ol.extent.getCenter(feature.getGeometry().getExtent());
         this.map.getView().setCenter(center);
 
-        let source = new ol.source.Vector({ wrapX: false });
+        const source = new ol.source.Vector({ wrapX: false });
         source.addFeature(feature);
-        let modifyInteraction = new ol.interaction.Modify({
+        const modifyInteraction = new ol.interaction.Modify({
             source: source,
             style: this.style
         });
-        let layer = new ol.layer.Vector({
+        const layer = new ol.layer.Vector({
             source: source,
             style: this.style,
             zIndex: 150
@@ -240,10 +238,10 @@ export class PoisMenuComponent implements OnInit {
         this.map.addInteraction(modifyInteraction);
 
         modifyInteraction.on('modifyend', (function (evt) {
-            let feature = evt.features.item(0).clone();
-            let geometry = feature.getGeometry();
-            geometry.transform("EPSG:32633", "EPSG:4326");
-            let coords = geometry.getCoordinates();
+            const modifiedFeature = evt.features.item(0).clone();
+            const geometry = modifiedFeature.getGeometry();
+            geometry.transform('EPSG:32633', 'EPSG:4326');
+            const coords = geometry.getCoordinates();
             poi.coords = coords;
             this.saveItem(poi);
         }).bind(this));
@@ -266,4 +264,4 @@ export class PoisMenuComponent implements OnInit {
         this.mapData.pois.selectAll(this.selectAllOption);
         this.selectAllOption = !this.selectAllOption;
     }
-} 
+}

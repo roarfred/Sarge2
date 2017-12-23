@@ -24,30 +24,30 @@ export class MapService {
             .toPromise()
             .then((result) => result.json())
             .catch((error) => console.error(error));
-    };
+    }
 
     getPaperSizes(): Promise<Array<PaperSize>> {
         return this.http
             .get(`${this.baseUrl}/api/papersize`, { headers: this.headers })
             .toPromise()
-            .then((result) => { return result.json(); })
+            .then((result) => result.json())
             .catch((error) => console.error(error));
-    };
+    }
 
     getScales(mapName: string): Promise<Array<ScaleAndTileSize>> {
         return this.http
             .get(`${this.baseUrl}/api/scale/${mapName}`, { headers: this.headers })
             .toPromise()
-            .then((result) => { return result.json(); })
+            .then((result) => result.json())
             .catch((error) => console.error(error));
-    };
+    }
 
     downloadMap(settings: PrintSettings): Promise<boolean> {
         return this.http
             .post(`${this.baseUrl}/api/mapaspdf`, settings, { headers: this.headers, responseType: ResponseContentType.Blob })
             .toPromise()
             .then((result) => {
-                FileSaver.saveAs(result.blob(), "Map.pdf");
+                FileSaver.saveAs(result.blob(), 'Map.pdf');
                 return null;
             })
             .catch((error) => console.error(error));
@@ -57,7 +57,7 @@ export class MapService {
         return this.http
             .get(`${this.baseUrl}/api/symbols`, { headers: this.headers })
             .toPromise()
-            .then((result) => { return result.json(); })
+            .then((result) => result.json())
             .catch((error) => console.error(error));
-    };
+    }
 }
