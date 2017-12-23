@@ -7,9 +7,10 @@ export class UtmLocationPipe implements PipeTransform {
     }
 
     pad(value: number, digits: number) {
-        var v = value.toString();
-        while (v.length < digits)
-            v = "0" + v;
+        let v = value.toString();
+        while (v.length < digits) {
+            v = '0' + v;
+        }
         return v;
     }
 }

@@ -3,7 +3,7 @@ import { Location } from '../../../models';
 declare var ol: any;
 
 @Component({
-    selector: 'my-measure-line',
+    selector: 'app-measure-line',
     templateUrl: './measure-line.component.html',
     styleUrls: ['./measure-line.component.css', './measure-common.css']
 })
@@ -15,7 +15,7 @@ export class MeasureLineComponent {
         return this._map;
     }
     set map(map: any) {
-        if (map != this._map) {
+        if (map !== this._map) {
             this._map = map;
             if (this._map) {
                 this._map.on('pointermove', this.mouseMove, this);
@@ -35,12 +35,11 @@ export class MeasureLineComponent {
     measure(): void {
         this.distance = null;
         this.direction = null;
-        
         this.stopDraw();
 
-        var style = new ol.style.Style({
+        const style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: "red",
+                color: 'red',
                 width: 4
             }),
             image: new ol.style.Circle({
@@ -51,14 +50,14 @@ export class MeasureLineComponent {
               })
         });
 
-        var source = new ol.source.Vector({ wrapX: false });
+        const source = new ol.source.Vector({ wrapX: false });
         this.drawingLayer = new ol.layer.Vector({
             source: source,
             style: style
         });
         this.map.addLayer(this.drawingLayer);
 
-        var value = 'LineString';
+        const value = 'LineString';
         this.draw = new ol.interaction.Draw({
             source: source,
             style: style,
@@ -68,8 +67,8 @@ export class MeasureLineComponent {
         });
 
         this.draw.on('drawstart', (event) => {
-            let sketch = event.feature;
-            let position = sketch.getGeometry().getCoordinates()[0];
+            const sketch = event.feature;
+            const position = sketch.getGeometry().getCoordinates()[0];
             this.startPosition = new Location(33, position[0], position[1]).getLocalLocation();
             this.mouseTracker = this.trackMeasureDistance;
         }, this);
@@ -79,17 +78,16 @@ export class MeasureLineComponent {
             this.mouseTracker = null;
 
             // avoid more mouse move events
-            let from = this.startPosition;
+            const from = this.startPosition;
             this.startPosition = null;
 
-            let sketch = event.feature;
-            let position = sketch.getGeometry().getCoordinates()[1];
-            let to = new Location(33, position[0], position[1]).getLocalLocation();
+            const sketch = event.feature;
+            const position = sketch.getGeometry().getCoordinates()[1];
+            const to = new Location(33, position[0], position[1]).getLocalLocation();
 
             this.measureDistance(from, to);
         }, this);
 
-        
         this.map.addInteraction(this.draw);
 
         /*
@@ -105,17 +103,18 @@ export class MeasureLineComponent {
         Polygon
         SimpleGeometry
         */
-    };
+    }
 
     private mouseMove(event): void {
-        if (this.mouseTracker)
+        if (this.mouseTracker) {
             this.mouseTracker(event);
-    };
+        }
+    }
 
-    trackMeasureDistance(event) : void {
+    trackMeasureDistance(event): void {
         if (this.startPosition) {
-            var current = event.coordinate;
-            var to = new Location(33, current[0], current[1]).getLocalLocation();
+            const current = event.coordinate;
+            const to = new Location(33, current[0], current[1]).getLocalLocation();
             this.measureDistance(this.startPosition, to);
         }
     }
@@ -134,5 +133,4 @@ export class MeasureLineComponent {
             this.drawingLayer = null;
         }
     }
-
 }

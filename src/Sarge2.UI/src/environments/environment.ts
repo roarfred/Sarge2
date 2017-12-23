@@ -5,16 +5,16 @@
 
 export const environment = {
   production: false,
-//  apiUrl: "http://sarge2.ro4r.no",
-  apiUrl: "http://localhost:5000",
-  kovaApiUrl: "https://api.kova.no",
-//  kovaApiUrl: "http://localhost:5001",
+//  apiUrl: 'http://sarge2.ro4r.no',
+  apiUrl: 'http://localhost:5000',
+  kovaApiUrl: 'https://api.kova.no',
+//  kovaApiUrl: 'http://localhost:5001',
   fireBase: {
-    apiKey: "AIzaSyClG4XsgFDTcrDhBlSAtGy9RkrS2dCUDc4",
-    authDomain: "sarge2-41ef7.firebaseapp.com",
-    databaseURL: "https://sarge2-41ef7.firebaseio.com",
-    projectId: "sarge2-41ef7",
-    storageBucket: "",
-    messagingSenderId: "1091128158107"
+    apiKey: 'AIzaSyClG4XsgFDTcrDhBlSAtGy9RkrS2dCUDc4',
+    authDomain: 'sarge2-41ef7.firebaseapp.com',
+    databaseURL: 'https://sarge2-41ef7.firebaseio.com',
+    projectId: 'sarge2-41ef7',
+    storageBucket: '',
+    messagingSenderId: '1091128158107'
   }
 };

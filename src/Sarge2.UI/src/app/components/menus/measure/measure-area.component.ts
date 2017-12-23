@@ -3,7 +3,7 @@ import { Location } from '../../../models';
 declare var ol: any;
 
 @Component({
-    selector: 'my-measure-area',
+    selector: 'app-measure-area',
     templateUrl: './measure-area.component.html',
     styleUrls: ['./measure-area.component.css', './measure-common.css']
 })
@@ -15,7 +15,7 @@ export class MeasureAreaComponent {
         return this._map;
     }
     set map(map: any) {
-        if (map != this._map) {
+        if (map !== this._map) {
             this._map = map;
             if (this._map) {
                 this._map.on('pointermove', this.mouseMove, this);
@@ -31,6 +31,7 @@ export class MeasureAreaComponent {
     track: any;
 
     distance: number;
+    distances: Array<number>;
     area: number;
 
     measure(): void {
@@ -39,9 +40,9 @@ export class MeasureAreaComponent {
 
         this.stopDraw();
 
-        var style = new ol.style.Style({
+        const style = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: "red",
+                color: 'red',
                 width: 4
             }),
             image: new ol.style.Circle({
@@ -52,14 +53,14 @@ export class MeasureAreaComponent {
             })
         });
 
-        var source = new ol.source.Vector({ wrapX: false });
+        const source = new ol.source.Vector({ wrapX: false });
         this.drawingLayer = new ol.layer.Vector({
             source: source,
             style: style
         });
         this.map.addLayer(this.drawingLayer);
 
-        var value = 'Polygon';
+        const value = 'Polygon';
         this.draw = new ol.interaction.Draw({
             source: source,
             style: style,
@@ -68,16 +69,16 @@ export class MeasureAreaComponent {
         });
 
         this.draw.on('drawstart', (event) => {
-            let sketch = event.feature;
+            const sketch = event.feature;
             this.track = sketch.getGeometry();
-            let position = this.track.getCoordinates()[0];
+            const position = this.track.getCoordinates()[0];
             this.distances = new Array<number>();
             this.started = true;
             this.mouseTracker = this.trackMeasureDistance;
         }, this);
 
         this.draw.on('change', (event) => {
-            console.log("change");
+            console.log('change');
         });
 
         this.draw.on('drawend', (event) => {
@@ -106,28 +107,29 @@ export class MeasureAreaComponent {
         Polygon
         SimpleGeometry
         */
-    };
+    }
 
     private mouseMove(event): void {
-        if (this.mouseTracker)
+        if (this.mouseTracker) {
             this.mouseTracker(event);
-    };
+        }
+    }
 
-    distances: Array<number>;
-    
     trackMeasureDistance(event): void {
         if (this.started) {
-            let coords = this.track.getCoordinates()[0];
-            if (coords.length < 3) return;
+            const coords = this.track.getCoordinates()[0];
+            if (coords.length < 3) {
+                return;
+            }
 
             // coords contains each point, but the last one and first one is the same
             // the last point is also the current mouse position, so just skip that
             if (coords.length > this.distances.length + 3) {
                 for (let i = this.distances.length; i < coords.length - 3; i++) {
-                    let prev = new Location(33, coords[i][0], coords[i][1]);
-                    let next = new Location(33, coords[i + 1][0], coords[i + 1][1]);
-                    let dist = prev.getDistanceTo(next);
-                    this.distances.push(dist);
+                    const prev = new Location(33, coords[i][0], coords[i][1]);
+                    const next = new Location(33, coords[i + 1][0], coords[i + 1][1]);
+                    const distance = prev.getDistanceTo(next);
+                    this.distances.push(distance);
                 }
             }
 
@@ -135,15 +137,15 @@ export class MeasureAreaComponent {
             this.distances.forEach(v => dist += v);
 
             // now, let's add in the distance to the current mouse position and then back to start
-            let secondLastCoord = coords[coords.length - 3];
-            let secondLast = new Location(33, secondLastCoord[0], secondLastCoord[1]).getLocalLocation();
+            const secondLastCoord = coords[coords.length - 3];
+            const secondLast = new Location(33, secondLastCoord[0], secondLastCoord[1]).getLocalLocation();
 
-            let lastCoord = coords[coords.length - 2];
-            let last = new Location(33, lastCoord[0], lastCoord[1]).getLocalLocation();
+            const lastCoord = coords[coords.length - 2];
+            const last = new Location(33, lastCoord[0], lastCoord[1]).getLocalLocation();
             dist += secondLast.getDistanceTo(last);
 
-            let firstCoord = coords[coords.length - 1];
-            let first = new Location(33, firstCoord[0], firstCoord[1]).getLocalLocation();
+            const firstCoord = coords[coords.length - 1];
+            const first = new Location(33, firstCoord[0], firstCoord[1]).getLocalLocation();
             dist += last.getDistanceTo(first);
 
             this.distance = dist;
@@ -166,5 +168,4 @@ export class MeasureAreaComponent {
             this.drawingLayer = null;
         }
     }
-
 }

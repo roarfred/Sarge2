@@ -18,7 +18,7 @@ import { AppComponent } from './app.component';
 import { MainComponent } from './main.component';
 import { MapComponent } from './components/map.component';
 import { UserComponent } from './components/user.component';
-import { LoginBoxComponent } from "./components/login-box.component";
+import { LoginBoxComponent } from './components/login-box.component';
 
 import { AngularFireModule, FirebaseAppConfig } from 'angularfire2/angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -40,7 +40,7 @@ import { environment } from '../environments/environment';
   ],
   imports: [
     BrowserModule,
-    AngularFireModule.initializeApp(environment.fireBase),    
+    AngularFireModule.initializeApp(environment.fireBase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     FormsModule,

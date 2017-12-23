@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButton } from '@angular/material';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-    selector: "my-user",
-    templateUrl: "./user.component.html",
-    styleUrls: ["./user.component.css"]
+    selector: 'app-user',
+    templateUrl: './user.component.html',
+    styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit {
-    @ViewChild("loginButton") loginButton: MatButton;
+    @ViewChild('loginButton') loginButton: MatButton;
     public get userName(): string {
         return this.auth.userName;
     }
@@ -22,17 +22,18 @@ export class UserComponent implements OnInit {
     }
 
     loginButtonClick() {
-        if (this.auth.loggedIn)
+        if (this.auth.loggedIn) {
             this.logout();
-        else
+        } else {
             this.login();
+        }
     }
 
     logout(): void {
         this.auth.logout();
     }
 
-    get loggedIn() : boolean {
+    get loggedIn(): boolean {
         return this.auth.loggedIn;
     }
 }
