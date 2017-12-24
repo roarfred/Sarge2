@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from './services/auth-guard.service';
 import { MainComponent } from './main.component';
+import { environment } from '../environments/environment';
 
 const routes: Routes = [
     {
@@ -19,4 +20,4 @@ const routes: Routes = [
     }
 ];
 
-export const AppRoutingModule = RouterModule.forRoot(routes, { enableTracing: true });
+export const AppRoutingModule = RouterModule.forRoot(routes, { enableTracing: false /** !environment.production */ });

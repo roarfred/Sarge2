@@ -2,10 +2,25 @@
 .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
 .another-file-over-class { border: dotted 3px green; }
 
-.track {font-size: smaller}
-.trackDetails {color: gray}
+.item-header {
+    font-weight: bold; 
+    margin-top: 5px;
+}
+.item-name {
+    font-size: smaller;
+}
+.item-details {
+    color: gray; 
+    font-size: xx-small 
+}
 
 .geo-list {
     height: 400px;
     overflow-y: scroll;
+}
+mat-horizontal-stepper {
+   margin: -10px;
+}
+.button-container {
+    margin-bottom: 5px;
 }

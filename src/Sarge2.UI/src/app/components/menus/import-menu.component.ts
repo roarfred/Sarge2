@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { FileUploader, FileSelectDirective, FileDropDirective, ParsedResponseHeaders, FileItem } from 'ng2-file-upload/ng2-file-upload';
 import { environment } from '../../../environments/environment';
 import { GeoData, Track, TimePoint, Position, Poi, Location } from '../../models';
 import { MapDataService } from '../../services/map-data.service';
+import { MatHorizontalStepper } from '@angular/material';
 
 declare var ol: any;
 
@@ -14,6 +15,7 @@ const UPLOAD_URL = '/api/parsegpx/upload';
     styleUrls: ['import-menu.component.css']
 })
 export class ImportMenuComponent implements OnInit {
+    @ViewChild('stepper') stepper: MatHorizontalStepper;
     public uploader: FileUploader = new FileUploader({ url: environment.apiUrl + UPLOAD_URL, autoUpload: true });
 
     public hasBaseDropZoneOver = false;
@@ -45,6 +47,15 @@ export class ImportMenuComponent implements OnInit {
         return this._map;
     }
 
+    get selectedCount(): number {
+        if (this.trackFeatures && this.poiFeatures) {
+            return this.trackFeatures.filter(track => track != null).length +
+                this.poiFeatures.filter(track => track != null).length;
+        } else {
+            return 0;
+        }
+    }
+
     constructor(private mapData: MapDataService) {
         this.uploader.onBeforeUploadItem = (file: FileItem) => {
             this.uploading = true;
@@ -61,6 +72,7 @@ export class ImportMenuComponent implements OnInit {
             this.geoDataChange.emit(this.geoData);
             this.clearMap();
             this.showAll();
+            this.stepper.selectedIndex = 1;
         };
 
         this.uploader.onErrorItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
