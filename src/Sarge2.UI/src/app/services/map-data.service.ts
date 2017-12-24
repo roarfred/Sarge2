@@ -32,9 +32,9 @@ export class MapDataService {
     private getTrackFromAction(action: AngularFireAction<firebase.database.DataSnapshot>) {
         return {
             key: action.key,
-            coords: action.payload.child('coords').val(),
+            points: action.payload.child('points').val(),
             strokeColor: action.payload.child('strokeColor').val() || 'green',
-            strokeWidth: action.payload.child('strokeWidth').val() || 2,
+            strokeWidth: action.payload.child('strokeWidth').val() || 5,
             name: action.payload.child('name').val()
         };
     }

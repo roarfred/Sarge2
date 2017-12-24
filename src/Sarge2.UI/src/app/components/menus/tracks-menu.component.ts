@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MapDataService } from '../../services/map-data.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { TracksStyleDialogComponent } from './tracks-style-dialog.component';
+import { TimePoint } from '../../models';
 
 declare var ol: any;
 
@@ -66,7 +67,10 @@ export class TracksMenuComponent implements OnInit {
 
     trackAdded(track: any): void {
         if (this.trackFeatures[track.key] == null) {
-            const line = new ol.geom.LineString(track.coords);
+            const coords = track.points.map(trackPoint => {
+                return [trackPoint.position.longitude, trackPoint.position.latitude];
+            });
+            const line = new ol.geom.LineString(coords);
 
             line.transform('EPSG:4326', 'EPSG:32633');
             // Create feature with polygon.
@@ -94,7 +98,10 @@ export class TracksMenuComponent implements OnInit {
 
         const feature = this.trackFeatures[track.key];
         if (feature) {
-            const line = new ol.geom.LineString(track.coords);
+            const coords = track.points.map(trackPoint => {
+                return [trackPoint.position.longitude, trackPoint.position.latitude];
+            });
+            const line = new ol.geom.LineString(coords);
             line.transform('EPSG:4326', 'EPSG:32633');
             feature.setGeometry(line);
             feature.setStyle(this.getTrackStyle(track));
@@ -167,7 +174,7 @@ export class TracksMenuComponent implements OnInit {
                 'name': 'track',
                 'strokeColor': this.defaultStrokeColor,
                 'strokeWidth': this.defaultStrokeWidth,
-                'coords': coords
+                'points': coords.map(coord => ({ position: {longitude: coord[0], latitude: coord[1] }}))
             });
 
             this.map.removeInteraction(this.draw);
@@ -214,7 +221,7 @@ export class TracksMenuComponent implements OnInit {
             const geometry = modifiedFeature.getGeometry();
             geometry.transform('EPSG:32633', 'EPSG:4326');
             const coords = geometry.getCoordinates();
-            track.coords = coords;
+            track.points = coords.map(coord => ({ position: {longitude: coord[0], latitude: coord[1] }}));
             this.saveItem(track);
         }).bind(this));
 

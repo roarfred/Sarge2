@@ -21,7 +21,7 @@
             <input [(ngModel)]="item.name" (change)="saveItem(item)" style="width: 100px">
         </div>
         <div fxflex="30" fxLayoutAlign="end center">
-            <button class="item-button" mat-icon-button color="warn" (click)="editItem(item)" [color]="edit?.tracks == item.key ? 'primary' : 'accent'">
+            <button class="item-button" mat-icon-button color="warn" (click)="editItem(item)" [color]="edit?.track == item.key ? 'primary' : 'accent'">
                 <mat-icon aria-label="Edit track">edit</mat-icon>
             </button>
             <button class="item-button" mat-icon-button color="warn" (click)="deleteItem(item)">
