@@ -12,7 +12,7 @@
     <input matInput placeholder="max time" type="number" [(ngModel)]="maxTime">
 </mat-form-field>
 <mat-progress-bar mode="indeterminate" *ngIf="uploading"></mat-progress-bar>
-
+<button mat-button (click)="import()">Import</button>
 <div *ngIf="geoData" class="geo-list">
     Name:
     <input type="text" [(ngModel)]="geoData.name">
@@ -22,7 +22,7 @@
         {{geoData.tracks.length}} tracks:
         <div class="track" *ngFor="let track of geoData.tracks">
             <div class="track-name">
-                <mat-checkbox checked="true" (change)="showTrack(track, true)">{{track.name}}</mat-checkbox>
+                <mat-checkbox [checked]="isTrackVisible(track)" (change)="showTrack(track, true)">{{track.name}}</mat-checkbox>
             </div>
             <div class="track-details">
                 {{track.length | distance}} {{track.duration | timespan}} ({{track.pointCount}})
@@ -33,7 +33,7 @@
         {{geoData.pois.length}} POIs:
         <div class="poi" *ngFor="let poi of geoData.pois">
             <div class="poi-name">
-                <mat-checkbox checked="true" (change)="showPoi(poi, true)">{{poi.name}}</mat-checkbox>
+                <mat-checkbox [checked]="isPoiVisible(poi)" (change)="showPoi(poi, true)">{{poi.name}}</mat-checkbox>
             </div>
         </div>
     </div>

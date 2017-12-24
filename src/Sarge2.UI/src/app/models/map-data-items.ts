@@ -98,9 +98,11 @@ export class MapDataItems {
                         }
                     });
                     sub.unsubscribe();
+                    resolve(selected);
                 });
+            } else {
+                resolve([]);
             }
-            resolve(selected);
         });
 
         return p;

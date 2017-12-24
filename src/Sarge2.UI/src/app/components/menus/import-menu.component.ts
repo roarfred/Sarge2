@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FileUploader, FileSelectDirective, FileDropDirective, ParsedResponseHeaders, FileItem } from 'ng2-file-upload/ng2-file-upload';
 import { environment } from '../../../environments/environment';
 import { GeoData, Track, TimePoint, Position, Poi, Location } from '../../models';
+import { MapDataService } from '../../services/map-data.service';
 
 declare var ol: any;
 
@@ -44,7 +45,7 @@ export class ImportMenuComponent implements OnInit {
         return this._map;
     }
 
-    constructor() {
+    constructor(private mapData: MapDataService) {
         this.uploader.onBeforeUploadItem = (file: FileItem) => {
             this.uploading = true;
             this.uploader.options.additionalParameter = {
@@ -83,7 +84,22 @@ export class ImportMenuComponent implements OnInit {
         this.geoData.tracks.forEach(track => this.showTrack(track, false));
         this.geoData.pois.forEach(poi => this.showPoi(poi, false));
     }
-
+    isTrackVisible(track: Track): boolean {
+        const trackIndex = this.geoData.tracks.indexOf(track);
+        if (trackIndex >= 0 && this.trackFeatures && this.trackFeatures[trackIndex]) {
+            return this.trackFeatures[trackIndex] != null;
+        } else {
+            return false;
+        }
+    }
+    isPoiVisible(poi: Poi): boolean {
+        const poiIndex = this.geoData.pois.indexOf(poi);
+        if (poiIndex >= 0 && this.poiFeatures && this.poiFeatures[poiIndex]) {
+            return this.poiFeatures[poiIndex] != null;
+        } else {
+            return false;
+        }
+    }
     initPoiSource() {
         const poiStyle = function (feature, resolution) {
             let image = new ol.style.Circle({
@@ -228,7 +244,7 @@ export class ImportMenuComponent implements OnInit {
             this.poiFeatures[poiIndex] = poiFeature;
 
             if (centerMap) {
-                this.map.getView().center(poiOnMap);
+                this.map.getView().setCenter([pos.easting, pos.northing]);
             }
         }
     }
@@ -262,5 +278,29 @@ export class ImportMenuComponent implements OnInit {
                 this.map.getView().setCenter(center);
             }
         }
+    }
+
+    public import() {
+        this.trackFeatures.forEach((track, index) => {
+            if (track != null) {
+                const geoTrack = this.geoData.tracks[index];
+                this.mapData.tracks.addItem({
+                    name: geoTrack.name,
+                    points: geoTrack.points,
+                    strokeWidth: 8,
+                    strokeColor: '#00cc33cc'
+                });
+            }
+        });
+        this.poiFeatures.forEach((poi, index) => {
+            if (poi != null) {
+                const geoPoi = this.geoData.pois[index];
+                this.mapData.pois.addItem({
+                    name: geoPoi.name,
+                    symbol: geoPoi.symbol,
+                    coords: [geoPoi.position.longitude, geoPoi.position.latitude]
+                });
+            }
+        });
     }
 }

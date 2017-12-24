@@ -1,0 +1,32 @@
+<div class="menu-content">
+    <div fxLayout="row">
+        <div fxFlex>
+            <div class="track-preview" [style.borderColor]="defaultStrokeColor" [style.borderWidth]="defaultStrokeWidth"
+                (click)="openDialog()">set style</div>
+        </div>
+        <div fxFlex="20">
+            <button mat-mini-fab color="primary" (click)="startDrawing()">
+                <mat-icon aria-label="Add new track">add</mat-icon>
+            </button>
+        </div>
+    </div>
+    <button mat-icon-button color="primary" (click)="selectAll()" aria-label="Select all">
+        <mat-icon aria-label="Select all/none">{{selectAllOption ? 'check_box_outline_blank' : 'check_box'}}</mat-icon>select all ({{mapData.tracks.count}})
+    </button>
+    <div fxLayout="row" fxLayoutAlign="space-around center" *ngFor="let item of mapData.tracks.items | async">
+        <div fxflex="20" fxLayoutAlign="start center">
+            <mat-checkbox [checked]="mapData.tracks.isSelected(item)" (change)="mapData.tracks.setSelected(item, $event.checked)"></mat-checkbox>
+        </div>
+        <div fxflex fxLayoutAlign="center center">
+            <input [(ngModel)]="item.name" (change)="saveItem(item)" style="width: 100px">
+        </div>
+        <div fxflex="30" fxLayoutAlign="end center">
+            <button class="item-button" mat-icon-button color="warn" (click)="editItem(item)" [color]="edit?.track == item.key ? 'primary' : 'accent'">
+                <mat-icon aria-label="Edit track">edit</mat-icon>
+            </button>
+            <button class="item-button" mat-icon-button color="warn" (click)="deleteItem(item)">
+                <mat-icon aria-label="Delete track">clear</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>
