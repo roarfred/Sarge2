@@ -6,13 +6,17 @@
         <button mat-button class="toolbar-button">
             <mat-icon>menu</mat-icon>
         </button>
-        <button mat-button class="toolbar-button" *ngFor="let item of menuItems" (click)="toggleMenu(item.name)">
+        <button mat-button class="toolbar-button" *ngFor="let item of menuItems" (click)="click(item)">
             <mat-icon>{{item.icon}}</mat-icon>
         </button>
     </mat-menu>
     <div fxHide.lt-md>
-        <button mat-button class="toolbar-button" *ngFor="let item of menuItems" (click)="toggleMenu(item.name)">
+        <button *ngIf="menuName" mat-button class="toolbar-button" (click)="toggleMenu(null)">
+            <mat-icon>close</mat-icon>
+        </button>
+        <button mat-button class="toolbar-button" *ngFor="let item of menuItems" (click)="click(item)">
             <mat-icon>{{item.icon}}</mat-icon>
         </button>
-    </div>    
+    </div>
+    <input type="file" #photo accept="image/*" capture="environment">
 </div>
