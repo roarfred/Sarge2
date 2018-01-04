@@ -14,8 +14,8 @@ import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
         {name: 'tracks', icon: 'gesture'},
         {name: 'pois', icon: 'flag'},
         {name: 'areas', icon: 'format_shapes'},
-        {name: 'import', icon: 'backup'},
-        {name: 'camera', icon: 'photo_camera', action: this.capturePhoto}
+        {name: 'import', icon: 'backup'}
+        // ,{name: 'camera', icon: 'photo_camera', action: this.capturePhoto}
     ];
     @Output()
     public menuClick = new EventEmitter<string>();
@@ -30,7 +30,9 @@ import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
             this.toggleMenu(item.name);
         }
     }
+    /*
     public capturePhoto(item, component): void {
         component.photo.nativeElement.click();
     }
+    */
 }
