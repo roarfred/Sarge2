@@ -1,3 +1,5 @@
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+
 * {
  font-family: Roboto, sans-serif
 }
@@ -8,6 +10,3 @@ html, body {
     margin: 0;
     overflow: hidden;
 }
-
-
-@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
