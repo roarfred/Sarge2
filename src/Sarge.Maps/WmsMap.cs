@@ -76,8 +76,8 @@ namespace Sarge.Maps
         public static IEnumerable<WmsMap> CreateMaps()
         {
             return new[] {
-                new WmsMap("topo2"),
-                new WmsMap("topo2graatone"),
+                new WmsMap("topo4"),
+                new WmsMap("topo4graatone"),
                 new WmsMap("terreng_norgeskart"),
                 new WmsMap("sjokartraster"),
                 new WmsMap("toporaster3"),

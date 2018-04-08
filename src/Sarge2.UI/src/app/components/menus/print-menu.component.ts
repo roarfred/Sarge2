@@ -166,7 +166,7 @@ export class PrintMenuComponent implements OnInit {
 
         if (this.savedSettings == null) {
             this.savedSettings = new PrintSettings();
-            this.savedSettings.mapName = 'topo2';
+            this.savedSettings.mapName = 'topo4';
             this.savedSettings.radiusR25 = 500;
             this.savedSettings.radiusR50 = 2500;
             this.savedSettings.paperSize = { name: 'A4 Landscape', width: 0.29725, height: 0.21025 };
